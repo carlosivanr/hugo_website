@@ -2,16 +2,17 @@
 bio:
 education:
   courses:
-  - course: PhD in Psychology
+  - course: Ph.D. in Psychology
     institution: University of New Mexico
     year: 2018
-  - course: MS in Psychology
+  - course: M.S. in Psychology
     institution: University of New Mexico
     year: 2015
 email: ""
 highlight_name: false
 interests:
 - Resting state functional MRI
+- Graph theory
 - Data analysis
 - Data visualization
 - Promoting diversity in neuroscience
@@ -29,22 +30,25 @@ social:
   # icon_pack: fab
   # label: Follow me on Twitter
   # link: https://twitter.com/
+- icon: linkedin
+  icon_pack: fab
+  link: https://www.linkedin.com/in/carlosivanr
 - icon: google-scholar
   icon_pack: ai
   link: https://scholar.google.com/citations?hl=en&user=aatEyK8AAAAJ
 - icon: github
   icon_pack: fab
   link: https://github.com/carlosivanr
-- icon: linkedin
-  icon_pack: fab
-  link: https://www.linkedin.com/in/carlosivanr
+
 superuser: true
-title: Carlos Rodriguez, Ph.D.
+title: Carlos I. Rodriguez, Ph.D.
 ---
 
-I am currently a postdoctoral fellow at the Mind Research Network in Albuquerque, NM. My research primarily centers on investigating the consequences of prenatal alcohol exposure on resting state functional brain connectivity using animal models and human-subjects research. I am also currently pursuing research projects that explore brain connectivity in adolescents and in individuals with histories of substance use.
+I am currently a postdoctoral fellow at the Mind Research Network in Albuquerque, NM. My research primarily centers on investigating the consequences of prenatal alcohol exposure on resting state functional brain connectivity using a pre-clinical model and in adolescents diagnosed with Fetal Alcohol Spectrum Disorder (FASD). I am also involved in research using longitudinal neuroimaging data in the area of adolescent substance use and non-invasive brain stimulation.
 
-I am experienced in teaching introductory brain & behavior, leading efforts to implement psychological science research in university student success programs, and actively mentor undergraduate students from under-represented interested in research careers.
+I have experience in teaching university level introduction to behavioral neuroscience, leading efforts to implement psychological science research in university student success programs, and actively mentor students from under-represented interested in research careers.
+
+Outside of my professional interests, I dabble in carpentry, learning guitar, cooking, camping, and mountain biking.
 
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/cv.pdf" "newtab" >}}CV{{< /staticref >}}.

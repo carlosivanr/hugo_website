@@ -1,7 +1,7 @@
 ---
 title: Introduction to R for researchers
 linkTitle: Intro to R
-summary: An example of using Wowchemy's Book layout for publishing online courses.
+summary: A work in progress designed to introduce R to beginners.
 date: '2021-04-25'
 type: book
 ---
