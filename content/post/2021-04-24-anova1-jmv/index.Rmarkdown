@@ -63,7 +63,7 @@ summary(aov(formula = Scores ~ as.factor(Group),
         )
 ```
 
-Notice how both ANOVA outputs provide the same F ratio, degrees of freedom, and a p values. The difference is that a plot of the means and confidence intervals is not automatically generated. To produce a similar plot, a little more effort will be required.
+Notice how both ANOVA outputs provide the same F ratio, degrees of freedom, and p values. The difference is that a plot of the means and confidence intervals is not automatically generated. To produce a similar plot, a little more effort will be required.
 
 ### Produce a plot for the one-way ANOVA
 The quickest way that I know of to produce similar jmv() style plot is to utilize the tidyverse and ggpubr packages. The tidyverse package introduces extra functionality to feed the output of one function into another with the pipe operator (`%>%`) and includes additional functionality for summarizing data.
