@@ -29,15 +29,15 @@ social:
   # icon_pack: fab
   # label: Follow me on Twitter
   # link: https://twitter.com/
-- icon: graduation-cap
-  icon_pack: fas
-  link: https://scholar.google.com/citations?user=aatEyK8AAAAJ
+- icon: google-scholar
+  icon_pack: ai
+  link: https://scholar.google.com/citations?hl=en&user=aatEyK8AAAAJ
 - icon: github
   icon_pack: fab
   link: https://github.com/carlosivanr
 - icon: linkedin
   icon_pack: fab
-  link: www.linkedin.com/in/carlosivanr
+  link: https://www.linkedin.com/in/carlosivanr
 superuser: true
 title: Carlos Rodriguez, Ph.D.
 ---
