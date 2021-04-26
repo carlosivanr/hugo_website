@@ -18,7 +18,7 @@ projects: []
 ---
 
 ### jmv package
-Recently, I learned about the jamovi (jmv) R package as an additional tool to conduct a wide variety of statistical tests in R. The jmv package comes from the standalone jamovi statistical spreadsheet software. Jamovi was designed as an alternative to costly programs like SPSS or SAS and is built on the R language. The developers recently released an R package as an alternative to their standalone software package. In this post, I will demonstrate a simple one-way ANOVA in jmv and compare it to base R. As you'll see, jmv provides simplified syntax, produces well organized output, and can automatically produce plots in a oneliner. It serves as a great way to get your feet wet with R and avoid getting bogged down in ggplot syntax for generating plots.
+Recently, I learned about the jamovi (jmv) R package as an additional tool to conduct a wide variety of statistical tests in R. The jmv package comes from the standalone jamovi statistical spreadsheet software. Jamovi was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers recently released an R package as an alternative to their standalone program. In this post, I will demonstrate a simple one-way ANOVA in jmv and compare it to base R. As you'll see, jmv can produces well organized output and can save you some time by painlessly generating plots. It serves as a great way to get your feet wet with performing statistical tests in R.
 
 
 
@@ -28,7 +28,7 @@ library(jmv)
 
 ### The data set
 
-For this demo, we will use the AMCP package which stands for "A Model Comparison Perspective." AMCP which is R package for Maxwell, Delaney, and Kelley's 3rd edition of "Designing Experiments and Analyzing Data: A model comparison perspective". We will use the data from Chapter 3 Exercise 9. In this exercies, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments that consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy improves phobia scores best and lends itself to a a one-way ANOVA test.
+For this demo, we will use the AMCP package which stands for "A Model Comparison Perspective." AMCP is the R package for Maxwell, Delaney, and Kelley's 3rd edition of "Designing Experiments and Analyzing Data: A model comparison perspective". We will use the data from Chapter 3, Exercise 9. In this exercies, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective which can be tested with a one-way ANOVA.
 
 
 ```r

@@ -1,5 +1,5 @@
 ---
-title: Introduction to R for researchers
+title: Introduction to R for beginners
 linkTitle: Intro to R
 summary: A work in progress designed to introduce R to beginners.
 date: '2021-04-25'
