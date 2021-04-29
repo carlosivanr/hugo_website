@@ -1,20 +1,28 @@
 ---
-title: Statistics
-date: '2021-01-01'
+title: Statistics with R
+date: '2021-04-25'
 type: book
-weight: 40
+weight: 90
 math: true
 ---
 
-Introduction to statistics for data science.
+Basic statistics with R.
+- one sample t test
+- two sample t test
+- correlation
+- regression
+- one way anova
+- one way welch anova
+- two way anova
+- N-way anova
+- ancova
+- manova
+
 
 <!--more-->
 
-This is just a bunch of test content to figure out where to place the text
 
-
-
-{{< icon name="clock" pack="fas" >}} 1-2 hours per week, for 8 weeks
+<!-- {{< icon name="clock" pack="fas" >}} 1-2 hours per week, for 8 weeks
 
 ## Learn
 
@@ -22,16 +30,16 @@ The general form of the **normal** probability density function is:
 
 $$
 f(x) = \frac{1}{\sigma \sqrt{2\pi} } e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}
-$$
+$$ -->
 
-{{< callout note >}}
+<!-- {{< callout note >}}
 The parameter $\mu$ is the mean or expectation of the distribution.
 $\sigma$ is its standard deviation.
 The variance of the distribution is $\sigma^{2}$.
-{{< /callout >}}
+{{< /callout >}} -->
 
-## Quiz
+<!-- ## Quiz
 
 {{< spoiler text="What is the parameter $\mu$?" >}}
 The parameter $\mu$ is the mean or expectation of the distribution.
-{{< /spoiler >}}
+{{< /spoiler >}} -->

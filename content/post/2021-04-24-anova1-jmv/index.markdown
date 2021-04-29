@@ -28,7 +28,7 @@ library(jmv)
 
 ### The data set
 
-For this demo, we will use the AMCP package which stands for "A Model Comparison Perspective." AMCP is the R package for Maxwell, Delaney, and Kelley's 3rd edition of "Designing Experiments and Analyzing Data: A model comparison perspective". We will use the data from Chapter 3, Exercise 9. In this exercies, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective which can be tested with a one-way ANOVA.
+For this demo, we will use the AMCP package. AMCP is the R package for Maxwell, Delaney, and Kelley's 3rd edition of "Designing Experiments and Analyzing Data: A model comparison perspective". For this demo we will use the data from Chapter 3, Exercise 9. In this exercies, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective which can be tested with a one-way ANOVA.
 
 
 ```r
@@ -36,7 +36,7 @@ library(AMCP)
 ```
 
 ### Inspect the data
-For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher level of phobia. Finally, each of the 12 rows represent each subject.
+For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
 
 ```r
 data(C3E9)
@@ -109,7 +109,7 @@ summary(aov(formula = Scores ~ as.factor(Group),
 Notice how both ANOVA outputs provide the same F ratio, degrees of freedom, and p values. The difference is that a plot of the means and confidence intervals is not automatically generated. To produce a similar plot, a little more effort will be required.
 
 ### Produce a plot for the one-way ANOVA
-The quickest way that I know of to produce similar jmv() style plot is to utilize the tidyverse and ggpubr packages. The tidyverse package introduces extra functionality to feed the output of one function into another with the pipe operator (`%>%`) and includes additional functionality for summarizing data.
+The quickest way that I know of to produce a similar jmv style plot is to utilize the tidyverse and ggpubr packages. The tidyverse package introduces extra functionality to feed the output of one function into another with the pipe operator (`%>%`) and includes additional functionality for summarizing data. The ggpubr has a nice helper function to generate summary statistics.
 
 
 ```r
@@ -146,4 +146,4 @@ ggplot(plot_data, aes(x = Group, y = Scores)) +
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 
-The benefit of jmv `anovaOneW()` function lies in eliminating the need to write code to produce a plot of means and confidence intervals. What is produced weith one option within the `anovaOneW()` command, takes additional packages, several lines of code, to make with ggplot. If you're starting out with R the jmv package will surely give users a head start in terms of analyzing and visualizing simple one way ANOVA tests.
+The benefit of jmv `anovaOneW()` function lies in eliminating the need to write code to produce a plot of means and confidence intervals. What is produced with one option within the `anovaOneW()` command, takes additional packages and several lines of code toproduce with ggplot. If you're starting out with R the jmv package will surely give beginners a head start in terms of analyzing and visualizing simple one way ANOVA tests in R.
