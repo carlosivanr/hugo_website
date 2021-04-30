@@ -18,7 +18,7 @@ projects: []
 ---
 
 ### jmv package
-Recently, I learned about the jamovi (jmv) R package as an additional tool to conduct a wide variety of statistical tests in R. The jmv package comes from the standalone jamovi statistical spreadsheet software. Jamovi was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package that with all of the function of their standalone program. In this post, I will demonstrate a simple one-way ANOVA in jmv and compare it to base R. As you'll see, jmv produces well organized output and can save you some time by automatically generating plots. It serves as a great way to get your feet wet with performing statistical tests in R.
+Recently, I learned about the jamovi (jmv) R package as an additional tool to conduct a wide variety of statistical tests in R. The jmv package comes from the standalone jamovi statistical spreadsheet software. Jamovi was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. In this post, I will demonstrate a simple one-way ANOVA in jmv and compare it to base R. As you'll see, jmv produces well organized output and can save you some time by automatically generating plots. It serves as a great way to get your feet wet with performing statistical tests in R.
 
 
 
