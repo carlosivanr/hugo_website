@@ -98,7 +98,8 @@ C3E9
   
   
   ```r
-  summary(aov(formula = Scores ~ as.factor(Group), 
+  summary(
+          aov(formula = Scores ~ as.factor(Group), 
               data = C3E9)
           )
   ```
