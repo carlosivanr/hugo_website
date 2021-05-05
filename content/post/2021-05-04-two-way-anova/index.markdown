@@ -17,7 +17,7 @@ image:
 projects: []
 ---
 
-One of the features of R programming is that there is a ton of flexibility in how to program statistical analyes. In this post, I will cover three different ways of conducting two-way ANOVAs. I will be using the jmv, rstatix, car, and base R functions. For this demo, we will utilize an example with the chapter_7_table_5 data from the AMCP package. This particular dataset, we have hypothetical data from an experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of hypertension. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not receive biofeedback. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Scores refer to a measure of blood pressure where lower values are better.
+One of the features of R programming is that there is a large amount of flexibility in how to program statistical analyes. In this post, I will cover three different ways of conducting two-way ANOVAs. I will be using the jmv, rstatix, and base R functions. For this demo, we will utilize an example with the chapter_7_table_5 data from the AMCP package. In this particular dataset, we have hypothetical experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of hypertension. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not receive biofeedback. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to a measure of blood pressure where lower values are better.
 
 
 {{< tabs tabTotal="3" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="base R" >}}
@@ -25,14 +25,12 @@ One of the features of R programming is that there is a ton of flexibility in ho
   ###
   ### Two-way ANOVA in jmv  
 
-I've posted about the jmv package before and I think it's a great way to get introduced into performing stats in R. The syntax is streamlined, the output tables are visually easy to follow, and its functions automatically convert numeric data to factor to boot! As in my previous jmv post, one of the nice things about the jmv package is that the functions can automatically produce plots. So if your coming into the R universe from statistical software something like SPSS, jmv eases that transition. Let's start by loading the packages, loading the data, and then inspecting it.
+I've posted about the jmv package before and I think its good start for beginners who want to perform statistical analyses in R. The syntax is streamlined, the output tables look great, its functions automatically convert numeric data to factor, and they can produce  plots to boot! So if you're coming into the R universe from statistical software like SPSS, jmv eases that transition. Let's start by loading the packages, loading the data, and then inspecting it.
 
 ```r
 library(AMCP)
 library(jmv)
-```
 
-```r
 # Load data
 data("chapter_7_table_5")
 
@@ -121,7 +119,7 @@ Where things get a little more complicated for jmv, is in the comparisons of cel
   {{< tab tabNum="2" >}}  
   ###
   ### Two-way ANOVA with rstatix
-When using the rstatix package, we will want to convert our Feedback and Drug data to factor because it won't convert them automatically like jmv. If we don't do this the anova_test() function will think they are continuous variables and our results will not match. The rstatix command is a bit more limited in the sense that it will not automatically create the post hoc tests and it will not automatically generate plots. In order to generate the posthoc tests. When using rstatix, it's useful to also useful to load the tidyverse function so that you can use the pipe operator and the group_by() function. The pipe operator basically takes the output of one function or a data frame and feeds into another function.
+When using the rstatix package, we will want to convert our Feedback and Drug data to factor because it won't convert them automatically like jmv. If we don't do this the `anova_test()` function will think they are continuous variables and our results will not match. The rstatix command is a bit more limited in the sense that it will not automatically create the post hoc tests and it will not automatically generate plots. In order to generate the posthoc tests. When using rstatix, it's useful to also useful to load the tidyverse function so that you can use the pipe operator and the `group_by()` function. The pipe operator basically takes the output of one function or a data frame and feeds into another function.
 
 ```r
 library(AMCP)
@@ -168,11 +166,11 @@ anova_test(chapter_7_table_5,
 ```
 
 #### Alternative rstatix method for two-way ANOVA
-There is an additional way of using the anova_test() function. First, we will create a model with the base R aov() function. Then we can run the anova_test() function on our model. This form will have the added benefit of playing well the emmeans_test() function to correctly calculate the degrees of freedom for post-hoc tests. Also in this code block is the command to perform the the comparisons of cell means within each factor.
+There is an additional way of using the `anova_test()` function. First, we will create a model with the base R `aov()` function. Then we can run the anova_test() function on our model. This form will have the added benefit of playing well the emmeans_test() function to correctly calculate the degrees of freedom for post-hoc tests. Also in this code block is the command to perform the the comparisons of cell means within each factor.
 
 ```r
 # Alternative way of using anova_test
-# First make an base R anova model
+# First make a base R anova model
 model <- aov(formula = Score ~ Feedback * Drug,
     data = chapter_7_table_5)
 
