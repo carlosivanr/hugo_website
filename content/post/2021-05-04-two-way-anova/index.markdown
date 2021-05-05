@@ -119,7 +119,7 @@ Where things get a little more complicated for jmv, is in the comparisons of cel
   {{< tab tabNum="2" >}}  
   ###
   ### Two-way ANOVA with rstatix
-When using the rstatix package, we will want to convert our Feedback and Drug data to factor because it won't convert them automatically like jmv. If we don't do this the `anova_test()` function will think they are continuous variables and our results will not match. The rstatix command is a bit more limited in the sense that it will not automatically create the post hoc tests and it will not automatically generate plots. In order to generate the posthoc tests. When using rstatix, it's useful to also useful to load the tidyverse function so that you can use the pipe operator and the `group_by()` function. The pipe operator basically takes the output of one function or a data frame and feeds into another function.
+When using the rstatix package, we will want to convert our Feedback and Drug data to factor because it won't convert them automatically like jmv. If we don't do this the `anova_test()` function will think they are continuous variables and our results will not match. The rstatix command is a bit more limited in the sense that it will not automatically create the post hoc tests and it will not automatically generate plots. In order to generate the posthoc tests. When using rstatix, it's useful to also useful to load the tidyverse function so that you can use the pipe operator (`%>%`) and the `group_by()` function. The pipe operator basically takes the output of one function or a data frame and feeds into another function.
 
 ```r
 library(AMCP)
@@ -166,7 +166,7 @@ anova_test(chapter_7_table_5,
 ```
 
 #### Alternative rstatix method for two-way ANOVA
-There is an additional way of using the `anova_test()` function. First, we will create a model with the base R `aov()` function. Then we can run the anova_test() function on our model. This form will have the added benefit of playing well the emmeans_test() function to correctly calculate the degrees of freedom for post-hoc tests. Also in this code block is the command to perform the the comparisons of cell means within each factor.
+There is an additional way of using the `anova_test()` function. First, we will create a model with the base R `aov()` function. Then we can run the `anova_test()` function on our model. This form will have the added benefit of playing well the `emmeans_test()` function to correctly calculate the degrees of freedom for post-hoc tests. Also in this code block is the command to perform the the comparisons of cell means within each factor.
 
 ```r
 # Alternative way of using anova_test

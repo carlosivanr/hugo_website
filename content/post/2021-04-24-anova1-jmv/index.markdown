@@ -17,28 +17,21 @@ image:
 projects: []
 ---
 
-### jmv package
-Recently, I learned about the jamovi (jmv) R package as an additional tool to conduct a wide variety of statistical tests in R. The jmv package comes from the standalone jamovi statistical spreadsheet software. Jamovi was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. In this post, I will demonstrate a simple one-way ANOVA in jmv and compare it to base R. As you'll see, jmv produces well organized output and can save you some time by automatically generating plots. It serves as a great way to get your feet wet with performing statistical tests in R.
 
-
-
-```r
-library(jmv)
-```
+One of the characteristics of R, for better or for worse, is that there are multiple ways of performing a statistical analysis. In this post, I will demonstrate how to perform a one-way ANOVA with the jmv package and the base R functions. jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners. 
 
 ### The data set
 
-For this demo, we will use the AMCP package. AMCP is the R package for Maxwell, Delaney, and Kelley's 3rd edition of "Designing Experiments and Analyzing Data: A model comparison perspective". For this demo we will use the data from Chapter 3, Exercise 9. In this exercies, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective which can be tested with a one-way ANOVA.
 
+For this demo, we will use the AMCP package. AMCP is the R package for Maxwell, Delaney, and Kelley's 3rd edition of <a href="https://designingexperiments.com/"> "Designing Experiments and Analyzing Data: A model comparison perspective."</a> For this demo we will use the data from Chapter 3, Exercise 9. In this exercies, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective which can be tested with a one-way ANOVA.
 
-```r
-library(AMCP)
-```
 
 ### Inspect the data
 For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
 
 ```r
+library(AMCP)
+
 data(C3E9)
 C3E9
 ```
@@ -62,9 +55,12 @@ C3E9
 {{< tabs tabTotal="2" tabID="1" tabName1="ANOVA with jmv" tabName2="ANOVA with base R" tabName3="Tab 3" >}}
   {{< tab tabNum="1" >}}  
   ###
-  With the anovaOneW() function we will predict Scores by Group, set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. Lastly, we want to set descPlot to `TRUE`, to plot means and confidence intervals.
+  With the anovaOneW() function we will predict Scores by Group, set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. Lastly, we want to set descPlot to `TRUE` to plot means and confidence intervals.
   
   ```r
+  library(jmv)
+  
+  # Conduct a one-way ANOVA
   anovaOneW(formula = Scores ~ Group, 
             data = C3E9, 
             fishers = TRUE, 
@@ -156,4 +152,4 @@ C3E9
 {{< /tabs >}}
 
 ### Wrap Up
-One of the benefits of the `anovaOneW()` function lies in eliminating the need to write code to produce a plot of means and confidence intervals. What is produced with one option within the `anovaOneW()` command, takes additional packages and several lines of code to produce with ggplot. If you're starting out with R the jmv package will surely give beginners a head start in terms of analyzing and visualizing simple one way ANOVA tests in R.
+One of the benefits of the `anovaOneW()` function lies in eliminating the need to write code to produce a plot of means and confidence intervals. What is produced with one option within the `anovaOneW()` command, takes additional packages and several lines of code to produce with ggplot. If you're starting out with R, the jmv package will surely give you a head start in terms of analyzing and visualizing simple one way ANOVA tests.
