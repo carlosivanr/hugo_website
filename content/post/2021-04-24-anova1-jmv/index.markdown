@@ -1,5 +1,5 @@
 ---
-title: One-way ANOVA with the jamovi package in R
+title: One-way ANOVA in R
 author: R package build
 date: '2021-04-24'
 slug: test-3

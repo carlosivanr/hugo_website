@@ -1,0 +1,160 @@
+---
+title: two-way_anova
+author: Carlos Rodriguez
+date: '2021-05-04'
+slug: two-way-anova
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-04T19:37:58-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Two-way ANOVA with jmv
+I've posted about the jmv package before and I think it's a good way to get introduced into performing stats in R. The syntax streamlined streamlined, the output tables are clean, and many of the commands will automatically convert numeric data to factor in cases where groups are coded by number. On top of that, many of the jmv functions will automatically produce plots. So if your coming into the R universe from something like SPSS, jmv eases that transition.  
+
+Let's take a look at an example with the chapter_7_table_5 data from the AMCP package. In this example we have a 2x3 design with hypothetical data from an experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of hypertension.  
+
+### Two-way ANOVA in jmv  
+The following code will perform a two-way ANOVA with Score as the dependent variable and Feedback and Drug as independent variables. That settings are set to use type 3 sums of squares, the effect size will be reported as partial eta squared, post-hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be created.
+```{r, warning = FALSE, message = FALSE}
+library(AMCP)
+library(jmv)
+```
+```{r}
+# Load data
+data("chapter_7_table_5")
+
+# Inspect data
+head(chapter_7_table_5)
+```
+
+The following code will perform a two-way ANOVA with Score as the dependent variable and Feedback and Drug as independent variables. That settings are set to use type 3 sums of squares, the effect size will be reported as partial eta squared, post-hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be created.
+```{r, message=FALSE}
+# ANOVA test with jmv
+ANOVA(formula = Score ~ Feedback * Drug,
+      data = chapter_7_table_5,
+      ss = "3",
+      effectSize = 'partEta',
+      postHoc = c('Feedback', 'Drug'),
+      postHocCorr = 'none',
+      emMeans = ~ Feedback:Drug,
+      emmPlots = TRUE)
+
+```
+
+#### Comparisons of Cell Means with jmv
+Where things get a little more complicated for jmv, is in the comparisons of cell means. These would test all pairwise combinations of Drug within Factor for this example. The following code will produce the results of interest, but it will also produce quite a bit of output and so the code is commented
+```{r}
+# # Drug 1 vs Drug 2, Drug 1 vs Drug 3, and Drug 2 vs Drug 3 at Feedback 1
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 1, Drug == 1 | Drug == 2), vars = Score, group = Drug)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 1, Drug == 1 | Drug == 3), vars = Score, group = Drug)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 1, Drug == 2 | Drug == 3), vars = Score, group = Drug)
+# 
+# #Drug 1 vs Drug 2, Drug 1 vs Drug 3, and Drug 2 vs Drug 3 at Feedback 2
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 2, Drug == 1 | Drug == 2), vars = Score, group = Drug)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 2, Drug == 1 | Drug == 3), vars = Score, group = Drug)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 2, Drug == 2 | Drug == 3), vars = Score, group = Drug)
+
+```
+
+### Two-way ANOVA with rstatix
+When using the rstatix package, we will want to convert our Feedback and Drug data to factor because it won't convert them automatically like jmv. If we don't do this the anova_test() function will think they are continuous variables and our results will not match. The rstatix command is a bit more limited in the sense that it will not automatically create the post hoc tests and it will not automatically generate plots. In order to generate the posthoc tests. When using rstatix, it's useful to also useful to load the tidyverse function so that you can use the pipe operator and the group_by() function. The pipe operator basically takes the output of one function or a data frame and feeds into another function.
+```{r, warning = FALSE, message=FALSE}
+library(AMCP)
+library(rstatix)
+library(tidyverse)
+
+# Load data
+data("chapter_7_table_5")
+
+# Convert Drug and Feedback to factor
+chapter_7_table_5$Drug <- as.factor(chapter_7_table_5$Drug)
+chapter_7_table_5$Feedback <- as.factor(chapter_7_table_5$Feedback)
+
+# Inspect the data
+head(chapter_7_table_5)
+
+# ANOVA test rstatix
+anova_test(chapter_7_table_5, 
+           Score ~ Feedback * Drug, 
+           dv = Score, 
+           type = 3, 
+           effect.size = "pes")
+```
+
+#### Alternative rstatix method for two-way ANOVA
+There is an additional way of using the anova_test() function. First, we will create a model with the base R aov() function. Then we can run the anova_test() function on our model. This form will have the added benefit of playing well the emmeans_test() function to correctly calculate the degrees of freedom for post-hoc tests. Also in this code block is the command to perform the the comparisons of cell means within each factor.
+```{r}
+# Alternative way of using anova_test
+# First make an base R anova model
+model <- aov(formula = Score ~ Feedback * Drug,
+    data = chapter_7_table_5)
+
+# Second, use anova_test on the model to print the output
+anova_test(model, effect.size = "pes", type = 3)
+```
+
+#### Post-hoc tests with rstatix
+```{r}
+# Post-hoc tests for Feedback collapsed across Drug
+# Requires the alternative method for correctly calculating degrees of freedom
+chapter_7_table_5 %>% 
+  emmeans_test(Score ~ Feedback, 
+               p.adjust.method = "none", 
+               model = model)
+
+chapter_7_table_5 %>% 
+  emmeans_test(Score ~ Drug, 
+               p.adjust.method = "none", 
+               model = model)
+```
+
+
+#### Comparisons of cell means
+```{r}
+# Comparisons of cell means (pairwise tests)
+chapter_7_table_5 %>% group_by(Drug) %>%
+         pairwise_t_test(Score ~ Feedback, 
+                         p.adjust.method = "none", 
+                         pool.sd = FALSE, 
+                         var.equal = TRUE)
+
+chapter_7_table_5 %>% group_by(Feedback) %>%
+         pairwise_t_test(Score ~ Drug, 
+                         p.adjust.method = "none", 
+                         pool.sd = FALSE, 
+                         var.equal = TRUE)
+```
+
+### Two-way ANOVA with base R and car
+When using the base R function, it's wise to also load the car package. The default sums of squares in the aov() function is type II and in order to get ANOVA results with type III sums of squares, the car package is needed. Similar to the functions with rstatix, we will need to convert the Feedback and Drug data to factor before running the ANOVA. There are ways to get the effect size as in the jmv or rstatix packages, but, an additional package and more coding will be needed, thus it provides a bit less functionality.
+```{r, warning = FALSE, message=FALSE}
+library(car)
+library(AMCP)
+
+# Load data
+data("chapter_7_table_5")
+
+# Convert Feedback and Drug to factor
+chapter_7_table_5$Drug <- as.factor(chapter_7_table_5$Drug)
+chapter_7_table_5$Feedback <- as.factor(chapter_7_table_5$Feedback)
+
+# ANOVA with car
+Anova(aov(formula = Score ~ Feedback * Drug,
+    data = chapter_7_table_5),
+    type = "3")
+```
+
+### Wrap-up
+All three packages, jmv, rstatix, and car, will produce the exact same results for the main effects and interaction tests of a two-way ANOVA. The jmv package is a great way to conduct statistical tests if you are beginning with R or statistics because it simplifies some of the syntax, generates plots automatically, and it also converts some of your numerical data to categorical. It's main disadvantage is in conducting the comparisons of cell means. However, R is such a flexible program that you could conceivably rely on jmv for the majority of your analyes and then use rstatix for conducting the comparisons of cell means.
