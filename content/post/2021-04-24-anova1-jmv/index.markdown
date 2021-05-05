@@ -17,8 +17,7 @@ image:
 projects: []
 ---
 
-
-One of the characteristics of R, for better or for worse, is that there are multiple ways of performing a statistical analysis. In this post, I will demonstrate how to perform a one-way ANOVA with the jmv package and the base R functions. jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners. 
+In this post, I will demonstrate how to perform a one-way ANOVA with the jmv package and the base R functions. jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners. 
 
 ### The data set
 
