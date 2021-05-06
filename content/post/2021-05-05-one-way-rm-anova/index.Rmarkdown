@@ -1,0 +1,94 @@
+---
+title: One-way Repeated Measures ANOVA in R
+author: Carlos Rodriguez
+date: '2021-05-05'
+slug: one-way-rm-anova
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-05360:40:40-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+<!-- -----------------------TABS---------------------------------- -->
+{{< tabs tabTotal="2" tabID="1" tabName1="rm-anova" tabID="2" tabName2="paired-t-test" >}}
+<!-- -----------------------Tab 1---------------------------------- -->
+{{< tab tabNum="1" >}}
+### Repeated Measures ANOVA with jmv
+```{r, warning=FALSE, include=TRUE}
+library(AMCP)
+library(jmv)
+
+#### Chapter 11 Table 5
+# Load data
+data("chapter_11_table_5")
+
+# Inspect data
+head(chapter_11_table_5)
+
+# Repeated measures anova with jmv
+anovaRM(
+  data = chapter_11_table_5,
+  rm = list(
+    list(
+      label = "Age-in-months", 
+      levels = c("30", "36", "42", "48"))),
+  rmCells = list(
+    list(
+      measure = "Months30", 
+      cell = "30"),
+    list(
+      measure = "Months36", 
+      cell = "36"),
+    list(
+      measure = "Months42", 
+      cell = "42"),
+    list(
+      measure = "Months48", 
+      cell = "48")),
+  rmTerms = list(
+    "Age-in-months"),
+  spherCorr = 'none',
+  effectSize = 'omega',
+  emMeans = ~ `Age-in-months`,
+  emmPlots = TRUE)
+```
+{{< /tab >}}
+
+<!-- -----------------------Tab 2---------------------------------- -->
+{{< tab tabNum="2" >}}
+#### Paired T test in RM ANOVA Framework
+```{r, include=TRUE}
+#### Chapter 11 Table 1, A paired t test can be run as an anovaRM
+data("chapter_11_table_1")
+head(chapter_11_table_1)
+
+anovaRM(
+  data = chapter_11_table_1,
+        rm = list(
+            list(
+                label = 'Condition',
+                levels = c('Low', 'High'))),
+        rmCells = list(
+            list(
+                measure = 'YCondition1',
+                cell = 'Low'),
+            list(
+                measure = 'YCondition2',
+                cell = 'High')),
+        rmTerms = list(
+            'Condition'),
+)
+```
+{{< /tab >}}
+{{< /tabs >}}

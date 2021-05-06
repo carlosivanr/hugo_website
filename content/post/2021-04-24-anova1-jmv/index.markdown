@@ -19,18 +19,25 @@ projects: []
 
 In this post, I will demonstrate how to perform a one-way ANOVA with the jmv package and the base R functions. jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners. 
 
-### The data set
 
+
+```r
+library(jmv)
+```
+
+### The data set
 
 For this demo, we will use the AMCP package. AMCP is the R package for Maxwell, Delaney, and Kelley's 3rd edition of <a href="https://designingexperiments.com/"> "Designing Experiments and Analyzing Data: A model comparison perspective."</a> For this demo we will use the data from Chapter 3, Exercise 9. In this exercies, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective which can be tested with a one-way ANOVA.
 
+
+```r
+library(AMCP)
+```
 
 ### Inspect the data
 For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
 
 ```r
-library(AMCP)
-
 data(C3E9)
 C3E9
 ```
@@ -50,104 +57,102 @@ C3E9
 ## 11     4     10
 ## 12     4     12
 ```
-
+<!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="ANOVA with jmv" tabName2="ANOVA with base R" tabName3="Tab 3" >}}
-  {{< tab tabNum="1" >}}  
-  ###
-  With the anovaOneW() function we will predict Scores by Group, set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. Lastly, we want to set descPlot to `TRUE` to plot means and confidence intervals.
-  
-  ```r
-  library(jmv)
-  
-  # Conduct a one-way ANOVA
-  anovaOneW(formula = Scores ~ Group, 
-            data = C3E9, 
-            fishers = TRUE, 
-            welchs = FALSE, 
-            descPlot = TRUE
-            )
-  ```
-  
-  ```
-  ## 
-  ##  ONE-WAY ANOVA
-  ## 
-  ##  One-Way ANOVA (Fisher's)                          
-  ##  ───────────────────────────────────────────────── 
-  ##              F           df1    df2    p           
-  ##  ───────────────────────────────────────────────── 
-  ##    Scores    10.00000      3      8    0.0044074   
-  ##  ─────────────────────────────────────────────────
-  ```
-  
-  <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
-  
-  ### Interpret the output
-  For the omnibus test, we obtain a significant effect of Group [F(3,8) = 10, p < 0.01] which suggests that the means of the 4 groups are not equal. In other words, one of the treatments may be significantly different than another. Post-hoc tests are covered in a different post.
 
-{{< /tab >}}
-  {{< tab tabNum="2" >}}
-  ###
-  The same data can be analyzed with the base R functions which produce the same results when using the `aov()` function. Again, we will predict Scores by Group. However, because Group is of numerical class, we will need to convert it to factor for the `aov()` function to work properly. Lastly, we will need to encase our `aov()` function within the `summary()` function to produce the output we are interested in. 
-  
-  
-  
-  ```r
-  summary(
-          aov(formula = Scores ~ as.factor(Group), 
-              data = C3E9)
+<!-- -----------------------Tab 1---------------------------------- -->
+{{< tab tabNum="1" >}}  
+### One-way ANOVA with the anovaOneW()function
+With the anovaOneW() function we will predict Scores by Group, set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. Lastly, we want to set descPlot to `TRUE` to plot means and confidence intervals.
+
+```r
+anovaOneW(formula = Scores ~ Group, 
+          data = C3E9, 
+          fishers = TRUE, 
+          welchs = FALSE, 
+          descPlot = TRUE
           )
-  ```
-  
-  ```
-  ##                  Df Sum Sq Mean Sq F value  Pr(>F)   
-  ## as.factor(Group)  3    120      40      10 0.00441 **
-  ## Residuals         8     32       4                   
-  ## ---
-  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-  ```
-  
-  Notice how both ANOVA outputs provide the same F ratio, degrees of freedom, and p values. The difference is that a plot of the means and confidence intervals is not automatically generated. To produce a similar plot, a little more effort will be required.
-  
-  ### Produce a plot for the one-way ANOVA
-  The quickest way that I know of to produce a similar jmv style plot is to utilize the tidyverse and ggpubr packages. The tidyverse package introduces extra functionality to feed the output of one function into another with the pipe operator (`%>%`) and includes additional functionality for summarizing data. The ggpubr has a nice helper function to generate summary statistics.
-  
-  
-  ```r
-  library(tidyverse)
-  library(ggpubr)
-  ```
-  
-  In the following code, summary_data is created by taking C3E9 and piping into the `group_by()` function, which will group the data by treatment, and then produce summary statistics with the `get_summary_stats()` function from the ggpubr package. This will automatically compute several summary statistics such as the mean, sample sizes, standard deviations, and the confidence intervals to be used in plotting. Next, a dataframe of the data to plot is created, by piping C3E9 and piping it to `group_by()` to separate the data by treatment(Group), calculating means, and then binding the output to the confidence intervals from summary_data. Finally, we can use ggplot with the `geom_errorbar()` and `geom_point()` layers to reproduce the jmv plot. A few aesthetic elements such as the color, theme, and title will need to be adjusted to reproduce the jmv plot.
-  
-  
-  ```r
-  # Use get_summary_stats to compute the 95% CI
-  summary_data <- C3E9 %>% group_by(Group) %>% 
-    get_summary_stats(Scores)
-  
-  # Bind the CI to means by group
-  plot_data <- C3E9 %>% group_by(Group) %>%
-    summarise(Scores = mean(Scores)) %>% 
-    cbind(., ci = summary_data$ci)
-  
-  # Generate a plot of mean and 95% CIs
-  ggplot(plot_data, aes(x = Group, y = Scores)) +
-    geom_errorbar(aes(ymin=Scores-ci, ymax=Scores+ci), 
-                  width = 0.1, 
-                  color = "blue") +
-    geom_point(fill = "white", 
-               shape = 21, 
-               size = 3, 
-               color = "blue") +
-    ggtitle("Mean (95% CI)") +
-    theme_pubr() +
-    theme(plot.title = element_text(hjust = 0.5))
-  ```
-  
-  <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
-  
-  {{< /tab >}}
+```
+
+```
+## 
+##  ONE-WAY ANOVA
+## 
+##  One-Way ANOVA (Fisher's)                          
+##  ───────────────────────────────────────────────── 
+##              F           df1    df2    p           
+##  ───────────────────────────────────────────────── 
+##    Scores    10.00000      3      8    0.0044074   
+##  ─────────────────────────────────────────────────
+```
+
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+
+### Interpret the output
+For the omnibus test, we obtain a significant effect of Group [F(3,8) = 10, p < 0.01] which suggests that the means of the 4 groups are not equal. In other words, one of the treatments may be significantly different than another. Post-hoc tests are covered in a different post.
+{{< /tab >}}
+
+<!-- -----------------------Tab 2---------------------------------- -->
+{{< tab tabNum="2" >}}
+### One-way ANOVA with the R functions
+The same data can be analyzed with the base R functions which produce the same results when using the `aov()` function. Again, we will predict Scores by Group. However, because Group is of numerical class, we will need to convert it to factor for the `aov()` function to work properly. Lastly, we will need to encase our `aov()` function within the `summary()` function to produce the output we are interested in.  
+
+
+
+```r
+summary(aov(formula = Scores ~ as.factor(Group), 
+            data = C3E9)
+        )
+```
+
+```
+##                  Df Sum Sq Mean Sq F value  Pr(>F)   
+## as.factor(Group)  3    120      40      10 0.00441 **
+## Residuals         8     32       4                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+Notice how both ANOVA outputs provide the same F ratio, degrees of freedom, and p values. The difference is that a plot of the means and confidence intervals is not automatically generated. To produce a similar plot, a little more effort will be required.
+
+### Produce a plot for the one-way ANOVA
+The quickest way that I know of to produce a similar jmv style plot is to utilize the tidyverse and ggpubr packages. The tidyverse package introduces extra functionality to feed the output of one function into another with the pipe operator (`%>%`) and includes additional functionality for summarizing data. The ggpubr has a nice helper function to generate summary statistics.
+
+
+```r
+library(tidyverse)
+library(ggpubr)
+```
+
+In the following code, summary_data is created by taking C3E9 and piping into the `group_by()` function, which will group the data by treatment, and then produce summary statistics with the `get_summary_stats()` function from the ggpubr package. This will automatically compute several summary statistics such as the mean, sample sizes, standard deviations, and the confidence intervals to be used in plotting. Next, a dataframe of the data to plot is created, by piping C3E9 and piping it to `group_by()` to separate the data by treatment(Group), calculating means, and then binding the output to the confidence intervals from summary_data. Finally, we can use ggplot with the `geom_errorbar()` and `geom_point()` layers to reproduce the jmv plot. A few aesthetic elements such as the color, theme, and title will need to be adjusted to reproduce the jmv plot.
+
+
+```r
+# Use get_summary_stats to compute the 95% CI
+summary_data <- C3E9 %>% group_by(Group) %>% 
+  get_summary_stats(Scores)
+
+# Bind the CI to means by group
+plot_data <- C3E9 %>% group_by(Group) %>%
+  summarise(Scores = mean(Scores)) %>% 
+  cbind(., ci = summary_data$ci)
+
+# Generate a plot of mean and 95% CIs
+ggplot(plot_data, aes(x = Group, y = Scores)) +
+  geom_errorbar(aes(ymin=Scores-ci, ymax=Scores+ci), 
+                width = 0.1, 
+                color = "blue") +
+  geom_point(fill = "white", 
+             shape = 21, 
+             size = 3, 
+             color = "blue") +
+  ggtitle("Mean (95% CI)") +
+  theme_pubr() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+{{< /tab >}}
 {{< /tabs >}}
 
 ### Wrap Up
