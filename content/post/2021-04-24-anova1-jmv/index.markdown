@@ -58,19 +58,20 @@ C3E9
 ## 12     4     12
 ```
 <!-- -----------------------TABS---------------------------------- -->
-{{< tabs tabTotal="2" tabID="1" tabName1="ANOVA with jmv" tabName2="ANOVA with base R" tabName3="Tab 3" >}}
+{{< tabs tabTotal="3" tabID="1" tabName1="ANOVA with jmv" tabName2="ANOVA with rstatix" tabName3="ANOVA with base R"  >}}
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}  
 ### One-way ANOVA with the anovaOneW()function
-With the anovaOneW() function we will predict Scores by Group, set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. Lastly, we want to set descPlot to `TRUE` to plot means and confidence intervals.
+With the anovaOneW() function we will predict Scores by Group, set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. We will also set the phMethod to 'tukey' to conduct posthoc tests, Lastly, we want to set descPlot to `TRUE` to plot means and confidence intervals.
 
 ```r
 anovaOneW(formula = Scores ~ Group, 
           data = C3E9, 
           fishers = TRUE, 
           welchs = FALSE, 
-          descPlot = TRUE
+          descPlot = TRUE,
+          phMethod = 'tukey'
           )
 ```
 
@@ -83,7 +84,27 @@ anovaOneW(formula = Scores ~ Group,
 ##              F           df1    df2    p           
 ##  ───────────────────────────────────────────────── 
 ##    Scores    10.00000      3      8    0.0044074   
-##  ─────────────────────────────────────────────────
+##  ───────────────────────────────────────────────── 
+## 
+## 
+##  POST HOC TESTS
+## 
+##  Tukey Post-Hoc Test – Scores                                                 
+##  ──────────────────────────────────────────────────────────────────────────── 
+##                            1            2            3            4           
+##  ──────────────────────────────────────────────────────────────────────────── 
+##    1    Mean difference            —    -8.000000    -2.000000    -6.000000   
+##         p-value                    —    0.0052339    0.6297636    0.0259193   
+##                                                                               
+##    2    Mean difference                         —     6.000000     2.000000   
+##         p-value                                 —    0.0259193    0.6297636   
+##                                                                               
+##    3    Mean difference                                      —    -4.000000   
+##         p-value                                              —    0.1441838   
+##                                                                               
+##    4    Mean difference                                                   —   
+##         p-value                                                           —   
+##  ────────────────────────────────────────────────────────────────────────────
 ```
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
@@ -94,6 +115,85 @@ For the omnibus test, we obtain a significant effect of Group [F(3,8) = 10, p < 
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
+### One-way ANOVA with the rstatix functions
+
+
+```r
+library(AMCP)
+library(tidyverse)
+library(rstatix)
+library(ggpubr)
+
+# Load data
+data(C3E9)
+
+# Convert group to factor
+C3E9$Group <- as.factor(C3E9$Group)
+```
+
+```r
+# Conduct ANOVA test
+anova_test(Scores ~ Group, 
+           data = C3E9, 
+           dv = Scores, 
+           effect.size = "pes", 
+           type = 3
+           )
+```
+
+```
+## Coefficient covariances computed by hccm()
+```
+
+```
+## ANOVA Table (type III tests)
+## 
+##   Effect DFn DFd  F     p p<.05   pes
+## 1  Group   3   8 10 0.004     * 0.789
+```
+
+```r
+# Tukey posthoc tests
+tukey_hsd(C3E9, Scores ~ Group)
+```
+
+```
+## # A tibble: 6 x 8
+##   term  group1 group2 estimate conf.low conf.high   p.adj p.adj.signif
+## * <chr> <chr>  <chr>     <dbl>    <dbl>     <dbl>   <dbl> <chr>       
+## 1 Group 1      2          8.00    2.77     13.2   0.00523 **          
+## 2 Group 1      3          2.00   -3.23      7.23  0.63    ns          
+## 3 Group 1      4          6.00    0.771    11.2   0.0259  *           
+## 4 Group 2      3         -6.00  -11.2      -0.771 0.0259  *           
+## 5 Group 2      4         -2.00   -7.23      3.23  0.63    ns          
+## 6 Group 3      4          4      -1.23      9.23  0.144   ns
+```
+
+```r
+# Use get_summary_stats to compute the 95% CI
+summary_data <- C3E9 %>% group_by(Group) %>% 
+  get_summary_stats(Scores)
+
+# Generate a plot of mean and 95% CIs
+ggplot(summary_data, aes(x = Group, y = mean)) +
+  geom_errorbar(aes(ymin=mean-ci, ymax=mean+ci), 
+                width = 0.1, 
+                color = "blue") +
+  geom_point(fill = "white", 
+             shape = 21, 
+             size = 3, 
+             color = "blue") +
+  ggtitle("Mean (95% CI)") +
+  ylab("Scores") +
+  theme_pubr() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+{{< /tab >}}
+
+<!-- -----------------------Tab 3---------------------------------- -->
+{{< tab tabNum="3" >}}
 ### One-way ANOVA with the R functions
 The same data can be analyzed with the base R functions which produce the same results when using the `aov()` function. Again, we will predict Scores by Group. However, because Group is of numerical class, we will need to convert it to factor for the `aov()` function to work properly. Lastly, we will need to encase our `aov()` function within the `summary()` function to produce the output we are interested in.  
 
@@ -151,7 +251,7 @@ ggplot(plot_data, aes(x = Group, y = Scores)) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 {{< /tab >}}
 {{< /tabs >}}
 
