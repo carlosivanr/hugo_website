@@ -17,20 +17,23 @@ image:
 projects: []
 ---
 
+
 In this post, I will cover three different ways of conducting two-way ANOVAs. I will be using the jmv, rstatix, and base R functions. For this demo, we will utilize an example with the chapter_7_table_5 data from the AMCP package. In this particular dataset, we have hypothetical experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of hypertension. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not receive biofeedback. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to a measure of blood pressure where lower values are better.
 
-
+<!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="3" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="base R" >}}
-  {{< tab tabNum="1" >}}  
-  ###
-  ### Two-way ANOVA in jmv  
-
+<!-- -----------------------Tab 1---------------------------------- -->
+{{< tab tabNum="1" >}}  
+###
+### Two-way ANOVA in jmv  
 I've posted about the jmv package before and I think its good start for beginners who want to perform statistical analyses in R. The syntax is streamlined, the output tables look great, its functions automatically convert numeric data to factor, and they can produce  plots to boot! So if you're coming into the R universe from statistical software like SPSS, jmv eases that transition. Let's start by loading the packages, loading the data, and then inspecting it.
 
 ```r
 library(AMCP)
 library(jmv)
+```
 
+```r
 # Load data
 data("chapter_7_table_5")
 
@@ -113,12 +116,12 @@ Where things get a little more complicated for jmv, is in the comparisons of cel
 # ttestIS(data = filter(chapter_7_table_5, Feedback == 2, Drug == 1 | Drug == 3), vars = Score, group = Drug)
 # ttestIS(data = filter(chapter_7_table_5, Feedback == 2, Drug == 2 | Drug == 3), vars = Score, group = Drug)
 ```
-
 {{< /tab >}}
 
-  {{< tab tabNum="2" >}}  
-  ###
-  ### Two-way ANOVA with rstatix
+<!-- -----------------------Tab 2---------------------------------- -->
+{{< tab tabNum="2" >}}  
+###
+### Two-way ANOVA with rstatix
 When using the rstatix package, we will want to convert our Feedback and Drug data to factor because it won't convert them automatically like jmv. If we don't do this the `anova_test()` function will think they are continuous variables and our results will not match. The rstatix command is a bit more limited in the sense that it will not automatically create the post hoc tests and it will not automatically generate plots. In order to generate the posthoc tests. When using rstatix, it's useful to also useful to load the tidyverse function so that you can use the pipe operator (`%>%`) and the `group_by()` function. The pipe operator basically takes the output of one function or a data frame and feeds into another function.
 
 ```r
@@ -170,7 +173,7 @@ There is an additional way of using the `anova_test()` function. First, we will 
 
 ```r
 # Alternative way of using anova_test
-# First make a base R anova model
+# First make an base R anova model
 model <- aov(formula = Score ~ Feedback * Drug,
     data = chapter_7_table_5)
 
@@ -206,7 +209,7 @@ chapter_7_table_5 %>%
 ## NOTE: Results may be misleading due to involvement in interactions
 ```
 
-```
+```r
 ## # A tibble: 1 x 8
 ##   .y.   group1 group2    df statistic      p  p.adj p.adj.signif
 ## * <chr> <chr>  <chr>  <dbl>     <dbl>  <dbl>  <dbl> <chr>       
@@ -224,7 +227,7 @@ chapter_7_table_5 %>%
 ## NOTE: Results may be misleading due to involvement in interactions
 ```
 
-```
+```r
 ## # A tibble: 3 x 8
 ##   .y.   group1 group2    df statistic        p    p.adj p.adj.signif
 ## * <chr> <chr>  <chr>  <dbl>     <dbl>    <dbl>    <dbl> <chr>       
@@ -232,7 +235,6 @@ chapter_7_table_5 %>%
 ## 2 Score 1      3         24    -3.76  0.000958 0.000958 ***         
 ## 3 Score 2      3         24     0.538 0.596    0.596    ns
 ```
-
 
 #### Comparisons of cell means
 
@@ -245,7 +247,7 @@ chapter_7_table_5 %>% group_by(Drug) %>%
                          var.equal = TRUE)
 ```
 
-```
+```r
 ## # A tibble: 3 x 11
 ##   Drug  .y.   group1 group2    n1    n2 statistic    df     p p.adj p.adj.signif
 ## * <fct> <chr> <chr>  <chr>  <int> <int>     <dbl> <dbl> <dbl> <dbl> <chr>       
@@ -256,13 +258,13 @@ chapter_7_table_5 %>% group_by(Drug) %>%
 
 ```r
 chapter_7_table_5 %>% group_by(Feedback) %>%
-         pairwise_t_test(Score ~ Drug, 
-                         p.adjust.method = "none", 
-                         pool.sd = FALSE, 
+         pairwise_t_test(Score ~ Drug,
+                         p.adjust.method = "none",
+                         pool.sd = FALSE,
                          var.equal = TRUE)
 ```
 
-```
+```r
 ## # A tibble: 6 x 11
 ##   Feedback .y.   group1 group2    n1    n2 statistic    df     p p.adj
 ## * <fct>    <chr> <chr>  <chr>  <int> <int>     <dbl> <dbl> <dbl> <dbl>
@@ -274,11 +276,11 @@ chapter_7_table_5 %>% group_by(Feedback) %>%
 ## 6 2        Score 2      3          5     5     -1.05     8 0.326 0.326
 ## # … with 1 more variable: p.adj.signif <chr>
 ```
-
 {{< /tab >}}
-  {{< tab tabNum="3" >}}
-  ###
-  ### Two-way ANOVA with base R and car
+
+<!-- -----------------------Tab 3---------------------------------- -->
+{{< tab tabNum="3" >}}
+### Two-way ANOVA with base R and car
 When using the base R function, it's wise to also load the car package. The default sums of squares in the aov() function is type II and in order to get ANOVA results with type III sums of squares, the car package is needed. Similar to the functions with rstatix, we will need to convert the Feedback and Drug data to factor before running the ANOVA. There are ways to get the effect size as in the jmv or rstatix packages, but, an additional package and more coding will be needed, thus it provides a bit less functionality.
 
 ```r
@@ -311,8 +313,8 @@ Anova(aov(formula = Score ~ Feedback * Drug,
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
-  
-  {{< /tab >}}
+
+{{< /tab >}}
 {{< /tabs >}}
 
 ### Wrap-up
