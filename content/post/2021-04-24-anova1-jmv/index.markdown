@@ -17,7 +17,7 @@ image:
 projects: []
 ---
 
-In this post, I will demonstrate how to perform a one-way ANOVA with the jmv package and the base R functions. jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners. 
+In this post, I will demonstrate how to perform a one-way ANOVA with the jmv and rstatix packages and with the base R functions. jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners. 
 
 
 ### The data set
@@ -41,10 +41,11 @@ head(C3E9)
 ## 6     2     14
 ```
 <!-- -----------------------TABS---------------------------------- -->
-{{< tabs tabTotal="3" tabID="1" tabName1="ANOVA with jmv" tabName2="ANOVA with rstatix" tabName3="ANOVA with base R"  >}}
+{{< tabs tabTotal="3" tabID="1" tabName1="jmv" tabName2="rstatix" tabName3="base R"  >}}
 
 <!-- -----------------------Tab 1---------------------------------- -->
-{{< tab tabNum="1" >}}  
+{{< tab tabNum="1" >}}
+####
 Jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners.  
 
 With the `anovaOneW()` function we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. We will also set the phMethod to `'tukey'` to conduct posthoc tests, Lastly, we want to set descPlot to `TRUE` to plot means and confidence intervals.
@@ -102,6 +103,7 @@ anovaOneW(formula = Scores ~ Group,
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
+####
 The rstatix package is another way of programming statistical tests in R. One of the benefits of the rstatix package is that it meshes very well with the pipe (`%>%`) operator from the tidyverse package. This means that you could potentialy use the `group_by()` function on your data to facilitate conducting pairwise comparisons, generating summary data, and other statistical computations like calculating effect sizes. We'll see an example of this in the sample code below. The same developer of the rstatix package developed the ggpubr package which simplifies producing ggplot2 figures. In this demo, the ggpubr package is loaded primarily for a them to produce a jamovi style plot, but is definitely worth checking out.  
 
 The sample code of conducting the `anova_test()` is not too diferent than the `anovaOneW()` function in jmv. Before conducting the ANOVA we will need to change our Group variable to factor, otherwise anova_test() will think we will want to predict scores by a numeric variable rather than a categorical one. Next, we specify a formula predicting Scores by Group (`Scores ~ Group`). Then we tell the function that we want to analyze the C3E9 data, specify our dependent variable (dv; Scores), set the effect size output to partial eta squared, and then set the sum of squares method to type III.
@@ -139,7 +141,8 @@ To get the output for the post-hoc tests, we will run the `tukey_hsd()` function
 
 ```r
 # Tukey posthoc tests
-tukey_hsd(C3E9, Scores ~ Group)
+tukey_hsd(C3E9, 
+          Scores ~ Group)
 ```
 
 ```
@@ -161,7 +164,8 @@ To produce a jmv style plot, things get a little trickier. First, we will need t
 
 ```r
 # Use get_summary_stats to compute the 95% CI
-summary_data <- C3E9 %>% group_by(Group) %>% 
+summary_data <- C3E9 %>% 
+  group_by(Group) %>% 
   get_summary_stats(Scores)
 
 head(summary_data)
@@ -201,6 +205,7 @@ ggplot(summary_data, aes(x = Group, y = mean)) +
 
 <!-- -----------------------Tab 3---------------------------------- -->
 {{< tab tabNum="3" >}}
+####    
 The same data can be analyzed with the base R functions which produce the same results when using the `aov()` function. Again, we will predict Scores by Group. However, because Group is of numerical class, we will need to convert it to factor for the `aov()` function to work properly. Lastly, we will need to encase our `aov()` function within the `summary()` function to produce the output we are interested in. A plot of the data can be recreated using the code in the rstatix approach.
 
 

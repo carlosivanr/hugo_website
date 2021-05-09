@@ -44,11 +44,10 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-I am currently a postdoctoral fellow at the Mind Research Network in Albuquerque, NM. My research primarily centers on investigating the consequences of prenatal alcohol exposure on resting state functional brain connectivity. I am also involved in research using longitudinal neuroimaging data in the area of adolescent substance use and cross-sectional neuroimaging research of adult substance users.
+I am currently a postdoctoral fellow at the Mind Research Network in Albuquerque, NM. I primarily use functional magnetic resonance imaging (fMRI) to study the influence of alcohol and drugs on functional brain connectivity. Additionally, I am engaged in research studying the development of dynamic brain connectivity in adolescents.
 
 I have experience in teaching university level introduction to behavioral neuroscience, leading efforts to implement psychological science research in university student success programs, and actively mentor students from under-represented groups interested in research careers.
 
 Outside of my professional interests, I dabble in carpentry, learning guitar, cooking, camping, and mountain biking.
-
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/cv.pdf" "newtab" >}}CV{{< /staticref >}}.
