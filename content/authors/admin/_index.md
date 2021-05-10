@@ -44,7 +44,7 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-I am currently a postdoctoral fellow at the Mind Research Network in Albuquerque, NM. I primarily use functional magnetic resonance imaging (fMRI) to study the influence of alcohol and drugs on functional brain connectivity. Additionally, I am engaged in research studying the development of dynamic brain connectivity in adolescents.
+I am currently a postdoctoral fellow at the Mind Research Network in Albuquerque, NM. I primarily use functional magnetic resonance imaging (fMRI) to study the influence of alcohol and drugs on functional brain connectivity.
 
 I have experience in teaching university level introduction to behavioral neuroscience, leading efforts to implement psychological science research in university student success programs, and actively mentor students from under-represented groups interested in research careers.
 

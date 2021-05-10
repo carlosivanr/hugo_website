@@ -1,8 +1,8 @@
 ---
 title: One-way ANOVA in R
-author: R package build
+author: Carlos Rodriguez
 date: '2021-04-24'
-slug: test-3
+slug: one-way-anova
 categories: []
 tags: []
 subtitle: ''
@@ -27,7 +27,11 @@ For these data, Group represents the type of therapy the participant was randoml
 
 ```r
 library(AMCP)
+
+# Load the data
 data(C3E9)
+
+# Display part of the data
 head(C3E9)
 ```
 
@@ -50,6 +54,7 @@ Jmv is a package that comes from the standalone jamovi statistical spreadsheet s
 
 With the `anovaOneW()` function we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. We will also set the phMethod to `'tukey'` to conduct posthoc tests, Lastly, we want to set descPlot to `TRUE` to plot means and confidence intervals.
 
+
 ```r
 library(jmv)
 library(AMCP)
@@ -57,6 +62,7 @@ library(AMCP)
 # Load the data
 data(C3E9)
 
+# Conduct ANOVA test
 anovaOneW(formula = Scores ~ Group, 
           data = C3E9, 
           fishers = TRUE, 
@@ -98,7 +104,10 @@ anovaOneW(formula = Scores ~ Group,
 ##  ────────────────────────────────────────────────────────────────────────────
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+<div class="figure">
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot1-1.png" alt="anovaOneW plot of means and 95% confidence intervals by group." width="672" />
+<p class="caption">Figure 1: anovaOneW plot of means and 95% confidence intervals by group.</p>
+</div>
 {{< /tab >}}
 
 <!-- -----------------------Tab 2---------------------------------- -->
@@ -168,6 +177,7 @@ summary_data <- C3E9 %>%
   group_by(Group) %>% 
   get_summary_stats(Scores)
 
+# Print part of the data
 head(summary_data)
 ```
 
@@ -183,6 +193,7 @@ head(summary_data)
 ```
 
 The ggplot code is the trickiest part of using this approach. I'll attempt to explain the basic components here, but don't get discouraged if it doesn't make sense. It can take a while to fully get a hold of ggplot. I know it frustrated me plenty when I started with it. First, summary_data is used as the input, because it contains the means and confidence intervals. Next, we will specify what to plot on the x axis and what to plot on the y axis. Then, we will tell ggplot to add a layer of geometric element in the form of error bars. We can then set the ymin and ymax of the error bars as mean-ci and mean+ci as these values are in the input summary_data. Next, we will want to add some points (geom_point), then change their fill, color, and shape. The ggtitle will add a title to our plot, while ylab changes the label on the y axis. To wrap things up, we will add a theme to the plot to change the background, and then set the title to be centered horizontally.
+
 
 ```r
 # Generate a plot of mean and 95% CIs
@@ -200,7 +211,10 @@ ggplot(summary_data, aes(x = Group, y = mean)) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<div class="figure">
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot2-1.png" alt="ggplot of means and 95% confidence intervals by group." width="672" />
+<p class="caption">Figure 2: ggplot of means and 95% confidence intervals by group.</p>
+</div>
 {{< /tab >}}
 
 <!-- -----------------------Tab 3---------------------------------- -->

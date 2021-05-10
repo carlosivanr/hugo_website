@@ -1,8 +1,8 @@
 ---
 title: One-way ANOVA in R
-author: R package build
+author: Carlos Rodriguez
 date: '2021-04-24'
-slug: test-3
+slug: one-way-anova
 categories: []
 tags: []
 subtitle: ''
@@ -42,7 +42,8 @@ head(C3E9)
 Jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners.  
 
 With the `anovaOneW()` function we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9, set fishers to `TRUE` and welchs to `FALSE`, otherwise the function will run the default Welch's ANOVA. We will also set the phMethod to `'tukey'` to conduct posthoc tests, Lastly, we want to set descPlot to `TRUE` to plot means and confidence intervals.
-```{r, warning=FALSE}
+
+```{r, plot1, fig.cap = 'anovaOneW plot of means and 95% confidence intervals by group.', warning=FALSE,  }
 library(jmv)
 library(AMCP)
 
@@ -67,7 +68,7 @@ The rstatix package is another way of programming statistical tests in R. One of
 
 The sample code of conducting the `anova_test()` is not too diferent than the `anovaOneW()` function in jmv. Before conducting the ANOVA we will need to change our Group variable to factor, otherwise anova_test() will think we will want to predict scores by a numeric variable rather than a categorical one. Next, we specify a formula predicting Scores by Group (`Scores ~ Group`). Then we tell the function that we want to analyze the C3E9 data, specify our dependent variable (dv; Scores), set the effect size output to partial eta squared, and then set the sum of squares method to type III.
 
-```{r, message=FALSE, warning=FALSE}
+```{r output2, message=FALSE, warning=FALSE}
 library(AMCP)
 library(tidyverse)
 library(rstatix)
@@ -89,7 +90,7 @@ anova_test(Scores ~ Group,
 ```
 
 To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`)
-```{r}
+```{r tukey_hsd}
 # Tukey posthoc tests
 tukey_hsd(C3E9, 
           Scores ~ Group)
@@ -99,7 +100,7 @@ tukey_hsd(C3E9,
 To produce a jmv style plot, things get a little trickier. First, we will need to calculate means and confidence intervals. Luckily, `get_summary_stats()` can do this painlessly because of the pipe operator from the tidyverse package. Essentially, the C3E9 data is fed to `group_by()` which will separate the data by Group, then the output is fed in `get_summary_stats()` which will compute descriptive statistics such as means, medians, confidence intervals, and others. The summary_data is then what we will use to generate a plot with the `ggplot()` function.  
 
 
-```{r}
+```{r summary}
 # Use get_summary_stats to compute the 95% CI
 summary_data <- C3E9 %>% 
   group_by(Group) %>% 
@@ -110,7 +111,8 @@ head(summary_data)
 ```
 
 The ggplot code is the trickiest part of using this approach. I'll attempt to explain the basic components here, but don't get discouraged if it doesn't make sense. It can take a while to fully get a hold of ggplot. I know it frustrated me plenty when I started with it. First, summary_data is used as the input, because it contains the means and confidence intervals. Next, we will specify what to plot on the x axis and what to plot on the y axis. Then, we will tell ggplot to add a layer of geometric element in the form of error bars. We can then set the ymin and ymax of the error bars as mean-ci and mean+ci as these values are in the input summary_data. Next, we will want to add some points (geom_point), then change their fill, color, and shape. The ggtitle will add a title to our plot, while ylab changes the label on the y axis. To wrap things up, we will add a theme to the plot to change the background, and then set the title to be centered horizontally.
-```{r}
+
+```{r plot2, fig.cap = 'ggplot of means and 95% confidence intervals by group.'}
 # Generate a plot of mean and 95% CIs
 ggplot(summary_data, aes(x = Group, y = mean)) +
   geom_errorbar(aes(ymin=mean-ci, ymax=mean+ci), 
@@ -132,7 +134,7 @@ ggplot(summary_data, aes(x = Group, y = mean)) +
 ####    
 The same data can be analyzed with the base R functions which produce the same results when using the `aov()` function. Again, we will predict Scores by Group. However, because Group is of numerical class, we will need to convert it to factor for the `aov()` function to work properly. Lastly, we will need to encase our `aov()` function within the `summary()` function to produce the output we are interested in. A plot of the data can be recreated using the code in the rstatix approach.
 
-```{r}
+```{r base}
 # Print the summary of the
 summary(
   aov(formula = Scores ~ as.factor(Group), 
