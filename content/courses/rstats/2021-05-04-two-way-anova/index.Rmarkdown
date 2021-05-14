@@ -1,0 +1,327 @@
+---
+title: Two-way ANOVA in R
+author: Carlos Rodriguez
+date: '2021-05-04'
+slug: two-way-anova
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-04T19:37:58-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 20
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For this module, I will cover different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are for situations when you want to compare means of groups that differ along two categorical variables.
+
+### The data set
+For this demo, we will utilize an example with the chapter_7_table_5 data from the AMCP package. In the example dataset, we have a hypothetical experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of blood pressure. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to a measure of blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design and we will assume that the assumptions of independence, equality of variance, and normality are met for the sample dataset.
+
+```{r data, warning = FALSE, include=TRUE} 
+library(AMCP)
+
+# Load data
+data("chapter_7_table_5")
+
+# Inspect data
+head(chapter_7_table_5)
+```
+
+### Perform ANOVA Tests
+<!-- -----------------------TABS---------------------------------- -->
+{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="base R" >}}
+
+<!-- -----------------------Tab 1---------------------------------- -->
+{{< tab tabNum="1" >}}  
+We've covered the jmv package before and it can be a good starting point for beginners who want to perform statistical analyses in R. The syntax is streamlined, the output tables look great, its functions will convert numeric data to factor, and it can automatically produce plots to boot! So if you're coming into the R universe from statistical software like SPSS, jmv eases that transition. Let's start by loading the packages, loading the data, and then inspecting it.
+
+### Perform two-way ANOVA, post-hoc tests, and generate plots
+Next, we'll perform our two-way ANOVA. The following code will set Score as the dependent variable and Feedback and Drug as independent variables. The settings are set to use type III sums of squares, the effect size will be reported as partial eta squared, post-hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be generated.
+```{r plot1, fig.cap = 'Estimated marginal means and confidence intervals.', message=FALSE}
+library(jmv)
+
+# ANOVA test with jmv
+ANOVA(formula = Score ~ Feedback * Drug,
+      data = chapter_7_table_5,
+      ss = "3",
+      effectSize = 'partEta',
+      postHoc = c('Feedback', 'Drug'),
+      postHocCorr = 'none',
+      emMeans = ~ Feedback + Drug,
+      emmPlots = TRUE,
+      emmTables = FALSE,
+      ciWidthEmm = 95
+      )
+```
+
+A walk through of the results and their interpretation is presented in the rstatix tab.
+
+<!-- #### Comparisons of Cell Means with jmv -->
+<!-- Where things get a little more complicated for jmv, is in the comparisons of cell means. These would test all pairwise combinations of Drug within Factor for this example. The following code will produce the results of interest, but it will also produce quite a bit of output and so the code is commented -->
+```{r pairwise comparisons, warning = FALSE, include=FALSE}
+# # Drug 1 vs Drug 2, Drug 1 vs Drug 3, and Drug 2 vs Drug 3 at Feedback 1
+# library(tidyverse)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 1, Drug == 1 | Drug == 2), vars = Score, group = Drug)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 1, Drug == 1 | Drug == 3), vars = Score, group = Drug)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 1, Drug == 2 | Drug == 3), vars = Score, group = Drug)
+# 
+# #Drug 1 vs Drug 2, Drug 1 vs Drug 3, and Drug 2 vs Drug 3 at Feedback 2
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 2, Drug == 1 | Drug == 2), vars = Score, group = Drug)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 2, Drug == 1 | Drug == 3), vars = Score, group = Drug)
+# ttestIS(data = filter(chapter_7_table_5, Feedback == 2, Drug == 2 | Drug == 3), vars = Score, group = Drug)
+```
+{{< /tab >}}
+
+<!-- -----------------------Tab 2---------------------------------- -->
+{{< tab tabNum="2" >}}  
+When using rstatix, it's useful to also useful to load the tidyverse package so that you can use the pipe operator (`%>%`) and the `group_by()` function. The pipe operator takes the output of one function or a data frame and feeds into another function. Once we load our data, we will first want to convert Feedback and Drug to factor so the values get treated as categorical variable. Next, we will build an ANOVA model with the base R `aov()` function that predicts Score by Feedback and Drug. Finally, we will use the rstatix `anova_test()` function on our aov model to produce the output for the omnibus test.
+```{r rstatix, warning = FALSE, message=FALSE}
+library(tidyverse)
+library(rstatix)
+library(ggpubr)
+
+# Convert Drug and Feedback to factor
+chapter_7_table_5$Drug <- as.factor(chapter_7_table_5$Drug)
+chapter_7_table_5$Feedback <- as.factor(chapter_7_table_5$Feedback)
+
+# Create aov() model
+model <- aov(formula = Score ~ Feedback * Drug,
+    data = chapter_7_table_5)
+
+# anova_test on  model, with partial eta squared and type III ss
+anova_test(model, effect.size = "pes", type = 3)
+```
+The results from the omnibus test reveal that there is no significant interaction between Drug and Feedback. On the other hand, there are significant effects for Drug and for Feedback. Thus, at this point, we could proceed to perform tests of marginal means. 
+
+#### Tests of Marginal Means
+The rstatix package includes a function, `emmeans_test()`, that can perform tests of estimated marginal means. To perform these tests, we will use the aov model that we created in the previous step and we will conduct two separate tests, one for Feedback and one for Drug. I set the correction method to `"none"`, but this can be easily changed according to your situation.
+
+We will also use the `get_summary_stats()` function here that will illustrate how the tidyverse package meshes with rstatix to produce descriptive statistics to aid in the interpretation of the output. First we will start with the chapter_7_table_5 data and pipe it to the `group_by()` function which will create subsets of data according to combinations of Drug and Feedback, then that output is fed into the `get_summary_stats()` which will calculate several descriptive statistics for each group. Finally, to display only a part of this output, the `select()` function will display only the four columns specified.
+
+To plot the data we will rely on the ggpubr package. The ggpubr and rstatix packages are developed by the same individual and are aimed at simplifying the syntax for conducting statistical tests and generating plots in R. For our purposes we will use the `ggerror()` function.
+#### Feedback
+```{r plot3, fig.cap = 'Means and confidence intervals for Feedback collapsed across Drug. n.b. Notice that the confidence intervals between the ggpubr plots and those produced by jmv are different. The reason for this is because of how the plotting function calculates confidence intervals. ggpubr computes a confidence interval based around a group mean using a group specific standard error, while the jmv function plots confidence intervals based on a standard error from an estimated marginal mean framework.', warning=FALSE}
+# Test of marginal means for Feedback
+chapter_7_table_5 %>% 
+  emmeans_test(Score ~ Feedback, 
+               p.adjust.method = "none", 
+               model = model)
+
+# Get Summary Stats
+chapter_7_table_5 %>% 
+  group_by(Feedback) %>%
+  get_summary_stats(Score) %>%
+  select(Feedback, mean, sd, se)
+
+# Generate plot
+ggerrorplot(chapter_7_table_5, 
+       x = "Feedback", 
+       y = "Score",
+       add = "mean",
+       desc_stat = "mean_ci",
+       error.plot = "errorbar",
+       width = .1,
+       )
+```
+
+#### Drug
+```{r plot4, fig.cap = 'Means and confidence intervals for Drug collapsed across Feedback.', warning=FALSE}
+# Test of marginal means for Drug
+chapter_7_table_5 %>% 
+  emmeans_test(Score ~ Drug, 
+               p.adjust.method = "none", 
+               model = model)
+
+# Get Summary Stats
+chapter_7_table_5 %>% 
+  group_by(Drug) %>%
+  get_summary_stats(Score) %>%
+  select(Drug, mean, sd, se)
+
+# Generate Plot
+ggerrorplot(chapter_7_table_5, 
+       x = "Drug", 
+       y = "Score",
+       add = "mean",
+       desc_stat = "mean_ci",
+       error.plot = "errorbar",
+       width = .1,
+)
+```
+
+The two tests of marginal means will produce a couple of messages to remind us that the results could be misleading because of interactions. However, as we saw in the omnibus test, there was no significant interaction and can disregard the message. The results of the `emmeans_test()` on Feedback indicate a significant effect and suggests that the participants undergoing biofeedback had lower bloodpressure scores than those without biofeedback. When examining the output of the results of the `emmeans_test()` on Drug, we see that the mean of Drug 1 is significantly lower than that of Drug 2 and Drug 3. However, the mean of Drug 2 is not significantly different than that of Drug 3.
+
+<!-- #### Alternative rstatix method for two-way ANOVA -->
+<!-- There is an additional way of using the `anova_test()` function. First, we will create a model with the base R `aov()` function. Then we can run the `anova_test()` function on our model. This form will have the added benefit of playing well the `emmeans_test()` function to correctly calculate the degrees of freedom for post-hoc tests. Also in this code block is the command to perform the the comparisons of cell means within each factor. -->
+```{r rstatix_alternative, include = FALSE}
+# # Alternative way of using anova_test
+# # First make an base R anova model
+# model <- aov(formula = Score ~ Feedback * Drug,
+#     data = chapter_7_table_5)
+# 
+# # Second, use anova_test on the model to print the output
+# anova_test(model, effect.size = "pes", type = 3)
+# 
+# 
+# anova_test(chapter_7_table_5, 
+#            Score ~ Feedback * Drug, 
+#            dv = Score, 
+#            type = 3, 
+#            effect.size = "pes")
+```
+
+```{r rstatix post hoc test notes, include=FALSE}
+#library(emmeans)
+#library(rstatix)
+# The output of the above code will match, because there are only two groups and the data are collapsed over levels of Drug. There will be no need to correct for multiple comparisons so both the rstatix and emmeans functions will results
+
+# Post-hoc tests for Feedback collapsed across Drug
+# Requires the alternative method for correctly calculating degrees of freedom
+# chapter_7_table_5 %>% 
+#   emmeans_test(Score ~ Feedback, 
+#                p.adjust.method = "tukey", 
+#                model = model)
+
+# emmeans, matches the results of post-hoc tests by Feedback in jmv, The lower and uper confidence intervals also match the jmv package output within rounding error
+# emmeans(model, pairwise ~ Feedback)
+
+# For the comparisons of Drug when collapsed over levels of Feedback, the default emmeans function is set to tukey, so the rstatix function will need to be set to the same or else a discrepancy will result.
+# chapter_7_table_5 %>% 
+#   emmeans_test(Score ~ Drug, 
+#                p.adjust.method = "tukey", 
+#                model = model)
+
+# emmeans, default p.adjust is tukey, results match the post-hoc comparisons of drug in jmv
+# emmeans(model, pairwise ~ Drug)
+
+# When this function is run, ci will be the result of the 95% confidence interval conducted from a one sample t-test via t.test function on the cell means, whereas in the jmv plot, the ci is from the estimated marginal mean, via the emmeans package
+# sum_stats <- chapter_7_table_5 %>% 
+#   group_by(Drug, Feedback) %>%
+#   get_summary_stats(Score)
+
+## Get the confidence intervals that match jmv, the difference is that the get_summary stats will plot the ci based around the cell mean, whereas the jmv plot will plot the ci based around the marginal means. Marginal means are different because they can be affected by the model such as if we are predicting a score based off of drug or off of drug AND feedback. Marginal means can also be weighted by the number of observations in cases of unequal sample size.
+# emmeans(model, pairwise ~ Feedback * Drug)
+
+```
+
+
+<!-- #### Comparisons of cell means -->
+```{r rstatix_pwcs, include = FALSE}
+# # Comparisons of cell means Feedback at each level of Drug
+# chapter_7_table_5 %>% group_by(Drug) %>%
+#          pairwise_t_test(Score ~ Feedback, 
+#                          p.adjust.method = "none", 
+#                          pool.sd = FALSE, 
+#                          var.equal = TRUE)
+# 
+# # Comparisons of cell means Drug at each level of Feedback
+# chapter_7_table_5 %>% group_by(Feedback) %>%
+#          pairwise_t_test(Score ~ Drug,
+#                          p.adjust.method = "none",
+#                          pool.sd = FALSE,
+#                          var.equal = TRUE)
+```
+
+
+```{r plot5, fig.cap = 'ggpubr plot of means by drug and feedback.', include=FALSE}
+# library(emmeans)
+# # Load data
+# data("chapter_4_table_1")
+# head(chapter_4_table_1)
+# 
+# # Create the test anoval model
+# test_model <- aov(formula = bloodpr ~ as.factor(cond),
+#     data = chapter_4_table_1)
+# 
+# 
+# emmeans(test_model, pairwise ~ as.factor(cond))
+# 
+# 
+# # Second, use anova_test on the model to print the output
+# anova_test(test_model, effect.size = "pes", type = 3)
+
+# data("chapter_7_table_5")
+
+# # Convert Drug and Feedback to factor
+# chapter_7_table_5$Drug <- as.factor(chapter_7_table_5$Drug)
+# chapter_7_table_5$Feedback <- as.factor(chapter_7_table_5$Feedback)
+# 
+# # Display data
+# chapter_7_table_5
+# 
+# sum_stats <- chapter_7_table_5 %>% group_by(Drug, Feedback) %>%
+#         get_summary_stats(Score) %>%
+#         select(Feedback, variable, n, min, max, median, mean, sd, se)
+# 
+# 
+# chapter_7_table_5 %>% get_summary_stats(Score)
+# 
+# # Prepare Plot Data
+# md <- chapter_7_table_5 %>% group_by(Drug, Feedback) %>% 
+#       summarise(score = mean(Score)) %>% cbind(., se = sum_stats$se)
+#     md$Feedback <- as.numeric(as.character(md$Feedback))
+#     
+#     md %>%
+#       ggplot(., aes(x= Feedback, y = score, color = Drug)) + 
+#       geom_line(position = position_dodge(width = 0.2)) + #geom_line(aes(linetype = group)) + 
+#       geom_errorbar(aes(ymin = score-se, ymax = score+se), width=.025, position = position_dodge(width = 0.2)) +
+#       #geom_point(size = 2, shape = 22, fill = "white") +
+#       geom_point(size = 1, fill = "white", shape = 21, position = position_dodge(width = 0.2)) +
+#       labs(y = "Score",
+#            color = "Group") +
+#       theme_pubr() + 
+#       scale_color_manual(values = get_palette("jco", 3))
+  
+```
+
+<!-- [Back to jmv](#jmv) -->
+{{< /tab >}}
+
+<!-- -----------------------Tab 3---------------------------------- -->
+{{< tab tabNum="3" >}}
+###
+When using the base R function, it's wise to also load the car package. The default sums of squares in the `aov()` function is type II and in order to get ANOVA results with type III sums of squares, the car package is needed. Similar to the functions with rstatix, we will need to convert the Feedback and Drug data to factor before running the ANOVA.
+```{r base_r, warning = FALSE, message=FALSE, include=FALSE}
+# library(car)
+# library(AMCP)
+# 
+# # Load data
+# data("chapter_7_table_5")
+# 
+# # Convert Feedback and Drug to factor
+# chapter_7_table_5$Drug <- as.factor(chapter_7_table_5$Drug)
+# chapter_7_table_5$Feedback <- as.factor(chapter_7_table_5$Feedback)
+# 
+# # ANOVA with car
+# Anova(aov(formula = Score ~ Feedback * Drug,
+#     data = chapter_7_table_5),
+#     type = "3")
+```
+
+<!-- As for the post-hoc tests, we can use the built-in `TukeyHSD()` function. These values will match those produced by jmv and rstatix when setting the correction method to "tukey". There are other ways of  -->
+```{r, include=FALSE}
+# Pairwise tests
+# These may not match up because they default to a Welch's t test
+#pairwise.t.test(chapter_7_table_5$Score[1:15], chapter_7_table_5$Drug[1:15], paired = FALSE, pool.sd = FALSE, p.adjust.method = "none")
+#pairwise.t.test(chapter_7_table_5$Score[16:30], chapter_7_table_5$Drug[16:30], paired = FALSE, pool.sd = FALSE, p.adjust.method = "none")
+
+# t.test(chapter_7_table_5$Score[1:5], chapter_7_table_5$Score[6:10], var.equal = TRUE)
+# t.test(chapter_7_table_5$Score[1:5], chapter_7_table_5$Score[11:15], var.equal = TRUE)
+# t.test(chapter_7_table_5$Score[6:10], chapter_7_table_5$Score[11:15], var.equal = TRUE)
+
+```
+{{< /tab >}}
+{{< /tabs >}}
+
+### Wrap-up
+The jmv and rstatix functions will produce the exact same results for the main effects and interaction tests of a two-way ANOVA. The jmv package is a great place to start with statistical tests if you are beginning with R because it simplifies some of the syntax, generates plots automatically, and it also converts some of your numerical data to categorical. While it's a lot easier to code a 2x3 ANOVA with jmv there are some advantages to using rstatix that I will become apparent in future modules. 

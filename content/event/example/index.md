@@ -11,8 +11,8 @@ address:
   street: 450 Serra Mall
 all_day: false
 authors: []
-date: "2030-06-01T13:00:00Z"
-date_end: "2030-06-01T15:00:00Z"
+date: "2010-06-01T13:00:00Z"
+date_end: "2010-06-01T15:00:00Z"
 event: Wowchemy Conference
 event_url: https://example.org
 featured: false

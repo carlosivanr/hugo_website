@@ -38,7 +38,6 @@ publication_types:
 - '2'
 abstract: ''
 publication: '*Alcohol*'
-url_pdf: https://www.ncbi.nlm.nih.gov/pubmed/33716098
 url_pdf: media/rodriguez_2021_pae_svm.pdf
 doi: 10.1016/j.alcohol.2021.03.001
 ---
