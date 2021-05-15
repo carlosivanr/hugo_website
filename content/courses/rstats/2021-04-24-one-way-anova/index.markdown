@@ -1,5 +1,5 @@
 ---
-title: One-way ANOVA in R
+title: One-way ANOVA
 author: Carlos Rodriguez
 date: '2021-04-24'
 slug: one-way-anova
@@ -19,13 +19,13 @@ type: book
 weight: 10
 ---
 
-In this module, I will demonstrate how to perform a one-way ANOVA with the jmv and rstatix packages and with the base R functions. 
+ANOVA is a commonly used statistical technique to compare differences among two or more means. In this module, we will cover how to perform a one-way ANOVA with the jmv and rstatix packages. A one-way ANOVA is appropriate for data in which groups differ along one categorical variable, but do not differ in the dependent variable
 
 
 ### The data set
-For this demo, we will use the AMCP package. AMCP is the R package for Maxwell, Delaney, and Kelley's 3rd edition of <a href="https://designingexperiments.com/"> "Designing Experiments and Analyzing Data: A model comparison perspective."</a> For this demo we will use the data from Chapter 3, Exercise 9. In this exercise, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective which can be tested with a one-way ANOVA.
+For this demo we will use the data from Chapter 3, Exercise 9 in the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
 
-For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject. The `head()` function in the code will only display data for the first six rows.
+For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
 
 ```r
 library(AMCP)
@@ -53,9 +53,9 @@ head(C3E9)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
-Jmv is a package that comes from the standalone jamovi statistical spreadsheet software. <a href="https://jamovi.org/"> Jamovi </a> was designed as an alternative to costly programs like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone program. As you'll see, jmv produces well organized output and can automatically generate plots. It serves as a great way run statistical tests in R for beginners.  
+Jmv is a package that comes from the standalone <a href="https://jamovi.org/"> jamovi </a> statistical spreadsheet software. Jamovi was designed as an alternative to costly statistical analysis software packages like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone version.  
 
-With the `anovaOneW()` function we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9, set `fishers = TRUE` and `welchs = FALSE`, otherwise the function will run the default Welch's ANOVA. We will also set the `phMethod = 'tukey'` to conduct posthoc tests, Lastly, we want to set `descPlot = TRUE` to plot means and confidence intervals.
+With the `anovaOneW()` function, we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9, set `fishers = TRUE` and `welchs = FALSE`, otherwise the function will run the default Welch's ANOVA. We will also set the `phMethod = 'tukey'` to conduct posthoc tests, Lastly, we want to set `descPlot = TRUE` to plot means and confidence intervals.
 
 
 ```r
@@ -80,19 +80,19 @@ anovaOneW(formula = Scores ~ Group,
 ##  ONE-WAY ANOVA
 ## 
 ##  One-Way ANOVA (Fisher's)                          
-##  ------------------------------------------------- 
+##  ───────────────────────────────────────────────── 
 ##              F           df1    df2    p           
-##  ------------------------------------------------- 
+##  ───────────────────────────────────────────────── 
 ##    Scores    10.00000      3      8    0.0044074   
-##  ------------------------------------------------- 
+##  ───────────────────────────────────────────────── 
 ## 
 ## 
 ##  POST HOC TESTS
 ## 
 ##  Tukey Post-Hoc Test – Scores                                                 
-##  ---------------------------------------------------------------------------- 
+##  ──────────────────────────────────────────────────────────────────────────── 
 ##                            1            2            3            4           
-##  ---------------------------------------------------------------------------- 
+##  ──────────────────────────────────────────────────────────────────────────── 
 ##    1    Mean difference            —    -8.000000    -2.000000    -6.000000   
 ##         p-value                    —    0.0052339    0.6297636    0.0259193   
 ##                                                                               
@@ -104,7 +104,7 @@ anovaOneW(formula = Scores ~ Group,
 ##                                                                               
 ##    4    Mean difference                                                   —   
 ##         p-value                                                           —   
-##  ----------------------------------------------------------------------------
+##  ────────────────────────────────────────────────────────────────────────────
 ```
 
 <div class="figure">
@@ -116,7 +116,7 @@ anovaOneW(formula = Scores ~ Group,
 {{< /tab >}}
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
-The rstatix package is another way of programming statistical tests in R. One of the benefits of the rstatix package is that it meshes well with the pipe (`%>%`) operator from the tidyverse package. This means that you could potentially use the `group_by()` function on your data to facilitate conducting pairwise comparisons, generating summary data, and other statistical computations like calculating effect sizes. We'll see an example of this in the code chunk below. The same developer of the rstatix package also developed the ggpubr package which simplifies producing ggplot2 figures. In this demo, the ggpubr package is loaded primarily to simplify producing a jamovi style plot.
+The rstatix package is another way of programming statistical tests in R. One of the benefits of the rstatix package is that it meshes well with the pipe (`%>%`) operator from the tidyverse package. This facilitates grouping data with the `group_by()` function and conducting pairwise comparisons, generating summary data, and other statistical computations like calculating effect sizes. We'll see an example of this in the code chunk below. The same developer of the rstatix package also developed the ggpubr package which simplifies producing ggplot2 figures. In this demo, the ggpubr package is loaded primarily to simplify producing a jamovi style plot.
 
 The sample code of conducting the `anova_test()` is not too different than the `anovaOneW()` function in jmv. However, for this approach, we will need to change our Group variable to factor, otherwise `anova_test()` will think we will want to predict scores by a numeric variable rather than a categorical one. Next, we specify a formula predicting Scores by Group (`Scores ~ Group`). Then we tell the function that we want to analyze the C3E9 data, specify our dependent variable (dv; Scores), set the effect size output to partial eta squared ("pes"), and then set the sum of squares method to type III.
 
@@ -153,18 +153,17 @@ To get the output for the post-hoc tests, we will run the `tukey_hsd()` function
 ```r
 # Tukey posthoc tests
 C3E9 %>%
-  tukey_hsd(Scores ~ Group) %>%
-  select(-null.value)
+  tukey_hsd(Scores ~ Group)
 ```
 
 ```r
 ## # A tibble: 6 x 8
 ##   term  group1 group2 estimate conf.low conf.high   p.adj p.adj.signif
-##   <chr> <chr>  <chr>     <dbl>    <dbl>     <dbl>   <dbl> <chr>       
+## * <chr> <chr>  <chr>     <dbl>    <dbl>     <dbl>   <dbl> <chr>       
 ## 1 Group 1      2          8.00    2.77     13.2   0.00523 **          
 ## 2 Group 1      3          2.00   -3.23      7.23  0.63    ns          
 ## 3 Group 1      4          6.00    0.771    11.2   0.0259  *           
-## 4 Group 2      3         -6.00  -11.2      -0.771 0.0259  *           
+## 4 Group 2      3         -6     -11.2      -0.771 0.0259  *           
 ## 5 Group 2      4         -2.00   -7.23      3.23  0.63    ns          
 ## 6 Group 3      4          4      -1.23      9.23  0.144   ns
 ```
@@ -180,10 +179,10 @@ C3E9 %>%
 ## # A tibble: 6 x 9
 ##   .y.    group1 group2    n1    n2       p p.signif   p.adj p.adj.signif
 ## * <chr>  <chr>  <chr>  <int> <int>   <dbl> <chr>      <dbl> <chr>       
-## 1 Scores 1      2          3     3 0.00120 **       0.00717 **          
+## 1 Scores 1      2          3     3 0.0012  **       0.00717 **          
 ## 2 Scores 1      3          3     3 0.256   ns       1       ns          
-## 3 Scores 2      3          3     3 0.00627 **       0.0376  *           
-## 4 Scores 1      4          3     3 0.00627 **       0.0376  *           
+## 3 Scores 1      4          3     3 0.00627 **       0.0376  *           
+## 4 Scores 2      3          3     3 0.00627 **       0.0376  *           
 ## 5 Scores 2      4          3     3 0.256   ns       1       ns          
 ## 6 Scores 3      4          3     3 0.04    *        0.24    ns
 ```
