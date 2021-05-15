@@ -1,23 +1,15 @@
 ---
-title: Statistics with R
+title: R packages
 date: '2021-04-25'
 type: book
-weight: 90
+weight: 30
 math: true
 ---
 
-Basic statistics with R.
-- one sample t test
-- two sample t test
-- correlation
-- regression
-- one way anova
-- one way welch anova
-- two way anova
-- N-way anova
-- ancova
-- manova
-
+Learn what is a package and how to install one.
+- install.packages()
+- library()
+- How to find packages?
 
 <!--more-->
 
