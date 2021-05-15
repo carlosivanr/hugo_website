@@ -4,6 +4,7 @@ date: '2021-04-25'
 type: book
 weight: 40
 math: true
+draft: true
 ---
 
 Learn how to read in data.

@@ -4,6 +4,7 @@ date: '2021-04-25'
 type: book
 weight: 20
 math: true
+draft: true
 ---
 
 How to creat an R project.

@@ -4,6 +4,7 @@ date: '2021-04-25'
 type: book
 weight: 85
 math: true
+draft: true
 ---
 
 Learn what is the difference between long and wide data.
