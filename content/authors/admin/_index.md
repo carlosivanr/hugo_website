@@ -50,4 +50,4 @@ I have experience in teaching university level introduction to behavioral neuros
 
 Outside of my professional interests, I dabble in carpentry, learning guitar, cooking, camping, and mountain biking.
 
-{{< icon name="download" pack="fas" >}} Download my {{< staticref "media/cv.pdf" "newtab" >}}CV{{< /staticref >}}.
+{{< icon name="download" pack="fas" >}} Download my {{< staticref "media/carlos_rodriguez_cv.pdf" "newtab" >}}CV{{< /staticref >}}.
