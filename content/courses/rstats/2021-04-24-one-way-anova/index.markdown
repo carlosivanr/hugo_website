@@ -47,7 +47,7 @@ head(C3E9)
 ## 6     2     14
 ```
 
-### Perform ANOVA Tests
+### Perform ANOVA Tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" tabName3="base R"  >}}
 
@@ -156,7 +156,7 @@ C3E9 %>%
   tukey_hsd(Scores ~ Group)
 ```
 
-```r
+```
 ## # A tibble: 6 x 8
 ##   term  group1 group2 estimate conf.low conf.high   p.adj p.adj.signif
 ## * <chr> <chr>  <chr>     <dbl>    <dbl>     <dbl>   <dbl> <chr>       
@@ -268,6 +268,8 @@ TukeyHSD(
 
 {{< /tab >}}
 {{< /tabs >}}
+
+[Back to tabs](#tests)
 
 ### Interpret the output
 For the omnibus test, we obtain a significant effect of Group [F(3,8) = 10, p < 0.01] which suggests that the means of the 4 groups are not equal. In other words, one of the treatments may be significantly different than another. The post-hoc tests that perform all possible combinations of pairwise comparisons also indicate a significant difference between group 1 and 2, between group 1 and 4, and between group 2 and 3.  

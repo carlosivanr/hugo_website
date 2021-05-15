@@ -1,5 +1,5 @@
 ---
-title: Two-way ANOVA in R
+title: Two-way ANOVA
 author: Carlos Rodriguez
 date: '2021-05-04'
 slug: two-way-anova
@@ -46,7 +46,7 @@ head(chapter_7_table_5)
 ## 6   186        1    2
 ```
 
-### Perform ANOVA Tests
+### Perform ANOVA Tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="base R" >}}
 
@@ -172,7 +172,7 @@ chapter_7_table_5 %>%
 ## NOTE: Results may be misleading due to involvement in interactions
 ```
 
-```r
+```
 ## # A tibble: 1 x 8
 ##   .y.   group1 group2    df statistic      p  p.adj p.adj.signif
 ## * <chr> <chr>  <chr>  <dbl>     <dbl>  <dbl>  <dbl> <chr>       
@@ -226,7 +226,7 @@ chapter_7_table_5 %>%
 ## NOTE: Results may be misleading due to involvement in interactions
 ```
 
-```r
+```
 ## # A tibble: 3 x 8
 ##   .y.   group1 group2    df statistic        p    p.adj p.adj.signif
 ## * <chr> <chr>  <chr>  <dbl>     <dbl>    <dbl>    <dbl> <chr>       
@@ -297,6 +297,8 @@ When using the base R function, it's wise to also load the car package. The defa
 
 {{< /tab >}}
 {{< /tabs >}}
+
+[Back to tabs](#tests)
 
 ### Wrap-up
 The jmv and rstatix functions both produce the exact same results, as they should because they share many of the underlying statistical functions. The jmv package is a great place to start with statistical tests if you are beginning with R because it simplifies some of the syntax, generates plots automatically, and it also converts some of your numerical data to categorical. While it's a lot easier to code a 2x3 ANOVA with jmv there are some advantages to using rstatix that will become apparent in future modules. 

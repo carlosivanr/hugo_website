@@ -21,7 +21,7 @@ weight: 30
 
 In this module we will cover how to conduct repeated measures one-way ANOVA with the jmv and rstatix packages. Repeated measures ANOVA are used in cases where a particular observation from the same subject is taken multiple times. An example of this may be in an experiment of learning and memory where a rat is timed over several trials to measure how long it takes to find an escape platform in the Morris Water Task. Another example will be seen in our data set where scores for a cognitive assessment are compared at multiple ages.
 
-#### The data set
+### The data set
 For this demo, we will use the chapter_11_table_5 dataset from the AMCP package. These data are from a hypothetical study that tracked the age-normed general cognitive scores from the McCarthy Scales of Children's Abilities (MSCA) of 12 children at 4 different time points.
 
 
@@ -45,7 +45,7 @@ head(chapter_11_table_5)
 ## 6      110      107       96       91
 ```
 
-
+### Perform ANOVA Tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="paired-t-test">}}
 
@@ -219,6 +219,9 @@ ggerrorplot(rm_data,
 <!-- ``` -->
 <!-- {{< /tab >}} -->
 {{< /tabs >}}
+
+<!-- This works to link back up to tabs -->
+[Back to tabs](#tests)
 
 ### Interpretation  
 For the omnibus test, we obtain a significant effect of Age [F(33,3) = 3.03, p < 0.05] which suggests that the means of the 4 ages are not equal. The omega squared value is 0.04 which suggest the about 4% of the variance in scores is acounted for by age in the ages studied.

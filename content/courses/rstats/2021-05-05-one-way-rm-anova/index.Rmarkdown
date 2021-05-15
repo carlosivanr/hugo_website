@@ -21,7 +21,7 @@ weight: 30
 
 In this module we will cover how to conduct repeated measures one-way ANOVA with the jmv and rstatix packages. Repeated measures ANOVA are used in cases where a particular observation from the same subject is taken multiple times. An example of this may be in an experiment of learning and memory where a rat is timed over several trials to measure how long it takes to find an escape platform in the Morris Water Task. Another example will be seen in our data set where scores for a cognitive assessment are compared at multiple ages.
 
-#### The data set
+### The data set
 For this demo, we will use the chapter_11_table_5 dataset from the AMCP package. These data are from a hypothetical study that tracked the age-normed general cognitive scores from the McCarthy Scales of Children's Abilities (MSCA) of 12 children at 4 different time points.
 
 ```{r, warning = FALSE}
@@ -34,7 +34,7 @@ data("chapter_11_table_5")
 head(chapter_11_table_5)
 ```
 
-
+### Perform ANOVA Tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="paired-t-test">}}
 
@@ -112,7 +112,6 @@ get_anova_table(rm_aov, correction = "none")
 ### Plot the data
 To plot the data, we can use the `ggerrorplot()` function. We will use the converted long-form rm_data rather than the wide chapter_11_table_5 dataframe. Then we just need to specify what to plot on the x and y axes, set `add = "mean", desc_stat = "mean_ci", `error.plot = "errorbar", and `width = .1`.
 ```{r plot2, warning=FALSE, fig.cap = 'ggerrorplot plot of means and 95% confidence intervals by group.'}
-
 ggerrorplot(rm_data,
             x = "age",
             y = "score",
@@ -124,29 +123,27 @@ ggerrorplot(rm_data,
 ```
 
 ```{r plot, include=FALSE}
-
-
-# Use get_summary_stats to compute the 95% CI
-summary_data <- rm_data %>% 
-  group_by(age) %>% 
-  get_summary_stats(score)
-
-# Print part of the data
-head(summary_data)
-
-# Generate a plot of the data
-ggplot(summary_data, aes(x = age, y = mean)) +
-  geom_errorbar(aes(ymin=mean-ci, ymax=mean+ci), 
-                width = 0.1, 
-                color = "blue") +
-  geom_point(fill = "white", 
-             shape = 21, 
-             size = 3, 
-             color = "blue") +
-  ggtitle("Mean (95% CI)") +
-  ylab("Scores") +
-  theme_pubr() +
-  theme(plot.title = element_text(hjust = 0.5))
+# # Use get_summary_stats to compute the 95% CI
+# summary_data <- rm_data %>% 
+#   group_by(age) %>% 
+#   get_summary_stats(score)
+# 
+# # Print part of the data
+# head(summary_data)
+# 
+# # Generate a plot of the data
+# ggplot(summary_data, aes(x = age, y = mean)) +
+#   geom_errorbar(aes(ymin=mean-ci, ymax=mean+ci), 
+#                 width = 0.1, 
+#                 color = "blue") +
+#   geom_point(fill = "white", 
+#              shape = 21, 
+#              size = 3, 
+#              color = "blue") +
+#   ggtitle("Mean (95% CI)") +
+#   ylab("Scores") +
+#   theme_pubr() +
+#   theme(plot.title = element_text(hjust = 0.5))
 ```
 {{< /tab >}}
 
@@ -177,6 +174,9 @@ ggplot(summary_data, aes(x = age, y = mean)) +
 <!-- ``` -->
 <!-- {{< /tab >}} -->
 {{< /tabs >}}
+
+<!-- This works to link back up to tabs -->
+[Back to tabs](#tests)
 
 ### Interpretation  
 For the omnibus test, we obtain a significant effect of Age [F(33,3) = 3.03, p < 0.05] which suggests that the means of the 4 ages are not equal. The omega squared value is 0.04 which suggest the about 4% of the variance in scores is acounted for by age in the ages studied.
