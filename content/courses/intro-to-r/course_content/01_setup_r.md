@@ -3,6 +3,7 @@ title: Setup R and RStudio
 date: '2021-04-25'
 type: book
 weight: 10
+draft: true
 ---
 
 Learn how to install R and RStudio
