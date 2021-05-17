@@ -9,7 +9,7 @@ type: book
 {{< toc hide_on="xl" >}}
 
 ## Overview
-This short course explores how to conduct various ANOVA statistical tests in R with freely available packages. Focus is placed on how to code the tests and their interpretation rather than on the conceptual background. For the background, I would recommend Maxwell, Delaney, and Kelley's 3rd edition of ["Designing Experiments and Analyzing Data: A model comparison perspective"](https://designingexperiments.com/). For many of the modules, we will rely on the AMCP package which is the R package for the Maxell et al. text an contains several sample data sets. We will also rely a handful of R packages including `jmv`, `rstatix`, `ggpubr`, and `tidyverse`.
+This short course explores how to conduct various ANOVA statistical tests in R with freely available packages. Focus is placed on how to implement ANOVA tests. For a thorough conceptual background, I would recommend Maxwell, Delaney, and Kelley's 3rd edition of ["Designing Experiments and Analyzing Data: A model comparison perspective"](https://designingexperiments.com/). For many of the modules, we will rely on the AMCP package which is the R package for the Maxell et al. text and contains several sample data sets. We will also rely a handful of other R packages including `jmv`, `rstatix`, `ggpubr`, and `tidyverse`.
 
 ## What you will learn
 - One-way ANOVA in R
