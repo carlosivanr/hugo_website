@@ -50,7 +50,7 @@ head(C3E9)
 
 ### Perform ANOVA Tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
-{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" tabName3="base R"  >}}
+{{< tabs tabTotal="4" tabID="1" tabName1="jmv" tabName2="rstatix" tabName3="Welch's jmv" tabName4="Welch's rstatix"  >}}
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
@@ -222,51 +222,154 @@ ggerrorplot(C3E9,
 
 <!-- -----------------------Tab 3---------------------------------- -->
 {{< tab tabNum="3" >}}
-####    
-The same data can be analyzed with the base R functions which produce the same results when using the `aov()` function. Again, we will predict Scores by Group. However, because Group is of numerical class, we will need to convert it to factor for the `aov()` function to work properly. Lastly, we will need to encase our `aov()` function within the `summary()` function to produce the output we are interested in. A plot of the data can be recreated using the code in the rstatix approach.
+The three primary assumptions for ANOVA are as follows:  
+ 1. The data (more specifically the residuals) are normally distributed.  
+ 2. Homogeneity of variance.  
+ 3. The groups tested need to be independent.
 
+There may be times when data fail to meet the some of these assumptions. In situations where  assumptions 1 and 3 are met, but assumption 2 is not, then Welch's ANOVA becomes an option to compare multiple means. The omnibus test of a Welch's ANOVA can be followed by Games-Howell post-hoc tests. One drawback, however, is that the Welch's ANOVA is restricted to only one explanatory factor unlike other ANOVA designs. 
 
-```r
-# Print the summary of the
-summary(
-  aov(formula = Scores ~ as.factor(Group), 
-      data = C3E9)
-        )
-```
-
-```
-##                  Df Sum Sq Mean Sq F value  Pr(>F)   
-## as.factor(Group)  3    120      40      10 0.00441 **
-## Residuals         8     32       4                   
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-```
+### jmv
+The following code chunk demonstrate how to code a Welch's ANOVA in R with the jmv and rstatix packages. The jmv approach uses the exact same function as the Fisher's one-way ANOVA and can take many of the same options to produce plots and conduct tests of normality and equality of variance (homogeneity of variance) with the `norm = TRUE` and `eqv = TRUE` options. Games-Howell post-hoc tests are produced by setting `phMethod = 'gamesHowell'`.
 
 ```r
-# Tukey post-hoc tests for the aov()
-TukeyHSD(
-  aov(formula = Scores ~ as.factor(Group), 
+# Conduct Welch's ANOVA
+anovaOneW(formula = Scores ~ Group,
+          data = C3E9,
+          welchs = TRUE,
+          norm = TRUE,
+          eqv = TRUE,
+          phMethod = 'gamesHowell'
+          )
+```
+
+```
+## 
+##  ONE-WAY ANOVA
+## 
+##  One-Way ANOVA (Welch's)                                
+##  ────────────────────────────────────────────────────── 
+##              F           df1    df2         p           
+##  ────────────────────────────────────────────────────── 
+##    Scores    7.692308      3    4.444444    0.0319410   
+##  ────────────────────────────────────────────────────── 
+## 
+## 
+##  ASSUMPTION CHECKS
+## 
+##  Normality Test (Shapiro-Wilk)        
+##  ──────────────────────────────────── 
+##              W            p           
+##  ──────────────────────────────────── 
+##    Scores    0.8107880    0.0124591   
+##  ──────────────────────────────────── 
+##    Note. A low p-value suggests a
+##    violation of the assumption of
+##    normality
+## 
+## 
+##  Homogeneity of Variances Test (Levene's)              
+##  ───────────────────────────────────────────────────── 
+##              F               df1    df2    p           
+##  ───────────────────────────────────────────────────── 
+##    Scores    6.933348e-33      3      8    1.0000000   
+##  ───────────────────────────────────────────────────── 
+## 
+## 
+##  POST HOC TESTS
+## 
+##  Games-Howell Post-Hoc Test – Scores                                          
+##  ──────────────────────────────────────────────────────────────────────────── 
+##                            1            2            3            4           
+##  ──────────────────────────────────────────────────────────────────────────── 
+##    1    Mean difference            —    -8.000000    -2.000000    -6.000000   
+##         p-value                    —    0.0270378    0.6456622    0.0689900   
+##                                                                               
+##    2    Mean difference                         —     6.000000     2.000000   
+##         p-value                                 —    0.0689900    0.6456622   
+##                                                                               
+##    3    Mean difference                                      —    -4.000000   
+##         p-value                                              —    0.2086312   
+##                                                                               
+##    4    Mean difference                                                   —   
+##         p-value                                                           —   
+##  ────────────────────────────────────────────────────────────────────────────
+```
+{{< /tab >}}
+
+<!-- -----------------------Tab 4---------------------------------- -->
+
+{{< tab tabNum="4" >}}
+To conduct a Welch's ANOVA with rstatix, the `welch_anova_test()` function is required. The syntax to conduct the actual test is rather simple. In the following code chunk, I've chosen to explicitly declare `formula = Scores ~ Group` and `data = C3E9`.  However, you could just as easily specify the dataframe and formula as long as data is the first entered variable. Similarly, data and formula do not need to be explicitly specified for the `games_howell_test()` function, but have chosen to do so in this example for consistency. To produce the Shapiro-Wilk's test of normality as in the jmv output, we need to first create an analysis of variance (aov) model with the base R `aov()` function. rstatix does contain its own `shapiro_test()` function, but it will not test normality of the residuals, only the actual values. We can then nest the output of that function in the `residuals()`, and then nest that output in the `shapiro.test()` function. Finally, for the homogeneity of variance test, we will use the rstatix `levene_test()` function specifying a formula and a dataframe. Base R also can also plot the Residuals vs Fitted values and generate Q-Q (quantile-quantile) plots from an `aov()` object to examine homogeneity of variance and normality respectively and commented code is also included in the following code chunk.
+
+```r
+# Conduct Welch's ANOVA
+welch_anova_test(formula = Scores ~ Group,
+                 data = C3E9)
+```
+
+```
+## # A tibble: 1 x 7
+##   .y.        n statistic   DFn   DFd     p method     
+## * <chr>  <int>     <dbl> <dbl> <dbl> <dbl> <chr>      
+## 1 Scores    12      7.69     3  4.44 0.032 Welch ANOVA
+```
+
+```r
+# Alternative syntax
+# welch_anova_test(C3E9, 
+#                  Scores ~ Group)
+
+# Games-Howell post-hoc tests
+games_howell_test(formula = Scores ~ Group,
+                  data = C3E9, 
+                  conf.level = 0.95, 
+                  detailed = FALSE)
+```
+
+```
+## # A tibble: 6 x 8
+##   .y.    group1 group2 estimate conf.low conf.high p.adj p.adj.signif
+## * <chr>  <chr>  <chr>     <dbl>    <dbl>     <dbl> <dbl> <chr>       
+## 1 Scores 1      2             8    1.35     14.6   0.027 *           
+## 2 Scores 1      3             2   -4.65      8.65  0.646 ns          
+## 3 Scores 1      4             6   -0.648    12.6   0.069 ns          
+## 4 Scores 2      3            -6  -12.6       0.648 0.069 ns          
+## 5 Scores 2      4            -2   -8.65      4.65  0.646 ns          
+## 6 Scores 3      4             4   -2.65     10.6   0.209 ns
+```
+
+```r
+# Produce Q-Q plots
+# plot(aov(formula = Scores ~ Group, data = C3E9), 2)
+
+# Base R Shapiro-Wilk test on residuals of the aov object
+shapiro.test(residuals(aov(formula = Scores ~ Group, data = C3E9)))
+```
+
+```
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  residuals(aov(formula = Scores ~ Group, data = C3E9))
+## W = 0.81079, p-value = 0.01246
+```
+
+```r
+# Residuals vs Fitted values plot
+# plot(aov(formula = Scores ~ Group, data = C3E9), 1)
+
+# rstatix Levene's test for homogeneity of variance
+levene_test(formula = Scores ~ Group,
             data = C3E9)
-         )
 ```
 
 ```
-##   Tukey multiple comparisons of means
-##     95% family-wise confidence level
-## 
-## Fit: aov(formula = Scores ~ as.factor(Group), data = C3E9)
-## 
-## $`as.factor(Group)`
-##     diff         lwr        upr     p adj
-## 2-1    8   2.7705811 13.2294189 0.0052339
-## 3-1    2  -3.2294189  7.2294189 0.6297636
-## 4-1    6   0.7705811 11.2294189 0.0259193
-## 3-2   -6 -11.2294189 -0.7705811 0.0259193
-## 4-2   -2  -7.2294189  3.2294189 0.6297636
-## 4-3    4  -1.2294189  9.2294189 0.1441838
+## # A tibble: 1 x 4
+##     df1   df2 statistic     p
+##   <int> <int>     <dbl> <dbl>
+## 1     3     8  6.93e-33     1
 ```
-
-
 {{< /tab >}}
 {{< /tabs >}}
 
