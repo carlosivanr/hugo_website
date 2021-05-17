@@ -23,7 +23,7 @@ weight: 20
 In this module, we will cover different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are an extension of one-ways ANOVAS and can be used for situations where the goal is to statistically compare means of two or more groups that differ along two categorical variables.
 
 ### The data set
-We will utilize an example with the chapter_7_table_5 data from the AMCP package. In the example dataset, we have a hypothetical experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of blood pressure. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to the dependent variable and measure blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design. We will also assume that the assumptions of independence, equality of variance, and normality are met for the sample dataset.
+We will utilize an example with the chapter_7_table_5 data from the AMCP package. In the example dataset, we have a hypothetical experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of blood pressure [@AMCP]. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to the dependent variable and measure blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design. We will also assume that the assumptions of independence, equality of variance, and normality are met for the sample dataset.
 
 
 ```r
@@ -67,7 +67,7 @@ ANOVA(formula = Score ~ Feedback * Drug,
       postHocCorr = 'none',
       emMeans = ~ Feedback + Drug,
       emmPlots = TRUE,
-      emmTables = FALSE,
+      emmTables = TRUE,
       ciWidthEmm = 95
       )
 ```
@@ -104,7 +104,32 @@ ANOVA(formula = Score ~ Feedback * Drug,
 ##    1       -    2            -24.000000    5.581219    24.00000    -4.3001362    0.0002462   
 ##            -    3            -21.000000    5.581219    24.00000    -3.7626192    0.0009578   
 ##    2       -    3              3.000000    5.581219    24.00000     0.5375170    0.5958599   
-##  ───────────────────────────────────────────────────────────────────────────────────────────
+##  ─────────────────────────────────────────────────────────────────────────────────────────── 
+## 
+## 
+##  ESTIMATED MARGINAL MEANS
+## 
+##  FEEDBACK
+## 
+##  Estimated Marginal Means - Feedback                          
+##  ──────────────────────────────────────────────────────────── 
+##    Feedback    Mean        SE          Lower       Upper      
+##  ──────────────────────────────────────────────────────────── 
+##    1           187.0000    3.222318    180.3495    193.6505   
+##    2           199.0000    3.222318    192.3495    205.6505   
+##  ──────────────────────────────────────────────────────────── 
+## 
+## 
+##  DRUG
+## 
+##  Estimated Marginal Means - Drug                          
+##  ──────────────────────────────────────────────────────── 
+##    Drug    Mean        SE          Lower       Upper      
+##  ──────────────────────────────────────────────────────── 
+##    1       178.0000    3.946517    169.8548    186.1452   
+##    2       202.0000    3.946517    193.8548    210.1452   
+##    3       199.0000    3.946517    190.8548    207.1452   
+##  ────────────────────────────────────────────────────────
 ```
 
 <div class="figure">
@@ -162,7 +187,7 @@ To plot the data we will rely on the ggpubr package. The ggpubr and rstatix pack
 
 ```r
 # Test of marginal means for Feedback
-chapter_7_table_5 %>% 
+pwc <- chapter_7_table_5 %>% 
   emmeans_test(Score ~ Feedback, 
                p.adjust.method = "none", 
                model = model)
@@ -170,6 +195,11 @@ chapter_7_table_5 %>%
 
 ```
 ## NOTE: Results may be misleading due to involvement in interactions
+```
+
+```r
+# Print the results of the pairwise comparisons of Feedback
+pwc
 ```
 
 ```
@@ -180,43 +210,60 @@ chapter_7_table_5 %>%
 ```
 
 ```r
-# Get Summary Stats
-chapter_7_table_5 %>% 
-  group_by(Feedback) %>%
-  get_summary_stats(Score) %>%
-  select(Feedback, mean, sd, se)
+# Print the estimated marginal means of Feedback
+get_emmeans(pwc)
 ```
 
 ```
-## # A tibble: 2 x 4
-##   Feedback  mean    sd    se
-##   <fct>    <dbl> <dbl> <dbl>
-## 1 1          187  18.0  4.64
-## 2 2          199  15.6  4.03
+## # A tibble: 2 x 7
+##   Feedback emmean    se    df conf.low conf.high method      
+##   <fct>     <dbl> <dbl> <dbl>    <dbl>     <dbl> <chr>       
+## 1 1           187  3.22    24     180.      194. Emmeans test
+## 2 2           199  3.22    24     192.      206. Emmeans test
 ```
 
 ```r
-# Generate plot
-ggerrorplot(chapter_7_table_5, 
+# Modify pwc to include x and y positions for plotting signficance markers
+pwc <- pwc %>% add_xy_position(x = "Feedback", fun = "mean_ci")
+
+# Generate an error plot uses ggpubr AND ggplot functions to layer the plot
+ggerrorplot(get_emmeans(pwc), 
        x = "Feedback", 
-       y = "Score",
-       add = "mean",
-       desc_stat = "mean_ci",
-       error.plot = "errorbar",
-       width = .1,
-       )
+       y = "emmean",
+       ylab = "Mean BP Scores") +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
+                  width = 0.1) +
+    stat_pvalue_manual(pwc, hide.ns = TRUE, tip.length = FALSE)
 ```
 
 <div class="figure">
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot3-1.png" alt="Means and confidence intervals for Feedback collapsed across Drug. n.b. Notice that the confidence intervals between the ggpubr plots and those produced by jmv are different. The reason for this is because of how the plotting function calculates confidence intervals. ggpubr computes a confidence interval based around a group mean using a group specific standard error, while the jmv function plots confidence intervals based on a standard error from an estimated marginal mean framework." width="672" />
-<p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. n.b. Notice that the confidence intervals between the ggpubr plots and those produced by jmv are different. The reason for this is because of how the plotting function calculates confidence intervals. ggpubr computes a confidence interval based around a group mean using a group specific standard error, while the jmv function plots confidence intervals based on a standard error from an estimated marginal mean framework.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot3-1.png" alt="Means and confidence intervals for Feedback collapsed across Drug. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. The same scaffolding can be used to plot the cell means for Drug. " width="672" />
+<p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. The same scaffolding can be used to plot the cell means for Drug. </p>
 </div>
+
+```r
+# Produce an error plot with cell means and ci
+# ggerrorplot(chapter_7_table_5, 
+#        x = "Feedback", 
+#        y = "Score",
+#        add = "mean",
+#        desc_stat = "mean_ci",
+#        error.plot = "errorbar",
+#        width = .1,
+#        )
+# Print cell mean, standard deviation, and standard error for each level of Feedback
+# chapter_7_table_5 %>% 
+#   group_by(Feedback) %>%
+#   get_summary_stats(Score) %>%
+#   select(Feedback, mean, sd, se)
+```
+
 
 #### Drug
 
 ```r
 # Test of marginal means for Drug
-chapter_7_table_5 %>% 
+pwc <- chapter_7_table_5 %>% 
   emmeans_test(Score ~ Drug, 
                p.adjust.method = "none", 
                model = model)
@@ -224,6 +271,11 @@ chapter_7_table_5 %>%
 
 ```
 ## NOTE: Results may be misleading due to involvement in interactions
+```
+
+```r
+# Print the results of the pairwise comparisons of Feedback
+pwc
 ```
 
 ```
@@ -236,32 +288,31 @@ chapter_7_table_5 %>%
 ```
 
 ```r
-# Get Summary Stats
-chapter_7_table_5 %>% 
-  group_by(Drug) %>%
-  get_summary_stats(Score) %>%
-  select(Drug, mean, sd, se)
+# Print the estimated marginal means of Feedback
+get_emmeans(pwc)
 ```
 
 ```
-## # A tibble: 3 x 4
-##   Drug   mean    sd    se
-##   <fct> <dbl> <dbl> <dbl>
-## 1 1       178  12.3  3.89
-## 2 2       202  11.8  3.74
-## 3 3       199  18.2  5.75
+## # A tibble: 3 x 7
+##   Drug  emmean    se    df conf.low conf.high method      
+##   <fct>  <dbl> <dbl> <dbl>    <dbl>     <dbl> <chr>       
+## 1 1        178  3.95    24     170.      186. Emmeans test
+## 2 2        202  3.95    24     194.      210. Emmeans test
+## 3 3        199  3.95    24     191.      207. Emmeans test
 ```
 
 ```r
-# Generate Plot
-ggerrorplot(chapter_7_table_5, 
+# Modify pwc to include x and y positions for plotting signficance markers
+pwc <- pwc %>% add_xy_position(x = "Feedback", fun = "mean_ci")
+
+# Generate an error plot uses ggpubr AND ggplot functions to layer the plot
+ggerrorplot(get_emmeans(pwc), 
        x = "Drug", 
-       y = "Score",
-       add = "mean",
-       desc_stat = "mean_ci",
-       error.plot = "errorbar",
-       width = .1,
-)
+       y = "emmean",
+       ylab = "Mean BP Scores") +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
+                  width = 0.1) +
+    stat_pvalue_manual(pwc, hide.ns = FALSE, tip.length = FALSE)
 ```
 
 <div class="figure">
@@ -301,4 +352,48 @@ When using the base R function, it's wise to also load the car package. The defa
 [Back to tabs](#tests)
 
 ### Wrap-up
-The jmv and rstatix functions both produce the exact same results, as they should because they share many of the underlying statistical functions. The jmv package is a great place to start with statistical tests if you are beginning with R because it simplifies some of the syntax, generates plots automatically, and it also converts some of your numerical data to categorical. While it's a lot easier to code a 2x3 ANOVA with jmv there are some advantages to using rstatix that will become apparent in future modules. 
+The jmv and rstatix functions both produce the same results, as they should because they share many of the underlying statistical functions. The jmv package is a great place to start with statistical tests if you are beginning with R. One reason for this is because it simplifies some of the syntax, generates plots automatically, and it can automatically convert some of your numerical data to categorical. While it's a lot easier to code a 2x3 ANOVA with jmv there are some advantages to using rstatix and ggpubr. One advantage is that the ggpubr functions are designed to take in arguments from rstatix that make plotting significance markers relatively straightforward. In addition, ggpubr plots can be used as a starting point layer ggplot geometric elements like the `geom_errorbar()` element in Figures 3 and 4. 
+
+
+### References
+
+
+<div id="refs" class="references">
+
+<div id="ref-R-ggpubr">
+
+Kassambara, Alboukadel. 2020a. *Ggpubr: ’Ggplot2’ Based Publication Ready Plots*. <https://CRAN.R-project.org/package=ggpubr>.
+
+</div>
+
+<div id="ref-R-rstatix">
+
+———. 2020b. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-AMCP">
+
+Maxwell, Scott, Harold Delaney, and Ken Kelley. 2020. *AMCP: A Model Comparison Perspective*. <https://CRAN.R-project.org/package=AMCP>.
+
+</div>
+
+<div id="ref-AMCP">
+
+Maxwell, Scott E, Harold D Delaney, and Ken Kelley. 2017. *Designing Experiments and Analyzing Data: A Model Comparison Perspective*. Routledge.
+
+</div>
+
+<div id="ref-R-jmv">
+
+Selker, Ravi, Jonathon Love, and Damian Dropmann. 2020. *Jmv: The ’Jamovi’ Analyses*. <https://CRAN.R-project.org/package=jmv>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+</div>

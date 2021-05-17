@@ -19,6 +19,7 @@ type: book
 weight: 10
 ---
 
+
 ANOVA is a commonly used statistical technique to compare differences among two or more means. In this module, we will cover how to perform a one-way ANOVA with the jmv and rstatix packages. A one-way ANOVA is appropriate for data in which groups differ along one categorical variable, but do not differ in the dependent variable
 
 
@@ -190,3 +191,44 @@ For the omnibus test, we obtain a significant effect of Group [F(3,8) = 10, p < 
 
 ### Wrap Up
 One of the benefits of the `anovaOneW()` function lies in eliminating the need to write code to produce a plot of means and confidence intervals. What is produced with one option within the `anovaOneW()` command, takes additional packages and several lines of code to produce with ggplot. It's main disadvantage is that `anovaOneW()` is limited in it post-hoc tests options.  You can select either 'tukey' or none for a traditional one-way ANOVA, but you could get additional correction methods with the `ANOVA()` in jmv. If you're starting out with R, the jmv package will surely give you a head start in terms of analyzing and visualizing simple one-way ANOVA tests.
+
+### References
+<div id="refs" class="references">
+
+<div id="ref-R-ggpubr">
+
+Kassambara, Alboukadel. 2020a. *Ggpubr: ’Ggplot2’ Based Publication Ready Plots*. <https://CRAN.R-project.org/package=ggpubr>.
+
+</div>
+
+<div id="ref-R-rstatix">
+
+———. 2020b. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-AMCP">
+
+Maxwell, Scott, Harold Delaney, and Ken Kelley. 2020. *AMCP: A Model Comparison Perspective*. <https://CRAN.R-project.org/package=AMCP>.
+
+</div>
+
+<div id="ref-AMCP">
+
+Maxwell, Scott E, Harold D Delaney, and Ken Kelley. 2017. *Designing Experiments and Analyzing Data: A Model Comparison Perspective*. Routledge.
+
+</div>
+
+<div id="ref-R-jmv">
+
+Selker, Ravi, Jonathon Love, and Damian Dropmann. 2020. *Jmv: The ’Jamovi’ Analyses*. <https://CRAN.R-project.org/package=jmv>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+</div>

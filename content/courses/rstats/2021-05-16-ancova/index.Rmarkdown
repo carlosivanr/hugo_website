@@ -1,0 +1,163 @@
+---
+title: One-way ANCOVA
+author: Carlos Rodriguez
+date: '2021-05-16'
+slug: ancova
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-16T06:57:23-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 30
+draft: true
+#bibliography: "../references/refs.bib"
+biblio-style: "apa"
+link-citations: true
+nocite: |
+  @R-rstatix, @R-AMCP, @R-jmv, @R-ggpubr, @R-tidyverse
+---
+
+### The data set
+For this demo, we will use the data from Chapter 9, Table 7 in the AMCP package. In this hypothetical study, participants are randomly assigned to one of three conditions to examine the efficacy of a treatment for depression. Participants receive a selective serotonin reuptake inhibitor (SSRI) in condition 1, a placebo in condition 2, or are assigned to a wait list control in condition 3.
+
+```{r data, message=FALSE, warning=FALSE}
+library(AMCP)
+library(rstatix)
+library(ggpubr)
+
+# Load data
+data(chapter_9_table_7)
+
+# Convert group to factor
+chapter_9_table_7$Condition <- as.factor(chapter_9_table_7$Condition)
+
+# Inspect Data
+head(chapter_9_table_7)
+```
+
+<!-- -----------------------TABS---------------------------------- -->
+{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="paired-t-test">}}
+
+<!-- -----------------------Tab 1---------------------------------- -->
+{{< tab tabNum="1" >}}
+```{r jmv, warning=FALSE, fig.cap = "Plot of post-treatment means by Condition."}
+library(jmv)
+ancova(formula = Post ~ Condition + Pre,
+       data = chapter_9_table_7,
+       effectSize = 'partEta',
+       ss = "3",
+       emMeans = ~ Condition,
+       emmPlots = TRUE,
+       emmTables = FALSE,
+       ciWidthEmm = 95
+)
+```
+{{< /tab >}}
+
+<!-- -----------------------Tab 2---------------------------------- -->
+{{< tab tabNum="2" >}}
+```{r rstatix}
+# Conduct ANOVA test
+aocv.model <- anova_test(Post ~ Condition + Pre, 
+           data = chapter_9_table_7, 
+           dv = Post,
+           covariate = Pre,
+           effect.size = "pes", 
+           type = 3
+           )
+
+# Print ANOVA table
+get_anova_table(aocv.model)
+```
+
+### Post-hoc tests
+```{r post-hoc tests}
+pwc <- chapter_9_table_7 %>% 
+  emmeans_test(
+    Post ~ Condition, covariate = Pre,
+    p.adjust.method = "bonferroni"
+    )
+
+# Print post-hoc test
+pwc
+```
+
+
+### Plot of means 
+```{r plot, fig.cap = 'Plot of post-treatment means by Condition.'}
+
+pwc <- pwc %>% add_xy_position(x = "Condition", fun = "mean_se")
+
+ggline(get_emmeans(pwc), 
+       x = "Condition", 
+       y = "emmean",
+       ylab = "Mean Depression Scores") +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) + 
+  stat_pvalue_manual(pwc, hide.ns = TRUE, tip.length = FALSE) +
+  labs(
+    subtitle = get_test_label(aocv.model, detailed = TRUE),
+    caption = get_pwc_label(pwc)
+  )
+```
+
+{{< /tab >}}
+{{< /tabs >}}
+
+
+
+
+```{r package refs, include = FALSE}
+knitr::write_bib(c("AMCP", "rstatix", "ggpubr", "tidyverse", "jmv", "base"), "", width = 60)
+```
+
+
+
+### References
+
+<div id="refs" class="references">
+
+<div id="ref-R-ggpubr">
+
+Kassambara, Alboukadel. 2020a. *Ggpubr: ’Ggplot2’ Based Publication Ready Plots*. <https://CRAN.R-project.org/package=ggpubr>.
+
+</div>
+
+<div id="ref-R-rstatix">
+
+———. 2020b. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-AMCP">
+
+Maxwell, Scott, Harold Delaney, and Ken Kelley. 2020. *AMCP: A Model Comparison Perspective*. <https://CRAN.R-project.org/package=AMCP>.
+
+</div>
+
+<div id="ref-AMCP">
+
+Maxwell, Scott E, Harold D Delaney, and Ken Kelley. 2017. *Designing Experiments and Analyzing Data: A Model Comparison Perspective*. Routledge.
+
+</div>
+
+<div id="ref-R-jmv">
+
+Selker, Ravi, Jonathon Love, and Damian Dropmann. 2020. *Jmv: The ’Jamovi’ Analyses*. <https://CRAN.R-project.org/package=jmv>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+</div>

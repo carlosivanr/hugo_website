@@ -17,6 +17,10 @@ image:
 projects: []
 type: book
 weight: 30
+biblio-style: "apa"
+link-citations: true
+nocite: |
+  @R-rstatix, @R-AMCP, @R-jmv, @R-ggpubr, @R-tidyverse
 ---
 
 In this module we will cover how to conduct repeated measures one-way ANOVA with the jmv and rstatix packages. Repeated measures ANOVA are used in cases where a particular observation from the same subject is taken multiple times. An example of this may be in an experiment of learning and memory where a rat is timed over several trials to measure how long it takes to find an escape platform in the Morris Water Task. Another example will be seen in our data set where scores for a cognitive assessment are compared at multiple ages.
@@ -145,6 +149,7 @@ ggerrorplot(rm_data,
 #   theme_pubr() +
 #   theme(plot.title = element_text(hjust = 0.5))
 ```
+
 {{< /tab >}}
 
 <!-- <!-- -----------------------Tab 3---------------------------------- -->
@@ -173,6 +178,7 @@ ggerrorplot(rm_data,
 <!-- ) -->
 <!-- ``` -->
 <!-- {{< /tab >}} -->
+
 {{< /tabs >}}
 
 <!-- This works to link back up to tabs -->
@@ -180,3 +186,44 @@ ggerrorplot(rm_data,
 
 ### Interpretation  
 For the omnibus test, we obtain a significant effect of Age [F(33,3) = 3.03, p < 0.05] which suggests that the means of the 4 ages are not equal. The omega squared value is 0.04 which suggest the about 4% of the variance in scores is acounted for by age in the ages studied.
+
+### References
+<div id="refs" class="references">
+
+<div id="ref-R-ggpubr">
+
+Kassambara, Alboukadel. 2020a. *Ggpubr: ’Ggplot2’ Based Publication Ready Plots*. <https://CRAN.R-project.org/package=ggpubr>.
+
+</div>
+
+<div id="ref-R-rstatix">
+
+———. 2020b. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-AMCP">
+
+Maxwell, Scott, Harold Delaney, and Ken Kelley. 2020. *AMCP: A Model Comparison Perspective*. <https://CRAN.R-project.org/package=AMCP>.
+
+</div>
+
+<div id="ref-AMCP">
+
+Maxwell, Scott E, Harold D Delaney, and Ken Kelley. 2017. *Designing Experiments and Analyzing Data: A Model Comparison Perspective*. Routledge.
+
+</div>
+
+<div id="ref-R-jmv">
+
+Selker, Ravi, Jonathon Love, and Damian Dropmann. 2020. *Jmv: The ’Jamovi’ Analyses*. <https://CRAN.R-project.org/package=jmv>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+</div>
