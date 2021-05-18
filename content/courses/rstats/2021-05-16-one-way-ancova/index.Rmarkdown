@@ -50,6 +50,8 @@ head(chapter_9_table_7)
 {{< tab tabNum="1" >}}
 ```{r jmv, warning=FALSE, fig.cap = "Plot of post-treatment means by Condition."}
 library(jmv)
+
+# ANCOVA in jmv
 ancova(formula = Post ~ Condition + Pre,
        data = chapter_9_table_7,
        effectSize = 'partEta',
@@ -65,7 +67,7 @@ ancova(formula = Post ~ Condition + Pre,
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
 ```{r rstatix}
-# Conduct ANOVA test
+# Conduct ANCOVA test w rstatix
 aocv.model <- anova_test(Post ~ Condition + Pre, 
            data = chapter_9_table_7, 
            dv = Post,
@@ -80,6 +82,7 @@ get_anova_table(aocv.model)
 
 ### Post-hoc tests
 ```{r post-hoc tests}
+# Pairwise comparisons
 pwc <- chapter_9_table_7 %>% 
   emmeans_test(
     Post ~ Condition, covariate = Pre,

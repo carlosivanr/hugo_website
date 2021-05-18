@@ -1,7 +1,7 @@
 ---
 title: ANOVA in R
 linkTitle: ANOVA with R
-summary: This courses was designed to introduce R newcomers to conducting ANOVA and is currently a work in progress.
+summary: This course is currently a work in progress and is designed to showcase how to conduct ANOVAs in R using the jmv and rstatix packages.
 date: '2021-05-12'
 type: book
 ---
@@ -9,20 +9,22 @@ type: book
 {{< toc hide_on="xl" >}}
 
 ## Overview
-This short course explores how to conduct various ANOVA statistical tests in R with freely available packages. Focus is placed on how to implement ANOVA tests. For a thorough conceptual background, I would recommend Maxwell, Delaney, and Kelley's 3rd edition of ["Designing Experiments and Analyzing Data: A model comparison perspective"](https://designingexperiments.com/). For many of the modules, we will rely on the AMCP package which is the R package for the Maxwell et al. text and contains several sample data sets. We will also rely a handful of other R packages including `jmv`, `rstatix`, `ggpubr`, and `tidyverse`.
+This short course explores how to conduct various ANOVA statistical tests in R with freely available packages. Focus is placed on demonstrating how to implement ANOVA tests in R rather than providing a readers with a conceptual background. That task is best accomplished by picking up what's been described as the ANOVA bible - Maxwell, Delaney, and Kelley's 3rd edition of ["Designing Experiments and Analyzing Data: A model comparison perspective"](https://designingexperiments.com/). For many of the modules, the AMCP package, which is the accompanying R package for the Maxwell et al. text, for sample data sets. We will also rely a handful of other R packages including `jmv`, `rstatix`, `ggpubr`, and `tidyverse`.
 
-## What you will learn
-- One-way ANOVA in R
-- Two-way ANOVA in R
-- Repeated measures one-way ANOVA in R
+<!-- ## Topics covered in this course
+- One-way ANOVA
+- Welch's ANOVA
+- Two-way ANOVA
+- One-way ANCOVA
+- Repeated measures one-way ANOVA
+-->
 
 
-
-<!--## Course Modules
+## Topics covered in this course:
 
 
 {{< list_children >}}
- -->
+
 <!-- ## Meet your instructor
 {{< mention "admin" >}}
 

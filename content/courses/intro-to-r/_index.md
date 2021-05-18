@@ -1,7 +1,7 @@
 ---
 title: Introduction to R for beginners
 linkTitle: Intro to R
-summary: A work in progress designed to introduce R to beginners.
+summary: This course was designed to introduce a small number of tools in R that are relevant to the ANOVA in R course.
 date: '2021-04-25'
 type: book
 draft: true
@@ -22,7 +22,9 @@ draft: true
 R is a powerful computer language for that is widely used, among other purposes, for conducting statistical analyses and generating graphics. R's capabilities lend themselves extremely well for quantitative researchers. However, if you are new to programming, learning R can seem daunting and this course was designed to help you get over the hump of learning a computer language and help you get started on using R. Course content is aimed at graduate students who are interested in adding R to their skillset, but have little or no programming experience.
 
 ## Course Modules
-
+- install.packages
+- library
+- tidyverse
 
 
 

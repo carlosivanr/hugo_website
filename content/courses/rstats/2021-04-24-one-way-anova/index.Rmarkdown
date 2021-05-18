@@ -20,11 +20,11 @@ weight: 10
 ---
 
 
-ANOVA is a commonly used statistical technique to compare differences among two or more means. In this module, we will cover how to perform a one-way ANOVA with the jmv and rstatix packages. A one-way ANOVA is appropriate for data in which groups differ along one categorical variable, but do not differ in the dependent variable
+ANOVA is a commonly used statistical technique to compare means among two or more groups In this module, we will cover how to perform a one-way ANOVA with the jmv and rstatix packages. The primary assumptions of ANOVA are independence between groups, normally distributed data, and homogeneity of variance. When the homogeneity of variance assumption is violated, a Welch's ANOVA can be conducted instead. This module will also cover how to conduct a Welch's ANOVA with jmv and rstatix. All four demos will use the same example data set.
 
 
 ### The data set
-For this demo we will use the data from Chapter 3, Exercise 9 in the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
+For this module we will use the data from the Chapter 3, Exercise 9 in the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
 
 For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
 ```{r warning=FALSE}
