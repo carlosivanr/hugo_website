@@ -17,10 +17,9 @@ image:
 projects: []
 type: book
 weight: 80
-draft: true
+draft: false
 ---
 
-Intro
 ### The data set
 
 ```{r warning=FALSE}

@@ -20,7 +20,6 @@ weight: 80
 draft: true
 ---
 
-Intro
 ### The data set
 
 
@@ -128,7 +127,7 @@ toc()
 ```
 
 ```
-## 3.71 sec elapsed
+## 4.033 sec elapsed
 ```
 
 {{< /tab >}}
@@ -191,17 +190,13 @@ ggline(rm_data,
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/rstatix-1.png" width="672" />
 
 ```r
-# ggboxplot(rm_data, 
-#           x = "Condition",
-#           y = "Reaction_Time",
-#           color = "Angle",
-#           )
 toc()
 ```
 
 ```
-## 0.707 sec elapsed
+## 0.549 sec elapsed
 ```
+
 {{< /tab >}}
 {{< /tabs >}}
 
