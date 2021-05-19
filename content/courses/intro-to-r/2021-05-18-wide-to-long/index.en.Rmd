@@ -1,0 +1,145 @@
+---
+title: Wide to Long
+author: Carlos Rodriguez
+date: '2021-05-18'
+slug: wide-to-long
+categories:
+  - data wrangling
+tags:
+  - tidyverse
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-18T22:08:51-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+type: book
+
+---
+
+This guide explains how to convert a wide dataset to long using tidyverse. The data are from the AMCP package and were created to run a two-way repeated measures ANOVA. While some statistical packages can indeed perform the aforementioned analysis on wide data, others will require long-format data including rstatix and base R.
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(AMCP)
+
+# Load the data
+data(chapter_12_table_1)
+```
+
+## Wide Data
+In the wide format data, each row represents a subject In the example, each contains data for one participant and each column represents one of six different measurements. Each column is a combination of two factors, Absent or Present as levels of the first factors, and 0, 4, or 8 as levels of the second factor. The design is from a 2 x 3 repeated measures design.
+
+```{r}
+# Display the data
+chapter_12_table_1
+```
+
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+library(rstatix)
+# Create a new data frame with a subject id
+rm_data <- cbind(id = c(1:10), chapter_12_table_1)
+
+# Convert the data from wide to long
+rm_data <-  rm_data %>% 
+  gather(key = Condition.Angle, 
+         value = Reaction_Time, 
+         -id) %>%
+  separate(col = Condition.Angle, 
+           into = c("Condition", "Angle"), 
+           sep = -1) %>%
+  arrange(id, 
+          Condition, 
+          Angle) %>%
+  convert_as_factor(Condition, Angle)
+rm_data <- rm_data %>% select(-id)
+```
+
+## Long Data
+In the long data format, each row represents an observation. Instead of having six columns with all of the dependent variables in one row, we want all of our dependent variables in one column. In addition, we will want additional columns that will contain the information that was specified by the column names. Notice that the values in 1st row of the wide data are now the first six values in the new column "Reaction_Time." So one way to think about this conversion is that we are going to take the values of each row, transpose the row to convert it to column, and then begin to concatenate or stack the remaining rows. At the same time, we will want to keep information about Condition wether noise was present or absent, and the angle at wich a stimulus was presented.
+```{r}
+head(rm_data)
+```
+
+## Converting Wide to Long
+### 1. Create a subject id
+To make this transformation we will use the tidyverse functions. First, we will want to keep track of our 10 subjects so we will create a column "id" with an integer to identify them, then bind that column to the wide data to create a new dataframe.
+```{r}
+#1. Create a new data frame with a subject id
+long.data <- cbind(id = c(1:10), chapter_12_table_1)
+```
+
+### 2. Gather dependent variables
+Next, we will use the `gather()` function which will stack each column of the wide data under a column called reaction_time and create a new column that will add the column name of the wide data as a value in a new column called condition.angle. The `-id` is used to prevent getting the id number into the condition.angle column.
+```{r}
+head(long.data %>% gather(key = condition.angle,
+                     value = reaction_time, -id)
+)
+```
+
+### 3. Separate characters
+So far we're on a good track, but the column condition.angle should be two. One to specify condition, and the other to specify angle. The `separate()` function can help split the one column into two. It will essentially separate `condition.angle` into `condition` and `angle`. The `sep = -1` argument tells the `separate()` function to split the values 1 character from the end. This separates the last character which contains an angle number into a separate column. Try substituting different numbers such as -2 or 1, to get a feel for what the function is doing here.
+```{r}
+head(long.data %>% gather(key = condition.angle,
+                     value = reaction_time, 
+                     -id) %>%
+  separate(col = condition.angle, 
+           into = c("condition", "angle"), 
+           sep = -1)
+)
+```
+### 4. Sort the data
+At this point, we've done most of what is needed to convert the wide data to long data. The next layer in the series of tidyverse functions is to sort the data. To get the output displayed above, we will want to sort the data by subject id, then by condition, then by angle. To accomplish this we will use the `arrange()` function an will display the reaction_time values as a column of the transposed rows from the wide data set. We will re-save this manipulation as long.data. Notice how the number of data frames is now 60 whereas we started with 10.
+```{r}
+long.data <- long.data %>% gather(key = condition.angle,
+                     value = reaction_time, 
+                     -id) %>%
+  separate(col = condition.angle, 
+           into = c("condition", "angle"), 
+           sep = -1) %>%
+      arrange(id, 
+          condition, 
+          angle)
+
+head(long.data)
+```
+
+### 5. Convert to factor
+Now before conducting any statistical tests, we will want to conver our id, condition, and angle columns to factor. We can do this with the base R function `as.factor()`. 
+```{r}
+long.data$id <- as.factor(long.data$id)
+long.data$condition <- as.factor(long.data$condition)
+long.data$angle <- as.factor(long.data$angle)
+```
+
+### Bonus with other helper functions
+We could also do this with an additional function, `convert_as_factor()` from the rstatix package. Instead of typing out the commands to convert the columns to factor, we add another piped function at the end of the layers we've built.
+```{r, include=TRUE, warning=FALSE, message=FALSE}
+library(rstatix)
+# Create a new data frame with a subject id
+rm_data <- cbind(id = c(1:10), chapter_12_table_1)
+
+# Convert the data from wide to long
+rm_data <-  rm_data %>% 
+  gather(key = Condition.Angle, 
+         value = Reaction_Time, 
+         -id) %>%
+  separate(col = Condition.Angle, 
+           into = c("Condition", "Angle"), 
+           sep = -1) %>%
+  arrange(id, 
+          Condition, 
+          Angle) %>%
+  convert_as_factor(id, Condition, Angle)
+
+# Display the wide data we started with
+head(rm_data %>% select(-id))
+```
+
+## Wrap Up
+Converting wide data to long and vice versa are indespensible skills when working in R. It can be tricky at first, but thankfully the tidyverse package as several functions that can simplify this process. Going from wide to long will smooth preparing your data so that you can perform the statistical analyses that you're probably interested in doing.

@@ -1,20 +1,21 @@
 ---
-title: One-way ANOVA
-author: Carlos Rodriguez
+title: "One-way ANOVA"
+author: "Carlos Rodriguez"
 date: '2021-04-24'
-slug: one-way-anova
-categories: []
-tags: []
-subtitle: ''
-summary: ''
-authors: []
-lastmod: '2021-04-24T21:53:52-06:00'
+output: pdf_document
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
+lastmod: '2021-04-24T21:53:52-06:00'
+categories: []
 projects: []
+slug: one-way-anova
+subtitle: ''
+summary: ''
+tags: []
+authors: []
 type: book
 weight: 10
 ---

@@ -1,0 +1,152 @@
+---
+title: Two-way Repeated Measures ANOVA
+author: Carlos Rodriguez
+date: '2021-05-18'
+slug: two-way-rm-anova
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-18T16:45:46-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 80
+draft: true
+---
+
+Intro
+### The data set
+
+```{r warning=FALSE}
+library(AMCP)
+
+# Load the data
+data(chapter_12_table_1)
+
+# Display part of the data
+head(chapter_12_table_1)
+```
+
+### Perform ANOVA Tests {#tests}
+<!-- -----------------------TABS---------------------------------- -->
+{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" >}}
+
+<!-- -----------------------Tab 1---------------------------------- -->
+{{< tab tabNum="1" >}}
+```{r, plot1, fig.cap = 'figure caption.', warning=FALSE,  }
+
+
+
+
+library(jmv)
+library(tictoc)
+# Repeated measures anova with jmv
+tic()
+anovaRM(
+  data = chapter_12_table_1,
+  rm = list(
+    list(
+      label = "Condition",
+      levels = c("Absent", "Present")),
+    list(
+      label = "Angle",
+      levels = c("0", "4", "8"))),
+  rmCells = list(
+    list(
+      measure = "Absent0",
+      cell = c("Absent", "0")),
+    list(
+      measure = "Absent4",
+      cell = c("Absent", "4")),
+    list(
+      measure = "Absent8",
+      cell = c("Absent", "8")),
+    list(
+      measure = "Present0",
+      cell = c("Present", "0")),
+    list(
+      measure = "Present4",
+      cell = c("Present", "4")),
+    list(
+      measure = "Present8",
+      cell = c("Present", "8"))),
+  rmTerms = ~ Condition + Angle + Condition:Angle,
+  effectSize = 'partEta',
+  emMeans = ~ Condition:Angle,
+  emmPlots = TRUE
+)
+toc()
+```
+
+{{< /tab >}}
+
+{{< tab tabNum="2" >}}
+```{r rstatix, warning=FALSE, message=FALSE}
+
+
+library(tidyverse)
+library(rstatix)
+library(ggpubr)
+library(tictoc)
+# Create a new data frame with a subject id
+rm_data <- cbind(id = c(1:10), chapter_12_table_1)
+
+# Convert the data from wide to long
+rm_data <-  rm_data %>% 
+  gather(key = Condition.Angle, 
+         value = Reaction_Time, 
+         -id) %>%
+  separate(col = Condition.Angle, 
+           into = c("Condition", "Angle"), 
+           sep = -1) %>%
+  arrange(id, 
+          Condition, 
+          Angle) %>%
+  convert_as_factor(Condition, Angle)
+
+# Conduct repeated measures ANOVA
+tic()
+rm_aov <- anova_test(
+  data = rm_data,
+  dv = Reaction_Time,
+  wid = id,
+  within = c(Condition, Angle),
+  effect.size = "pes",
+)
+get_anova_table(rm_aov, correction = "none")
+
+# Generate Plot
+ggline(rm_data,
+       "Condition", 
+       "Reaction_Time",
+       color = "Angle",
+       add = "mean_se",
+       palette = "jama",
+       position = position_dodge(.2))
+
+
+toc()
+```
+```{r include=FALSE}
+# ggboxplot(rm_data, 
+#           x = "Condition",
+#           y = "Reaction_Time",
+#           color = "Angle",
+#           )
+```
+{{< /tab >}}
+{{< /tabs >}}
+
+
+### Wrap Up
+jmv is much more tedious to code repeated measures. Yes the tables and plots are nice, but it can be a pain in the but to work with. If you have long data, you'll need to convert it to wide. And it's also very slow. I once ran a two-way repeated measures ANOVA on data from over 200 participants. WHile jmv took over a minute, rstatix computed the computation in less than one second. This could be a consideration when planing which package to use.
+
+With rstatix the syntax for repeated measures anova are much simpler. I wouldn't code two-way repeated measures in jmv. Rstatix is faster. 
+
+Because of these transformations, it's important to know how to convert long to wide and wide to long. This can become especially tricky when you have multiple variables to keep track of.

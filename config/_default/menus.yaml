@@ -27,7 +27,7 @@ main:
 #    url: '#talks'
 #    weight: 40
     
-  - name: Courses
+  - name: Statistics
     url: courses/
     weight: 20
     
