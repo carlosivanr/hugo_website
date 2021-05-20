@@ -23,8 +23,8 @@ main:
 #    url: '#posts'
 #    weight: 30
     
-  - name: R
-    url: statistics/
+  - name: R Guides
+    url: guides/
     weight: 20
     
 # - name: Courses

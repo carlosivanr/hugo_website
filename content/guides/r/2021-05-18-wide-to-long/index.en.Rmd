@@ -1,5 +1,5 @@
 ---
-title: Wide to Long
+title: Converting wide to long data
 author: Carlos Rodriguez
 date: '2021-05-18'
 slug: wide-to-long
@@ -17,7 +17,7 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
-draft: true
+draft: false
 type: book
 
 ---

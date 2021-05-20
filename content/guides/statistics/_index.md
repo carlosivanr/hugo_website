@@ -2,6 +2,6 @@
 header:
   caption: ""
   image: ""
-title: R Corner 
+title: R Guides 
 type: page
 ---

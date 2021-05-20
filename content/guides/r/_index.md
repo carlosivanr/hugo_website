@@ -1,10 +1,10 @@
 ---
 title: Introduction to R for beginners
-linkTitle: Intro to R
-summary: This course was designed to introduce a small number of tools in R that are relevant to the ANOVA in R course.
+linkTitle: R Guides
+summary: The following are a set of guides for working with data in R.
 date: '2021-04-25'
 type: book
-draft: true
+draft: false
 ---
 
 {{< figure src="featured.jpg" >}}
