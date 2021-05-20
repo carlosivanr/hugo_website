@@ -139,7 +139,9 @@ toc()
 [Back to tabs](#tests)
 
 ### Interpretation
+- If interaction, simple effects, then cell means
 
+- If no interaction, then test marginal means
 
 ### Wrap Up
 jmv is much more tedious to code repeated measures. Yes the tables and plots are nice, but it can be a pain in the but to work with. If you have long data, you'll need to convert it to wide. And it's also very slow. I once ran a two-way repeated measures ANOVA on data from over 200 participants. WHile jmv took over a minute, rstatix computed the computation in less than one second. This could be a consideration when planing which package to use.
