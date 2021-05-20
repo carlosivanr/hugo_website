@@ -38,7 +38,7 @@ head(chapter_12_table_1)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
-```{r, plot1, fig.cap = 'figure caption.', warning=FALSE,  }
+```{r, plot1, fig.cap = 'figure caption.', warning=FALSE}
 library(jmv)
 library(tictoc)
 # Repeated measures anova with jmv
@@ -78,6 +78,7 @@ anovaRM(
 )
 toc()
 ```
+
 
 {{< /tab >}}
 
@@ -122,10 +123,11 @@ ggline(rm_data,
        add = "mean_se",
        palette = "jama",
        position = position_dodge(.2))
-
-
 toc()
 ```
+
+#### rstatix elapsed time
+
 ```{r include=FALSE}
 # ggboxplot(rm_data, 
 #           x = "Condition",

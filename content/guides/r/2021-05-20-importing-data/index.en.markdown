@@ -1,0 +1,88 @@
+---
+title: Importing Data
+author: Carlos Rodriguez
+date: '2021-05-20'
+slug: importing-data
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-20T07:22:55-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+---
+
+
+<!-- -----------------------TABS---------------------------------- -->
+{{< tabs tabTotal="4" tabName1="CSV" tabName2="Excel" tabName3="SPSS" >}}
+
+
+<!-- -----------------------Tab 1---------------------------------- -->
+{{< tab tabNum="1" >}}
+<!-- ### read.table() -->
+<!-- ```{r, eval=FALSE} -->
+<!-- # Read csv files -->
+<!-- library(readr) -->
+<!-- #read_csv("file_name.csv") -->
+<!-- ``` -->
+
+### read.csv()
+
+```r
+# Read csv files
+library(readr)
+#read_csv("file_name.csv")
+```
+
+### read.csv()
+`read_csv()` from the readr package will read in a .csv files as a tibble. Tibbles are a subtype of data frame that have been modified to work well with tidyverse functions. `read_csv()` is a great function to use if you know that your data are in long format for running statistical analyses and if they aren't too massive. When working with large .csv files, I prefer reading with read.table() because it is much faster.
+
+```r
+# Read csv files
+library(readr)
+read_csv("file_name.csv")
+
+# Read csv files without Parsed column specification output
+read_csv("file_name.csv", col_types = cols())
+```
+
+{{< /tab >}}
+
+
+<!-- -----------------------Tab 2---------------------------------- -->
+{{< tab tabNum="2" >}}
+
+
+```r
+# Read excel files
+install.packages("readxl")
+library("readxl")
+read_excel("file_name.xlsx")
+```
+{{< /tab >}}
+
+
+
+
+
+<!-- -----------------------Tab 3---------------------------------- -->
+{{< tab tabNum="3" >}}
+
+```r
+# Read SPSS files
+install.packages("haven")
+library(haven)
+read_sav("file_name.sav")
+```
+{{< /tab >}}
+
+
+
+
+{{< /tabs >}}

@@ -137,7 +137,7 @@ rm_data <-  rm_data %>%
           Angle) %>%
   convert_as_factor(id, Condition, Angle)
 
-# Display the wide data we started with
+# Display the example long data
 head(rm_data %>% select(-id))
 ```
 

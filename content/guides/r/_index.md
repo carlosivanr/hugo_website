@@ -1,31 +1,16 @@
 ---
-title: Introduction to R for beginners
+title: R Guides
 linkTitle: R Guides
 summary: The following are a set of guides for working with data in R.
 date: '2021-04-25'
 type: book
 draft: false
 ---
-
+<!--
 {{< figure src="featured.jpg" >}}
+-->
 
-{{< toc hide_on="xl" >}}
-
-## What you will learn
-
-- How to get started using RStudio and basic R programming skills
-- How to conduct common statistical analyses in R
-- Gain experience with data visualization with in R
-
-## Overview
-
-R is a powerful computer language for that is widely used, among other purposes, for conducting statistical analyses and generating graphics. R's capabilities lend themselves extremely well for quantitative researchers. However, if you are new to programming, learning R can seem daunting and this course was designed to help you get over the hump of learning a computer language and help you get started on using R. Course content is aimed at graduate students who are interested in adding R to their skillset, but have little or no programming experience.
-
-## Course Modules
-- install.packages
-- library
-- tidyverse
-
+<!-- {{< toc hide_on="xl" >}} -->
 
 
 {{< list_children >}}
@@ -42,4 +27,6 @@ There are no prequisites, but a background in upper division or graduate level s
 Continuously, at your own pace.
 {{< /spoiler >}} -->
 
+<!--
 {{< cta cta_text="Begin the course" cta_link="01_r_setup" >}}
+-->

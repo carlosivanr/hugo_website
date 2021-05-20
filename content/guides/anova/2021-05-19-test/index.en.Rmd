@@ -1,0 +1,53 @@
+---
+title: TEST
+author: Carlos Rodriguez
+date: '2021-05-19'
+slug: test
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-19T22:30:21-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+type: book
+---
+### Testing the .html output
+```{r rstatix, message=FALSE, warning=FALSE}
+library(AMCP)
+library(rstatix)
+library(ggpubr)
+
+# Load data
+data(C3E9)
+
+# Convert group to factor
+C3E9$Group <- as.factor(C3E9$Group)
+
+# Conduct ANOVA test
+anova_test(Scores ~ Group, 
+           data = C3E9, 
+           dv = Scores, 
+           effect.size = "pes", 
+           type = 3
+           )
+```
+### Posthoc Tests
+To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`)
+```{r tukey_hsd}
+# Tukey posthoc tests
+C3E9 %>%
+  tukey_hsd(Scores ~ Group)
+```
+
+```{r bonferroni}
+# Bonferroni corrected posthoc tests
+C3E9 %>% 
+  pairwise_t_test(Scores ~ Group, p.adjust.method = "bonferroni")
+```
