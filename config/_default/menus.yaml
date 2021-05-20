@@ -23,7 +23,7 @@ main:
 #    url: '#posts'
 #    weight: 30
     
-  - name: Statistics
+  - name: R
     url: statistics/
     weight: 20
     
