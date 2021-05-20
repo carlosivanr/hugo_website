@@ -39,10 +39,6 @@ head(chapter_12_table_1)
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
 ```{r, plot1, fig.cap = 'figure caption.', warning=FALSE,  }
-
-
-
-
 library(jmv)
 library(tictoc)
 # Repeated measures anova with jmv
@@ -87,8 +83,6 @@ toc()
 
 {{< tab tabNum="2" >}}
 ```{r rstatix, warning=FALSE, message=FALSE}
-
-
 library(tidyverse)
 library(rstatix)
 library(ggpubr)
@@ -141,6 +135,10 @@ toc()
 ```
 {{< /tab >}}
 {{< /tabs >}}
+
+[Back to tabs](#tests)
+
+### Interpretation
 
 
 ### Wrap Up

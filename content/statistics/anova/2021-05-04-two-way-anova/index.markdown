@@ -20,10 +20,10 @@ weight: 20
 ---
 
 
-In this module, we will cover different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are an extension of one-ways ANOVAS and can be used for situations where the goal is to statistically compare means of two or more groups that differ along two categorical variables.
+In this guide, we will cover different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are an extension of one-ways ANOVAS and can be used for situations where the goal is to statistically compare means of two or more groups that differ along two categorical variables.
 
 ### The data set
-We will utilize an example with the chapter_7_table_5 data from the AMCP package. In the example dataset, we have a hypothetical experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of blood pressure [@AMCP]. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to the dependent variable and measure blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design. We will also assume that the assumptions of independence, equality of variance, and normality are met for the sample dataset.
+We will utilize an example with the chapter_7_table_5 data from the AMCP package. In the example dataset, we have a hypothetical experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of blood pressure. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to the dependent variable and measure blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design. We will also assume that the assumptions of independence, equality of variance, and normality are met for the sample dataset.
 
 
 ```r
@@ -237,12 +237,15 @@ ggerrorplot(get_emmeans(pwc),
 ```
 
 <div class="figure">
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot3-1.png" alt="Means and confidence intervals for Feedback collapsed across Drug. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. The same scaffolding can be used to plot the cell means for Drug. " width="672" />
-<p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. The same scaffolding can be used to plot the cell means for Drug. </p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot3-1.png" alt="Means and confidence intervals for Feedback collapsed across Drug. *, p&lt;0.05; **, p&lt;0.01; ***, p&lt;0.001; ns, not significant. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. " width="672" />
+<p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. </p>
 </div>
 
+#### Code chunk for plotting cell means instead of marginal means
+
 ```r
-# Produce an error plot with cell means and ci
+# Produce an error plot with cell means and ci instead of estimated marginal means
+# The same code chunk can be used to get cell means of Drug by changing the "x = " argument
 # ggerrorplot(chapter_7_table_5, 
 #        x = "Feedback", 
 #        y = "Score",
@@ -316,8 +319,8 @@ ggerrorplot(get_emmeans(pwc),
 ```
 
 <div class="figure">
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot4-1.png" alt="Means and confidence intervals for Drug collapsed across Feedback." width="672" />
-<p class="caption">Figure 4: Means and confidence intervals for Drug collapsed across Feedback.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot4-1.png" alt="Means and confidence intervals for Drug collapsed across Feedback. *, p&lt;0.05; **, p&lt;0.01; ***, p&lt;0.001; ns, not significant" width="672" />
+<p class="caption">Figure 4: Means and confidence intervals for Drug collapsed across Feedback. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant</p>
 </div>
 
 The two tests of marginal means will produce a couple of messages to remind us that the results could be misleading because of interactions. However, as we saw in the omnibus test, there was no significant interaction and can disregard the messages. The results of the `emmeans_test()` on Feedback indicate a significant effect and suggests that the participants undergoing biofeedback had lower bloodpressure scores than those without biofeedback. When examining the output of the results of the `emmeans_test()` on Drug, we see that the mean of Drug 1 is significantly lower than that of Drug 2 and Drug 3. However, the mean of Drug 2 is not significantly different than that of Drug 3.

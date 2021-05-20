@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 30
-draft: true
+draft: false
 #bibliography: "../references/refs.bib"
 biblio-style: "apa"
 link-citations: true
@@ -62,6 +62,8 @@ head(chapter_9_table_7)
 
 ```r
 library(jmv)
+
+# ANCOVA in jmv
 ancova(formula = Post ~ Condition + Pre,
        data = chapter_9_table_7,
        effectSize = 'partEta',
@@ -97,7 +99,7 @@ ancova(formula = Post ~ Condition + Pre,
 {{< tab tabNum="2" >}}
 
 ```r
-# Conduct ANOVA test
+# Conduct ANCOVA test w rstatix
 aocv.model <- anova_test(Post ~ Condition + Pre, 
            data = chapter_9_table_7, 
            dv = Post,
@@ -127,6 +129,7 @@ get_anova_table(aocv.model)
 ### Post-hoc tests
 
 ```r
+# Pairwise comparisons
 pwc <- chapter_9_table_7 %>% 
   emmeans_test(
     Post ~ Condition, covariate = Pre,

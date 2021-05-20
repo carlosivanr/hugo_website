@@ -23,13 +23,13 @@ main:
 #    url: '#posts'
 #    weight: 30
     
-#  - name: Talks
-#    url: '#talks'
-#    weight: 40
-    
   - name: Statistics
     url: statistics/
     weight: 20
+    
+  - name: Courses
+    url: courses/
+    weight: 40
     
 #  - name: Contact
 #    url: '#contact'

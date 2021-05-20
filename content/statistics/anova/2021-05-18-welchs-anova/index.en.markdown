@@ -20,7 +20,7 @@ type: book
 weight: 15
 ---
 
-ANOVA is a commonly used statistical technique to compare means among two or more groups. The primary assumptions of ANOVA are independence between groups, normally distributed data, and homogeneity of variance. When the homogeneity of variance assumption is violated, a Welch's ANOVA can be conducted instead. The omnibus test of a Welch's ANOVA can then be followed by Games-Howell post-hoc tests. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way designs). This guide covers how to conduct a Welch's ANOVA and the appropriate post-hoc tests with the jmv and rstatix packages. All four demos will use the same example data set as the Fisher's one-way ANOVA.
+ANOVA is a commonly used statistical technique to compare means among two or more groups. The primary assumptions of ANOVA are independence between groups, normally distributed data, and homogeneity of variance. When the homogeneity of variance assumption is violated, a Welch's ANOVA can be conducted instead. The omnibus test of a Welch's ANOVA can then be followed by Games-Howell post-hoc tests. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way designs). This guide covers how to test for normality, homogeneity of variance and how to conduct a Welch's ANOVA followed by the appropriate post-hoc tests with the jmv and rstatix packages. The two approaches use the same example data set as the Fisher's one-way ANOVA.
 
 
 ### The data set
@@ -48,8 +48,9 @@ head(C3E9)
 ## 6     2     14
 ```
 
+### Perform ANOVA Tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
-{{< tabs tabTotal="2" tabID="1" tabName1="Welch's jmv" tabName2="Welch's rstatix"  >}}
+{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix"  >}}
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
@@ -217,3 +218,52 @@ games_howell_test(formula = Scores ~ Group,
 
 {{< /tab >}}
 {{< /tabs >}}
+
+[Back to tabs](#tests)
+
+### Interpretation
+Both approaches produce the same results --- a significant effect of the omnibus test [F(3, 4.44) = 7.69, p < 0.05]. Furthermore, Games-Howell post-hoc tests reveal a significant difference between the scores of group 1 (rational-emotive therapy) and group 2 (psychoanalytic therapy) with group 1 demonstrating lower mean phobia scores.
+
+### Wrap Up
+Similar to the one-way ANOVA guide, the `anovaOneW()` function from the jmv package is a convenient way to perform Welch's one-way ANOVA in R. You can get a significant amount of output including normality, homogeneity of variance, and post-hoc tests by adding a few extra arguments to the call. To produce the same output with the rstatix package a little more work is necessary, but the results will be same.
+
+### References
+<div id="refs" class="references">
+
+<div id="ref-R-ggpubr">
+
+Kassambara, Alboukadel. 2020a. *Ggpubr: ’Ggplot2’ Based Publication Ready Plots*. <https://CRAN.R-project.org/package=ggpubr>.
+
+</div>
+
+<div id="ref-R-rstatix">
+
+———. 2020b. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-AMCP">
+
+Maxwell, Scott, Harold Delaney, and Ken Kelley. 2020. *AMCP: A Model Comparison Perspective*. <https://CRAN.R-project.org/package=AMCP>.
+
+</div>
+
+<div id="ref-AMCP">
+
+Maxwell, Scott E, Harold D Delaney, and Ken Kelley. 2017. *Designing Experiments and Analyzing Data: A Model Comparison Perspective*. Routledge.
+
+</div>
+
+<div id="ref-R-jmv">
+
+Selker, Ravi, Jonathon Love, and Damian Dropmann. 2020. *Jmv: The ’Jamovi’ Analyses*. <https://CRAN.R-project.org/package=jmv>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+</div>

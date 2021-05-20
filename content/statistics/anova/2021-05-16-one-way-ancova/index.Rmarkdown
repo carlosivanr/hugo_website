@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 30
-draft: true
+draft: false
 #bibliography: "../references/refs.bib"
 biblio-style: "apa"
 link-citations: true
