@@ -174,7 +174,7 @@ anova_test(model, effect.size = "pes", type = 3)
 ## 2          Drug   2  24 10.979 0.000411     * 0.478
 ## 3 Feedback:Drug   2  24  2.504 0.103000       0.173
 ```
-The results from the omnibus test reveal that there is no significant interaction between Drug and Feedback. On the other hand, there are significant effects for Drug and for Feedback. These results match up with the output from the jmv approach. At this point, we could proceed to perform tests of marginal means. 
+The results from the omnibus test reveal that there is no significant interaction between Drug and Feedback. On the other hand, there are significant main effects for Drug and for Feedback. Because the interaction is not significant, may proceed to perform tests of marginal means. Had the interaction been significant, we could have opted to perfrom tests of simple effects of Drug within Feedback, or Feedback within drug. However, these are primarily suggestions and the approach to analyzing the data should be guided by the research question.
 
 #### Tests of Marginal Means
 The rstatix package includes a function, `emmeans_test()`, that can perform tests of estimated marginal means. To perform these tests, we will use the aov model that we created in the previous step and we will conduct two separate tests, one for Feedback and one for Drug. The correction method in this example is set to `"none"`, but this can be easily changed according to your situation. The available correction methods can be found by typing `help(anova_test)` in the Console.
@@ -241,24 +241,25 @@ ggerrorplot(get_emmeans(pwc),
 <p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. </p>
 </div>
 
-#### Code chunk for plotting cell means instead of marginal means
+#### Plot cell means instead of marginal means
 
 ```r
-# Produce an error plot with cell means and ci instead of estimated marginal means
-# The same code chunk can be used to get cell means of Drug by changing the "x = " argument
-# ggerrorplot(chapter_7_table_5, 
-#        x = "Feedback", 
-#        y = "Score",
-#        add = "mean",
-#        desc_stat = "mean_ci",
-#        error.plot = "errorbar",
-#        width = .1,
-#        )
-# Print cell mean, standard deviation, and standard error for each level of Feedback
-# chapter_7_table_5 %>% 
-#   group_by(Feedback) %>%
-#   get_summary_stats(Score) %>%
-#   select(Feedback, mean, sd, se)
+#Produce an error plot with cell means and ci instead of estimated marginal means
+#The same code chunk can be used to get cell means of Drug by changing the "x = " argument
+ggerrorplot(chapter_7_table_5,
+       x = "Feedback",
+       y = "Score",
+       add = "mean",
+       desc_stat = "mean_ci",
+       error.plot = "errorbar",
+       width = .1,
+       )
+
+#Print cell mean, standard deviation, and standard error for each level of Feedback
+chapter_7_table_5 %>%
+  group_by(Feedback) %>%
+  get_summary_stats(Score) %>%
+  select(Feedback, mean, sd, se)
 ```
 
 
