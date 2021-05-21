@@ -21,6 +21,7 @@ draft: false
 ---
 
 ### The data set
+For this demo, we will use the data from Chapter 12, Table 1 in the AMCP package. In this hypothetical study, 10 subjects are participating in an experiment that tests how visual information can interfere with recognizing letters. Each subject performs a letter recognition task in two conditions, noise absent or present. Noise refers to visual information that is presented along with either a letter T or I that the subject needs to identify. Whithin each condition, visual information was either presented at 0&deg; (directly infront of the participant), at 4&deg; (slightly offset to one side), or at 8&deg; (even more offset to the side). Finally, the dependent variable in this study is the latency in milliseconds needed to identify the letter.
 
 
 ```r
@@ -86,7 +87,8 @@ anovaRM(
   rmTerms = ~ Condition + Angle + Condition:Angle,
   effectSize = 'partEta',
   emMeans = ~ Condition:Angle,
-  emmPlots = TRUE
+  emmPlots = TRUE,
+  depLabel = "Mean Latency"
 )
 ```
 
@@ -127,10 +129,8 @@ toc()
 ```
 
 ```
-## 3.406 sec elapsed
+## 3.373 sec elapsed
 ```
-
-
 {{< /tab >}}
 
 {{< tab tabNum="2" >}}
@@ -146,7 +146,7 @@ rm_data <- cbind(id = c(1:10), chapter_12_table_1)
 # Convert the data from wide to long
 rm_data <-  rm_data %>% 
   gather(key = Condition.Angle, 
-         value = Reaction_Time, 
+         value = Latency, 
          -id) %>%
   separate(col = Condition.Angle, 
            into = c("Condition", "Angle"), 
@@ -160,7 +160,7 @@ rm_data <-  rm_data %>%
 tic()
 rm_aov <- anova_test(
   data = rm_data,
-  dv = Reaction_Time,
+  dv = Latency,
   wid = id,
   within = c(Condition, Angle),
   effect.size = "pes",
@@ -181,7 +181,7 @@ get_anova_table(rm_aov, correction = "none")
 # Generate Plot
 ggline(rm_data,
        "Condition", 
-       "Reaction_Time",
+       "Latency",
        color = "Angle",
        add = "mean_se",
        palette = "jama",
@@ -195,7 +195,7 @@ toc()
 ```
 
 ```
-## 0.833 sec elapsed
+## 0.535 sec elapsed
 ```
 
 #### rstatix elapsed time

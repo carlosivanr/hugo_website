@@ -25,7 +25,7 @@ nocite: |
   @R-rstatix, @R-AMCP, @R-jmv, @R-ggpubr, @R-tidyverse
 ---
 
-A one-way analysis of covariance is an extension of the one-way ANOVA. In some situations, a researcher may wish to statistically control for a concomitant variable. A concomitant variable that "come along" with other variables of interest. These variables are also known as covariates and to concretize this concept, let's take a look at the example data set.
+A one-way analysis of covariance (ANCOVA) is an extension of the one-way ANOVA. In some situations, a researcher may wish to statistically control for a concomitant variable. A concomitant variable is one that "comes along" with other variables of interest. These variables are also known as covariates and to concretize this concept, let's take a look at the example data set.
 
 ### The data set
 For this demo, we will use the data from Chapter 9, Table 7 in the AMCP package. In this hypothetical study, participants are randomly assigned to one of three conditions to examine the effectiveness of a treatment for depression. Participants received a selective serotonin reuptake inhibitor (SSRI) in condition 1, a placebo in condition 2, or were assigned to a wait list control in condition 3. Each participant was also assessed for depression in a pre- and post-treatment assessment. One might want to control for pre-treatment levels of depression when comparing across the three conditions. In this example, pre-treatment depression scores are treated as covariates. 
@@ -33,8 +33,6 @@ For this demo, we will use the data from Chapter 9, Table 7 in the AMCP package.
 
 ```r
 library(AMCP)
-library(rstatix)
-library(ggpubr)
 
 # Load data
 data(chapter_9_table_7)
@@ -99,6 +97,37 @@ ancova(formula = Post ~ Condition + Pre,
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
+
+```r
+library(rstatix)
+```
+
+```
+## Warning: package 'rstatix' was built under R version 4.0.2
+```
+
+```
+## 
+## Attaching package: 'rstatix'
+```
+
+```
+## The following object is masked from 'package:stats':
+## 
+##     filter
+```
+
+```r
+library(ggpubr)
+```
+
+```
+## Warning: package 'ggpubr' was built under R version 4.0.2
+```
+
+```
+## Loading required package: ggplot2
+```
 
 ```r
 # Conduct ANCOVA test w rstatix
