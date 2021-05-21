@@ -129,17 +129,20 @@ toc()
 ```
 
 ```
-## 3.373 sec elapsed
+## 3.369 sec elapsed
 ```
 {{< /tab >}}
 
 {{< tab tabNum="2" >}}
+As we encountered in guide for [one-way rm-ANOVA](/guides/anova/one-way-anova), we will want to convert our data set from wide format to long format before proceeding to conduct the statistical test. This situation is a bit trickier because there are many more columns to deal with so I've written a separate walkthrough that can be found [here](/guides/r/wide-to-long) in order to emphasize the stats.
+
 
 ```r
 library(tidyverse)
 library(rstatix)
 library(ggpubr)
 library(tictoc)
+
 # Create a new data frame with a subject id
 rm_data <- cbind(id = c(1:10), chapter_12_table_1)
 
@@ -195,7 +198,7 @@ toc()
 ```
 
 ```
-## 0.535 sec elapsed
+## 0.738 sec elapsed
 ```
 
 #### rstatix elapsed time
@@ -217,3 +220,44 @@ jmv is much more tedious to code repeated measures. Yes the tables and plots are
 With rstatix the syntax for repeated measures anova are much simpler. I wouldn't code two-way repeated measures in jmv. Rstatix is faster. 
 
 Because of these transformations, it's important to know how to convert long to wide and wide to long. This can become especially tricky when you have multiple variables to keep track of.
+
+### References
+<div id="refs" class="references">
+
+<div id="ref-R-ggpubr">
+
+Kassambara, Alboukadel. 2020a. *Ggpubr: ’Ggplot2’ Based Publication Ready Plots*. <https://CRAN.R-project.org/package=ggpubr>.
+
+</div>
+
+<div id="ref-R-rstatix">
+
+———. 2020b. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-AMCP">
+
+Maxwell, Scott, Harold Delaney, and Ken Kelley. 2020. *AMCP: A Model Comparison Perspective*. <https://CRAN.R-project.org/package=AMCP>.
+
+</div>
+
+<div id="ref-AMCP">
+
+Maxwell, Scott E, Harold D Delaney, and Ken Kelley. 2017. *Designing Experiments and Analyzing Data: A Model Comparison Perspective*. Routledge.
+
+</div>
+
+<div id="ref-R-jmv">
+
+Selker, Ravi, Jonathon Love, and Damian Dropmann. 2020. *Jmv: The ’Jamovi’ Analyses*. <https://CRAN.R-project.org/package=jmv>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+</div>
