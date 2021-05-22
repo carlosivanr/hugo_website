@@ -24,6 +24,14 @@ link-citations: true
 nocite: |
   @R-rstatix, @R-AMCP, @R-jmv, @R-ggpubr, @R-tidyverse
 ---
+<style>
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
 
 A one-way analysis of covariance (ANCOVA) is an extension of the one-way ANOVA. In some situations, a researcher may wish to statistically control for a concomitant variable. A concomitant variable is one that "comes along" with other variables of interest. These variables are also known as covariates and to concretize this concept, let's take a look at the example data set.
 

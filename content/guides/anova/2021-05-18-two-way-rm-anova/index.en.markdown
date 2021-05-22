@@ -139,7 +139,7 @@ toc()
 ```
 
 ```
-## 4.402 sec elapsed
+## 3.733 sec elapsed
 ```
 {{< /tab >}}
 
@@ -208,7 +208,7 @@ toc()
 ```
 
 ```
-## 0.719 sec elapsed
+## 0.564 sec elapsed
 ```
 
 #### rstatix elapsed time
