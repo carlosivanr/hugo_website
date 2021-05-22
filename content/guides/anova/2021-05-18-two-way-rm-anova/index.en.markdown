@@ -20,6 +20,7 @@ weight: 80
 draft: false
 ---
 
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
 <style>
 pre code, pre, code {
   white-space: pre !important;
@@ -29,9 +30,8 @@ pre code, pre, code {
 }
 </style>
 
-
 ### The data set
-For this demo, we will use the data from Chapter 12, Table 1 in the AMCP package. In this hypothetical study, 10 subjects are participating in an experiment that tests how visual information can interfere with recognizing letters. Each subject performs a letter recognition task in two conditions, noise absent or present. Noise refers to visual information that is presented along with either a letter T or I that the subject needs to identify. Whithin each condition, visual information was either presented at 0&deg; (directly infront of the participant), at 4&deg; (slightly offset to one side), or at 8&deg; (even more offset to the side). Finally, the dependent variable in this study is the latency in milliseconds needed to identify the letter.
+For this demo, we will use the data from Chapter 12, Table 1 in the AMCP package. In this hypothetical study, 10 subjects are participating in an experiment that tests how visual information can interfere with recognizing letters. Each subject performs a letter recognition task in two conditions, noise absent or present. Noise refers to visual information that is presented along with either a letter T or I that the subject needs to identify. Whithin each condition, visual information was either presented at 0&deg; (directly in front of the participant), at 4&deg; (slightly offset to one side), or at 8&deg; (even more offset to the side). Finally, the dependent variable in this study is the latency in milliseconds needed to identify the letter.
 
 
 ```r
@@ -139,7 +139,7 @@ toc()
 ```
 
 ```
-## 3.733 sec elapsed
+## 3.22 sec elapsed
 ```
 {{< /tab >}}
 
@@ -157,27 +157,26 @@ library(tictoc)
 rm_data <- cbind(id = c(1:10), chapter_12_table_1)
 
 # Convert the data from wide to long
-rm_data <-  rm_data %>% 
-  gather(key = Condition.Angle, 
-         value = Latency, 
-         -id) %>%
-  separate(col = Condition.Angle, 
-           into = c("Condition", "Angle"), 
+rm_data <-  rm_data %>%
+  gather(key = Condition.Angle,
+         value = Latency,-id) %>%
+  separate(col = Condition.Angle,
+           into = c("Condition", "Angle"),
            sep = -1) %>%
-  arrange(id, 
-          Condition, 
+  arrange(id,
+          Condition,
           Angle) %>%
   convert_as_factor(Condition, Angle)
 
 # Conduct repeated measures ANOVA
 tic()
-rm_aov <- anova_test(
-  data = rm_data,
-  dv = Latency,
-  wid = id,
-  within = c(Condition, Angle),
-  effect.size = "pes",
-)
+rm_aov <- anova_test(data = rm_data,
+                     dv = Latency, 
+                     wid = id, 
+                     within = c(Condition, Angle), 
+                     effect.size = "pes")
+
+
 get_anova_table(rm_aov, correction = "none")
 ```
 
@@ -208,7 +207,7 @@ toc()
 ```
 
 ```
-## 0.564 sec elapsed
+## 0.562 sec elapsed
 ```
 
 #### rstatix elapsed time

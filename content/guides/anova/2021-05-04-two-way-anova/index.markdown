@@ -28,6 +28,16 @@ pre code, pre, code {
 }
 </style>
 
+<style type="text/css">
+pre {
+  max-height: 310px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 100px;
+}
+</style>
 
 
 
@@ -64,6 +74,7 @@ head(chapter_7_table_5)
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}  
 We will begin by loading the jmv package and use `ANOVA()` function which can be used for both one-way and two-way designs. The following code will set Score as the dependent variable and Feedback and Drug as independent variables. The settings are set to use type III sums of squares, the effect size will be reported as partial eta squared, post-hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be generated.
+
 
 
 ```r
@@ -263,8 +274,7 @@ ggerrorplot(chapter_7_table_5,
        add = "mean",
        desc_stat = "mean_ci",
        error.plot = "errorbar",
-       width = .1,
-       )
+       width = .1)
 
 #Print cell mean, standard deviation, and standard error for each level of Feedback
 chapter_7_table_5 %>%

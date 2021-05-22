@@ -20,12 +20,25 @@ type: book
 weight: 10
 ---
 
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
 <style>
 pre code, pre, code {
   white-space: pre !important;
   overflow-x: scroll !important;
   word-break: keep-all !important;
   word-wrap: initial !important;
+}
+</style>
+
+<!-- Limit the vertical height of output and source -->
+<style type="text/css">
+pre {
+  max-height: 310px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 100px;
 }
 </style>
 

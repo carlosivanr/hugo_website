@@ -23,6 +23,7 @@ nocite: |
   @R-rstatix, @R-AMCP, @R-jmv, @R-ggpubr, @R-tidyverse
 ---
 
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
 <style>
 pre code, pre, code {
   white-space: pre !important;
@@ -115,24 +116,21 @@ rm_data <- rm_data %>%
 head(rm_data)
 
 # Conduct repeated measures ANOVA
-rm_aov <- anova_test(
-  data = rm_data,
-  dv = score,
-  wid = id,
-  within = age,
-  effect.size = "pes",
-  detailed = TRUE
-)
+rm_aov <- anova_test(data = rm_data, 
+                     dv = score, 
+                     wid = id, 
+                     within = age, 
+                     effect.size = "pes", 
+                     detailed = TRUE)
 
 # Print anova table
 get_anova_table(rm_aov, correction = "none")
 
 # pairwise comparisons with pairwise_t_test
 pwc <- rm_data %>%
-  pairwise_t_test(
-    score ~ age, paired = TRUE,
-    p.adjust.method = "none"
-    )
+  pairwise_t_test(score ~ age, 
+                  paired = TRUE, 
+                  p.adjust.method = "none")
 pwc
 
 # pairwise comparisons with emmeans_test
@@ -157,8 +155,7 @@ ggerrorplot(rm_data,
             add = "mean",
             desc_stat = "mean_ci",
             error.plot = "errorbar",
-            width = .1
-            )
+            width = .1)
 ```
 
 ```{r plot, include=FALSE}

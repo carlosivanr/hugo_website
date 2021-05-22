@@ -19,6 +19,27 @@ draft: false
 type: book
 weight: 15
 ---
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
+<style>
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+
+<!-- Limit the vertical height of output and source -->
+<style type="text/css">
+pre {
+  max-height: 310px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 100px;
+}
+</style>
 
 ANOVA is a commonly used statistical technique to compare means among two or more groups. The primary assumptions of ANOVA are independence between groups, normally distributed data, and homogeneity of variance. When the homogeneity of variance assumption is violated, a Welch's ANOVA can be conducted instead. The omnibus test of a Welch's ANOVA can then be followed by Games-Howell post-hoc tests. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way designs). This guide covers how to test for normality, homogeneity of variance and how to conduct a Welch's ANOVA followed by the appropriate post-hoc tests with the jmv and rstatix packages. The two approaches use the same example data set as the Fisher's one-way ANOVA.
 

@@ -183,14 +183,12 @@ head(rm_data)
 
 ```r
 # Conduct repeated measures ANOVA
-rm_aov <- anova_test(
-  data = rm_data,
-  dv = score,
-  wid = id,
-  within = age,
-  effect.size = "pes",
-  detailed = TRUE
-)
+rm_aov <- anova_test(data = rm_data, 
+                     dv = score, 
+                     wid = id, 
+                     within = age, 
+                     effect.size = "pes", 
+                     detailed = TRUE)
 
 # Print anova table
 get_anova_table(rm_aov, correction = "none")
@@ -207,10 +205,9 @@ get_anova_table(rm_aov, correction = "none")
 ```r
 # pairwise comparisons with pairwise_t_test
 pwc <- rm_data %>%
-  pairwise_t_test(
-    score ~ age, paired = TRUE,
-    p.adjust.method = "none"
-    )
+  pairwise_t_test(score ~ age, 
+                  paired = TRUE, 
+                  p.adjust.method = "none")
 pwc
 ```
 
@@ -262,8 +259,7 @@ ggerrorplot(rm_data,
             add = "mean",
             desc_stat = "mean_ci",
             error.plot = "errorbar",
-            width = .1
-            )
+            width = .1)
 ```
 
 <div class="figure">

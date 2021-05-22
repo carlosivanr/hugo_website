@@ -24,6 +24,8 @@ link-citations: true
 nocite: |
   @R-rstatix, @R-AMCP, @R-jmv, @R-ggpubr, @R-tidyverse
 ---
+
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
 <style>
 pre code, pre, code {
   white-space: pre !important;
@@ -67,25 +69,23 @@ ancova(formula = Post ~ Condition + Pre,
        emMeans = ~ Condition,
        emmPlots = TRUE,
        emmTables = FALSE,
-       ciWidthEmm = 95
-)
+       ciWidthEmm = 95)
 ```
 {{< /tab >}}
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
-```{r rstatix}
+```{r rstatix, warning=FALSE, message=FALSE}
 library(rstatix)
 library(ggpubr)
 
 # Conduct ANCOVA test w rstatix
 aocv.model <- anova_test(Post ~ Condition + Pre, 
-           data = chapter_9_table_7, 
-           dv = Post,
-           covariate = Pre,
-           effect.size = "pes", 
-           type = 3
-           )
+                         data = chapter_9_table_7, 
+                         dv = Post, 
+                         covariate = Pre, 
+                         effect.size = "pes", 
+                         type = 3)
 
 # Print ANOVA table
 get_anova_table(aocv.model)
@@ -95,15 +95,18 @@ get_anova_table(aocv.model)
 ```{r post-hoc tests}
 # Pairwise comparisons
 pwc <- chapter_9_table_7 %>% 
-  emmeans_test(
-    Post ~ Condition, covariate = Pre,
-    p.adjust.method = "bonferroni"
-    )
+  emmeans_test(Post ~ Condition, 
+               covariate = Pre,
+               p.adjust.method = "bonferroni")
 
 # Print post-hoc test
-pwc
+print(pwc)
 ```
 
+```{r, include=FALSE, eval=FALSE}
+# Optional way of displaying pwc
+knitr::kable(pwc, "pipe", align = "lccrr" )
+```
 
 ### Plot of means 
 ```{r plot, fig.cap = 'Plot of post-treatment means by Condition.'}

@@ -24,6 +24,8 @@ link-citations: true
 nocite: |
   @R-rstatix, @R-AMCP, @R-jmv, @R-ggpubr, @R-tidyverse
 ---
+
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
 <style>
 pre code, pre, code {
   white-space: pre !important;
@@ -79,8 +81,7 @@ ancova(formula = Post ~ Condition + Pre,
        emMeans = ~ Condition,
        emmPlots = TRUE,
        emmTables = FALSE,
-       ciWidthEmm = 95
-)
+       ciWidthEmm = 95)
 ```
 
 ```
@@ -108,51 +109,16 @@ ancova(formula = Post ~ Condition + Pre,
 
 ```r
 library(rstatix)
-```
-
-```
-## Warning: package 'rstatix' was built under R version 4.0.2
-```
-
-```
-## 
-## Attaching package: 'rstatix'
-```
-
-```
-## The following object is masked from 'package:stats':
-## 
-##     filter
-```
-
-```r
 library(ggpubr)
-```
 
-```
-## Warning: package 'ggpubr' was built under R version 4.0.2
-```
-
-```
-## Loading required package: ggplot2
-```
-
-```r
 # Conduct ANCOVA test w rstatix
 aocv.model <- anova_test(Post ~ Condition + Pre, 
-           data = chapter_9_table_7, 
-           dv = Post,
-           covariate = Pre,
-           effect.size = "pes", 
-           type = 3
-           )
-```
+                         data = chapter_9_table_7, 
+                         dv = Post, 
+                         covariate = Pre, 
+                         effect.size = "pes", 
+                         type = 3)
 
-```
-## Coefficient covariances computed by hccm()
-```
-
-```r
 # Print ANOVA table
 get_anova_table(aocv.model)
 ```
@@ -170,13 +136,12 @@ get_anova_table(aocv.model)
 ```r
 # Pairwise comparisons
 pwc <- chapter_9_table_7 %>% 
-  emmeans_test(
-    Post ~ Condition, covariate = Pre,
-    p.adjust.method = "bonferroni"
-    )
+  emmeans_test(Post ~ Condition, 
+               covariate = Pre,
+               p.adjust.method = "bonferroni")
 
 # Print post-hoc test
-pwc
+print(pwc)
 ```
 
 ```
@@ -187,6 +152,7 @@ pwc
 ## 2 Post  1      3         26    -2.67  0.0129 0.0388 *           
 ## 3 Post  2      3         26    -0.826 0.416  1      ns
 ```
+
 
 
 ### Plot of means 
