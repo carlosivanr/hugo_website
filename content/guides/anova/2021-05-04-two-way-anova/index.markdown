@@ -19,6 +19,17 @@ type: book
 weight: 20
 ---
 
+<style>
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+
+
+
 
 In this guide, we will cover different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are an extension of one-ways ANOVAS and can be used for situations where the goal is to statistically compare means of two or more groups that differ along two categorical variables.
 
@@ -237,11 +248,11 @@ ggerrorplot(get_emmeans(pwc),
 ```
 
 <div class="figure">
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot3-1.png" alt="Means and confidence intervals for Feedback collapsed across Drug. *, p&lt;0.05; **, p&lt;0.01; ***, p&lt;0.001; ns, not significant. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. " width="672" />
-<p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant. n.b. The confidence intervals between plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard error are the same. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. </p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot3-1.png" alt="Means and confidence intervals for Feedback collapsed across Drug. *, p&lt;0.05; **, p&lt;0.01; ***, p&lt;0.001; ns, not significant. n.b. The confidence intervals plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard errors are the same for all levels of Feedback. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. " width="672" />
+<p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant. n.b. The confidence intervals plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard errors are the same for all levels of Feedback. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. </p>
 </div>
 
-#### Plot cell means instead of marginal means
+#### Plot cell means instead
 
 ```r
 #Produce an error plot with cell means and ci instead of estimated marginal means
