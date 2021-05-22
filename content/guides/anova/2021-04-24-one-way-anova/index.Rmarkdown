@@ -20,6 +20,14 @@ type: book
 weight: 10
 ---
 
+<style>
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
 
 ANOVA is a commonly used statistical technique to compare means among two or more groups. In this guide, we will cover how to perform a one-way ANOVA with the jmv and rstatix packages. The primary assumptions of ANOVA are independence between groups, normally distributed data, and homogeneity of variance. When the homogeneity of variance assumption is violated, a Welch's ANOVA can be conducted instead. This guide will also cover how to conduct a Welch's ANOVA with jmv and rstatix. All four demos will use the same example data set.
 
