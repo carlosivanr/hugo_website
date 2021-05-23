@@ -69,18 +69,21 @@ head(chapter_9_table_7)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
+The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared, to produce Bonferroni corrected post-hoc tests to compare conditions. Finally, a plot of means by condition with 95% confidence intervals will be generated.
 
 ```r
 library(jmv)
 
 # ANCOVA in jmv
-ancova(formula = Post ~ Condition + Pre,
+ancova(formula = Post ~ Pre + Condition,
        data = chapter_9_table_7,
-       effectSize = 'partEta',
        ss = "3",
+       effectSize = 'partEta',
+       postHoc = ~ Condition,
+       postHocCorr = 'bonf',
        emMeans = ~ Condition,
        emmPlots = TRUE,
-       emmTables = FALSE,
+       emmPlotError = "ci",
        ciWidthEmm = 95)
 ```
 
@@ -92,32 +95,43 @@ ancova(formula = Post ~ Condition + Pre,
 ##  ─────────────────────────────────────────────────────────────────────────────────────────── 
 ##                 Sum of Squares    df    Mean Square    F            p            η²p         
 ##  ─────────────────────────────────────────────────────────────────────────────────────────── 
-##    Condition          217.1495     2      108.57474     3.732399    0.0375843    0.2230642   
 ##    Pre                313.3653     1      313.36526    10.772342    0.0029369    0.2929469   
+##    Condition          217.1495     2      108.57474     3.732399    0.0375843    0.2230642   
 ##    Residuals          756.3347    26       29.08980                                          
-##  ───────────────────────────────────────────────────────────────────────────────────────────
+##  ─────────────────────────────────────────────────────────────────────────────────────────── 
+## 
+## 
+##  POST HOC TESTS
+## 
+##  Post Hoc Comparisons - Condition                                                                         
+##  ──────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    Condition         Condition    Mean Difference    SE          df          t             p-bonferroni   
+##  ──────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    1            -    2                  -4.448279    2.415968    26.00000    -1.8411994       0.2310916   
+##                 -    3                  -6.441874    2.413326    26.00000    -2.6692923       0.0387692   
+##    2            -    3                  -1.993595    2.412766    26.00000    -0.8262695       1.0000000   
+##  ────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 <div class="figure">
-<img src="{{< blogdown/postref >}}index_files/figure-html/jmv-1.png" alt="Plot of post-treatment means by Condition." width="672" />
-<p class="caption">Figure 1: Plot of post-treatment means by Condition.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/jmv-1.png" alt="Plot of post-treatment depression score means by Condition." width="672" />
+<p class="caption">Figure 1: Plot of post-treatment depression score means by Condition.</p>
 </div>
 {{< /tab >}}
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
+The following code chunk will produce the same ANCOVA output with the rstatix package. One slight difference here though is that we are going to save the output to an `anova_test()` object, then print the output with the `get_anova_table()` function. This approach will come in handy when generating the [plot of means](#mean_plots). In the `anova_test()` `formula` argument we enter the covariate first. This is primarily done to pull out the correct F ratio for plotting. In our example, we are setting the sums of squares `type = 3` which means we will get the same output whether we use `formula Post ~  Pre + Condition` or `formula = Post ~ Condition + Pre`. However, if using Type II sums of squares you'll need to enter the covariate first.
 
 ```r
 library(rstatix)
 library(ggpubr)
 
-# Conduct ANCOVA test w rstatix
-aocv.model <- anova_test(Post ~ Condition + Pre, 
+# Evaluated ANCOVA test w rstatix
+aocv.model <- anova_test(formula = Post ~  Pre + Condition, 
                          data = chapter_9_table_7, 
-                         dv = Post, 
-                         covariate = Pre, 
-                         effect.size = "pes", 
-                         type = 3)
+                         type = 3,
+                         effect.size = "pes")
 
 # Print ANOVA table
 get_anova_table(aocv.model)
@@ -127,11 +141,12 @@ get_anova_table(aocv.model)
 ## ANOVA Table (type III tests)
 ## 
 ##      Effect DFn DFd      F     p p<.05   pes
-## 1 Condition   2  26  3.732 0.038     * 0.223
-## 2       Pre   1  26 10.772 0.003     * 0.293
+## 1       Pre   1  26 10.772 0.003     * 0.293
+## 2 Condition   2  26  3.732 0.038     * 0.223
 ```
 
 ### Post-hoc tests
+To conduct the post-hoc tests, we will use the `emmeans_test()` function specifying the formula `Post ~ Condition`, setting `covariate = Pre`, and the Bonferroni correction with `p.adjust.method = "bonferroni"`. In the following code chunk, we will also save the output to an object called pwc and then print it to the console with the `print()` function which will serve us when generating the [plot of means](#mean_plots).
 
 ```r
 # Pairwise comparisons
@@ -155,36 +170,36 @@ print(pwc)
 
 
 
-### Plot of means 
+### Plot of means {#mean_plots}
+While the jmv approach is nice because we can get quite a bit of output (ANCOVA test, post-hoc tests, and plots) from one function, the benefit of using rstatix is that we gain some additional features when it comes to plotting. The plot produced for this guide displays the estimated marginal means, confidence intervals, a significance marker, the results of the omnibust tests, and includes a caption displaying the test used to compare means and the multiple correction procedure.
+
+
+
 
 ```r
-pwc <- pwc %>% add_xy_position(x = "Condition", fun = "mean_se")
+pwc <- pwc %>% add_xy_position(x = "Condition", 
+                               fun = "mean_se")
 
-ggline(get_emmeans(pwc), 
-       x = "Condition", 
-       y = "emmean",
-       ylab = "Mean Depression Scores") +
+ggerrorplot(get_emmeans(pwc), 
+            x = "Condition", 
+            y = "emmean", 
+            ylab = "Mean Depression Scores") +
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) + 
   stat_pvalue_manual(pwc, hide.ns = TRUE, tip.length = FALSE) +
-  labs(
-    subtitle = get_test_label(aocv.model, detailed = TRUE),
-    caption = get_pwc_label(pwc)
-  )
+  labs(subtitle = get_test_label(aocv.model, detailed = TRUE), caption = get_pwc_label(pwc))
 ```
 
 <div class="figure">
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot-1.png" alt="Plot of post-treatment means by Condition." width="672" />
-<p class="caption">Figure 2: Plot of post-treatment means by Condition.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot-1.png" alt="Plot of post-treatment depression score means by Condition." width="672" />
+<p class="caption">Figure 2: Plot of post-treatment depression score means by Condition.</p>
 </div>
 
 {{< /tab >}}
 {{< /tabs >}}
 
 
-
-
-
-
+### Wrap Up
+So far, we have seen that the jmv package is well suited for conducting between-subjects ANOVA and ANCOVA. However, we can also appreciate that the rstatix and ggpubr packages work well together for visualizing data. For this guide, the combination of the `emmeans_test()`, `add_xy_position()`, and `stat_pvalue_manual()` functions make plotting means and the statistical significance between them and added plus for preparing publication ready figures.
 
 
 ### References
