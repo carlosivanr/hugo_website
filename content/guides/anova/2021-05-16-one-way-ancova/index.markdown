@@ -69,7 +69,7 @@ head(chapter_9_table_7)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
-The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared, to produce Bonferroni corrected post-hoc tests to compare conditions. Finally, a plot of means by condition with 95% confidence intervals will be generated.
+The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared, to produce Bonferroni corrected post hoc tests to compare conditions. Finally, a plot of means by condition with 95% confidence intervals will be generated.
 
 ```r
 library(jmv)
@@ -145,8 +145,8 @@ get_anova_table(aocv.model)
 ## 2 Condition   2  26  3.732 0.038     * 0.223
 ```
 
-### Post-hoc tests
-To conduct the post-hoc tests, we will use the `emmeans_test()` function specifying the formula `Post ~ Condition`, setting `covariate = Pre`, and the Bonferroni correction with `p.adjust.method = "bonferroni"`. In the following code chunk, we will also save the output to an object called pwc and then print it to the console with the `print()` function which will serve us when generating the [plot of means](#mean_plots).
+### Post hoc tests
+To conduct the post hoc tests, we will use the `emmeans_test()` function specifying the formula `Post ~ Condition`, setting `covariate = Pre`, and the Bonferroni correction with `p.adjust.method = "bonferroni"`. In the following code chunk, we will also save the output to an object called pwc and then print it to the console with the `print()` function which will serve us when generating the [plot of means](#mean_plots).
 
 ```r
 # Pairwise comparisons
@@ -155,7 +155,7 @@ pwc <- chapter_9_table_7 %>%
                covariate = Pre,
                p.adjust.method = "bonferroni")
 
-# Print post-hoc test
+# Print post hoc test
 print(pwc)
 ```
 
@@ -171,7 +171,7 @@ print(pwc)
 
 
 ### Plot of means {#mean_plots}
-While the jmv approach is nice because we can get quite a bit of output (ANCOVA test, post-hoc tests, and plots) from one function, the benefit of using rstatix is that we gain some additional features when it comes to plotting. The plot produced for this guide displays the estimated marginal means, confidence intervals, a significance marker, the results of the omnibust tests, and includes a caption displaying the test used to compare means and the multiple correction procedure.
+While the jmv approach is nice because we can get quite a bit of output (ANCOVA test, post hoc tests, and plots) from one function, the benefit of using rstatix is that we gain some additional features when it comes to plotting. The plot produced for this guide displays the estimated marginal means, confidence intervals, a significance marker, the results of the omnibust tests, and includes a caption displaying the test used to compare means and the multiple correction procedure.
 
 
 
@@ -198,7 +198,7 @@ ggerrorplot(get_emmeans(pwc),
 {{< /tabs >}}
 
 
-### Wrap Up
+### Wrap up
 So far, we have seen that the jmv package is well suited for conducting between-subjects ANOVA and ANCOVA. However, we can also appreciate that the rstatix and ggpubr packages work well together for visualizing data. For this guide, the combination of the `emmeans_test()`, `add_xy_position()`, and `stat_pvalue_manual()` functions make plotting means and the statistical significance between them and added plus for preparing publication ready figures.
 
 

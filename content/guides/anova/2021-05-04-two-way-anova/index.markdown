@@ -19,6 +19,7 @@ type: book
 weight: 20
 ---
 
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
 <style>
 pre code, pre, code {
   white-space: pre !important;
@@ -28,6 +29,7 @@ pre code, pre, code {
 }
 </style>
 
+<!-- Limit the vertical height of output and source -->
 <style type="text/css">
 pre {
   max-height: 310px;
@@ -67,13 +69,13 @@ head(chapter_7_table_5)
 ## 6   186        1    2
 ```
 
-### Perform ANOVA Tests {#tests}
+### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
-{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="base R" >}}
+{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" >}}
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}  
-We will begin by loading the jmv package and use `ANOVA()` function which can be used for both one-way and two-way designs. The following code will set Score as the dependent variable and Feedback and Drug as independent variables. The settings are set to use type III sums of squares, the effect size will be reported as partial eta squared, post-hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be generated.
+We will begin by loading the jmv package and use `ANOVA()` function which can be used for both one-way and two-way designs. The following code will set Score as the dependent variable and Feedback and Drug as independent variables. The settings are set to use type III sums of squares, the effect size will be reported as partial eta squared, post hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be generated.
 
 
 
@@ -198,7 +200,7 @@ anova_test(model, effect.size = "pes", type = 3)
 ```
 The results from the omnibus test reveal that there is no significant interaction between Drug and Feedback. On the other hand, there are significant main effects for Drug and for Feedback. Because the interaction is not significant, may proceed to perform tests of marginal means. Had the interaction been significant, we could have opted to perfrom tests of simple effects of Drug within Feedback, or Feedback within drug. However, these are primarily suggestions and the approach to analyzing the data should be guided by the research question.
 
-#### Tests of Marginal Means
+#### Tests of marginal means
 The rstatix package includes a function, `emmeans_test()`, that can perform tests of estimated marginal means. To perform these tests, we will use the aov model that we created in the previous step and we will conduct two separate tests, one for Feedback and one for Drug. The correction method in this example is set to `"none"`, but this can be easily changed according to your situation. The available correction methods can be found by typing `help(anova_test)` in the Console.
 
 We will also use the `get_summary_stats()` function and illustrate how the tidyverse package meshes with rstatix to produce descriptive statistics to aid in the interpretation of the output. First we will start with the chapter_7_table_5 data and pipe it to the `group_by()` function which will create subsets of data according to combinations of Drug and Feedback, then that output is fed into the `get_summary_stats()` which will calculate several descriptive statistics for each group. Finally, to display only a part of this output, the `select()` function will display data by specifying column names.
@@ -206,6 +208,7 @@ We will also use the `get_summary_stats()` function and illustrate how the tidyv
 To plot the data we will rely on the ggpubr package. The ggpubr and rstatix packages are developed by the same individual and are aimed at simplifying the syntax for conducting statistical tests and generating plots in R. For our purposes we will use the `ggerrorplot()` function to plot means and confidence intervals.
 
 #### Feedback
+
 
 ```r
 # Test of marginal means for Feedback
@@ -263,7 +266,7 @@ ggerrorplot(get_emmeans(pwc),
 <p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant. n.b. The confidence intervals plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard errors are the same for all levels of Feedback. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. </p>
 </div>
 
-#### Plot cell means instead
+#### Plot cell means
 
 ```r
 #Produce an error plot with cell means and ci instead of estimated marginal means
@@ -353,7 +356,6 @@ The two tests of marginal means will produce a couple of messages to remind us t
 
 
 
-
 <!-- #### Comparisons of cell means -->
 
 
@@ -364,9 +366,9 @@ The two tests of marginal means will produce a couple of messages to remind us t
 {{< /tab >}}
 
 <!-- -----------------------Tab 3---------------------------------- -->
-{{< tab tabNum="3" >}}
-###
-When using the base R function, it's wise to also load the car package. The default sums of squares in the `aov()` function is type II and in order to get ANOVA results with type III sums of squares, the car package is needed. Similar to the functions with rstatix, we will need to convert the Feedback and Drug data to factor before running the ANOVA.
+<!-- {{< tab tabNum="3" >}} -->
+<!-- ### -->
+<!-- When using the base R function, it's wise to also load the car package. The default sums of squares in the `aov()` function is type II and in order to get ANOVA results with type III sums of squares, the car package is needed. Similar to the functions with rstatix, we will need to convert the Feedback and Drug data to factor before running the ANOVA. -->
 
 
 <!-- As for the post-hoc tests, we can use the built-in `TukeyHSD()` function. These values will match those produced by jmv and rstatix when setting the correction method to "tukey". There are other ways of  -->
@@ -376,7 +378,7 @@ When using the base R function, it's wise to also load the car package. The defa
 
 [Back to tabs](#tests)
 
-### Wrap-up
+### Wrap up
 The jmv and rstatix functions both produce the same results, as they should because they share many of the underlying statistical functions. The jmv package is a great place to start with statistical tests if you are beginning with R. One reason for this is because it simplifies some of the syntax, generates plots automatically, and it can automatically convert some of your numerical data to categorical. While it's a lot easier to code a 2x3 ANOVA with jmv there are some advantages to using rstatix and ggpubr. One advantage is that the ggpubr functions are designed to take in arguments from rstatix that make plotting significance markers relatively straightforward. In addition, ggpubr plots can be used as a starting point layer ggplot geometric elements like the `geom_errorbar()` element in Figures 3 and 4. 
 
 

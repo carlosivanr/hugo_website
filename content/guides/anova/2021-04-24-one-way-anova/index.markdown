@@ -70,7 +70,7 @@ head(C3E9)
 ## 6     2     14
 ```
 
-### Perform ANOVA Tests {#tests}
+### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" tabName3="Welch's jmv" tabName4="Welch's rstatix"  >}}
 
@@ -78,7 +78,7 @@ head(C3E9)
 {{< tab tabNum="1" >}}
 Jmv is a package that comes from the standalone <a href="https://jamovi.org/"> jamovi </a> statistical spreadsheet software. Jamovi was designed as an alternative to costly statistical analysis software packages like SPSS or SAS and runs R underneath the hood. The developers of jamovi also released an R package with all of the functions of their standalone version.  
 
-With the `anovaOneW()` function, we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9, set `fishers = TRUE` and `welchs = FALSE`, otherwise the function will run the default Welch's ANOVA. We will also set the `phMethod = 'tukey'` to conduct posthoc tests, Lastly, we want to set `descPlot = TRUE` to plot means and confidence intervals.
+With the `anovaOneW()` function, we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9, set `fishers = TRUE` and `welchs = FALSE`, otherwise the function will run the default Welch's ANOVA. We will also set the `phMethod = 'tukey'` to conduct post hoc tests, Lastly, we want to set `descPlot = TRUE` to plot means and confidence intervals.
 
 
 ```r
@@ -170,11 +170,11 @@ anova_test(Scores ~ Group,
 ##   Effect DFn DFd  F     p p<.05   pes
 ## 1  Group   3   8 10 0.004     * 0.789
 ```
-### Posthoc Tests
-To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`)
+### Post hoc tests
+To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply a different correction procedure such Bonferroni, Holm, or False Discover Rate (FDR). In addition, rstatix provides some convenient ways for producing effect sizes, and summary statistics.
 
 ```r
-# Tukey posthoc tests
+# Tukey post hoc tests
 C3E9 %>%
   tukey_hsd(Scores ~ Group)
 ```
@@ -193,7 +193,7 @@ C3E9 %>%
 
 
 ```r
-# Bonferroni corrected posthoc tests
+# Bonferroni corrected post hoc tests
 C3E9 %>% 
   pairwise_t_test(Scores ~ Group, p.adjust.method = "bonferroni")
 ```
@@ -210,6 +210,42 @@ C3E9 %>%
 ## 6 Scores 3      4          3     3 0.04    *        0.24    ns
 ```
 
+```r
+# Effect sizes
+C3E9 %>% 
+  cohens_d(Scores ~ Group, var.equal = TRUE)
+```
+
+```
+## # A tibble: 6 x 7
+##   .y.    group1 group2 effsize    n1    n2 magnitude
+## * <chr>  <chr>  <chr>    <dbl> <int> <int> <ord>    
+## 1 Scores 1      2           -4     3     3 large    
+## 2 Scores 1      3           -1     3     3 large    
+## 3 Scores 1      4           -3     3     3 large    
+## 4 Scores 2      3            3     3     3 large    
+## 5 Scores 2      4            1     3     3 large    
+## 6 Scores 3      4           -2     3     3 large
+```
+
+```r
+# Summary statistics
+C3E9 %>% 
+  group_by(Group) %>%
+  get_summary_stats()
+```
+
+```
+## # A tibble: 4 x 14
+##   Group variable     n   min   max median    q1    q3   iqr   mad  mean    sd
+##   <fct> <chr>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+## 1 1     Scores       3     2     6      4     3     5     2  2.96     4     2
+## 2 2     Scores       3    10    14     12    11    13     2  2.96    12     2
+## 3 3     Scores       3     4     8      6     5     7     2  2.96     6     2
+## 4 4     Scores       3     8    12     10     9    11     2  2.96    10     2
+## # … with 2 more variables: se <dbl>, ci <dbl>
+```
+
 <!-- To produce a jmv style plot, things get a little trickier. First, we will need to calculate means and confidence intervals. Luckily, `get_summary_stats()` can do this painlessly because of the pipe operator from the tidyverse package. Essentially, the C3E9 data is fed to `group_by()` which will separate the data by Group, then the output is fed in `get_summary_stats()` which will compute descriptive statistics such as means, medians, confidence intervals, and others. The summary_data is then what we will use to generate a plot with the `ggplot()` function.   -->
 
 
@@ -220,8 +256,9 @@ C3E9 %>%
 
 
 ### Plot the data  
-
 One way to produce a plot of the data is to use the ggpubr package. The ggpubr package is a wrapper for ggplot2 and serves to simplify the ggplot2 syntax. The only drawback is that it may not have all of the flexibility of ggplot2. However, if you're new to R, ggpubr is a gentle introduction to making figure. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
+
+
 
 ```r
 ggerrorplot(C3E9,
@@ -231,15 +268,15 @@ ggerrorplot(C3E9,
        desc_stat = "mean_ci",
        error.plot = "errorbar",
        width = .1,
-       color = "blue",
-       title = "Mean (95% CI)",
-)
+       color = azl,
+       title = "Mean (95% CI)")
 ```
 
 <div class="figure">
 <img src="{{< blogdown/postref >}}index_files/figure-html/ggpubr-1.png" alt="Plot of means and 95% confidence intervals produced by ggpbur." width="672" />
 <p class="caption">Figure 2: Plot of means and 95% confidence intervals produced by ggpbur.</p>
 </div>
+<!-- The color was picked off of the theme which is in themes/github.com/wowchemy/wowchemy-hugo-modules/wowchemy/data/themese/minimial.toml  -->
 {{< /tab >}}
 {{< /tabs >}}
 
@@ -248,7 +285,7 @@ ggerrorplot(C3E9,
 ### Interpret the output
 For the omnibus test, we obtain a significant effect of Group [F(3,8) = 10, p < 0.01] which suggests that the means of the 4 groups are not equal. In other words, one of the treatments may be significantly different than another. The post-hoc tests that perform all possible combinations of pairwise comparisons also indicate a significant difference between group 1 and 2, between group 1 and 4, and between group 2 and 3.  
 
-### Wrap Up
+### Wrap up
 One of the benefits of the `anovaOneW()` function lies in eliminating the need to write code to produce a plot of means and confidence intervals. What is produced with one option within the `anovaOneW()` command, takes additional packages and several lines of code to produce with ggplot. It's main disadvantage is that `anovaOneW()` is limited in it post-hoc tests options.  You can select either 'tukey' or none for a traditional one-way ANOVA, but you could get additional correction methods with the `ANOVA()` in jmv. If you're starting out with R, the jmv package will surely give you a head start in terms of analyzing and visualizing simple one-way ANOVA tests.
 
 ### References

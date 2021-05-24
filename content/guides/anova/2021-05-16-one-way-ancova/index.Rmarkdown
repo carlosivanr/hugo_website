@@ -58,7 +58,7 @@ head(chapter_9_table_7)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
-The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared, to produce Bonferroni corrected post-hoc tests to compare conditions. Finally, a plot of means by condition with 95% confidence intervals will be generated.
+The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared, to produce Bonferroni corrected post hoc tests to compare conditions. Finally, a plot of means by condition with 95% confidence intervals will be generated.
 ```{r jmv, warning=FALSE, fig.cap = "Plot of post-treatment depression score means by Condition."}
 library(jmv)
 
@@ -93,8 +93,8 @@ aocv.model <- anova_test(formula = Post ~  Pre + Condition,
 get_anova_table(aocv.model)
 ```
 
-### Post-hoc tests
-To conduct the post-hoc tests, we will use the `emmeans_test()` function specifying the formula `Post ~ Condition`, setting `covariate = Pre`, and the Bonferroni correction with `p.adjust.method = "bonferroni"`. In the following code chunk, we will also save the output to an object called pwc and then print it to the console with the `print()` function which will serve us when generating the [plot of means](#mean_plots).
+### Post hoc tests
+To conduct the post hoc tests, we will use the `emmeans_test()` function specifying the formula `Post ~ Condition`, setting `covariate = Pre`, and the Bonferroni correction with `p.adjust.method = "bonferroni"`. In the following code chunk, we will also save the output to an object called pwc and then print it to the console with the `print()` function which will serve us when generating the [plot of means](#mean_plots).
 ```{r post-hoc tests}
 # Pairwise comparisons
 pwc <- chapter_9_table_7 %>% 
@@ -102,7 +102,7 @@ pwc <- chapter_9_table_7 %>%
                covariate = Pre,
                p.adjust.method = "bonferroni")
 
-# Print post-hoc test
+# Print post hoc test
 print(pwc)
 ```
 
@@ -112,10 +112,10 @@ knitr::kable(pwc, "pipe", align = "lccrr" )
 ```
 
 ### Plot of means {#mean_plots}
-While the jmv approach is nice because we can get quite a bit of output (ANCOVA test, post-hoc tests, and plots) from one function, the benefit of using rstatix is that we gain some additional features when it comes to plotting. The plot produced for this guide displays the estimated marginal means, confidence intervals, a significance marker, the results of the omnibust tests, and includes a caption displaying the test used to compare means and the multiple correction procedure.
+While the jmv approach is nice because we can get quite a bit of output (ANCOVA test, post hoc tests, and plots) from one function, the benefit of using rstatix is that we gain some additional features when it comes to plotting. The plot produced for this guide displays the estimated marginal means, confidence intervals, a significance marker, the results of the omnibust tests, and includes a caption displaying the test used to compare means and the multiple correction procedure.
 
 ```{r, include = FALSE, eval = FALSE}
-In the the following code chunk, we first will modify `pwc` with the `add_xy_position()` helper function which will add the x and y coordinates for plotting significance markers. In the call to ggline, we will specify that the data to be plotted is the result of the `get_emmeans()` function on the `pwc` object. Then, we will specify the x variable as `x = "Condition"`, the y variable as `y = "emmean"` to plot the estimated marginal means rather than the group means, and change the label on the y axis to `"Mean Depression Scores"`. The ggpubr `ggline()` function ends up running the ggplot package underneath the hood and ggplot builds figure in layers. The `+` sign indicates that we are going to add another layer. The first layer we will add will display error bars () `geom_errorbar()`, the second layer adds the significance markers with the `stat_pvalue_manual()` function, and the third layer adds a caption and subtitle to display the ANCOVA omnibus test results and a caption to show the post-hoc comparison approach.
+In the the following code chunk, we first will modify `pwc` with the `add_xy_position()` helper function which will add the x and y coordinates for plotting significance markers. In the call to ggline, we will specify that the data to be plotted is the result of the `get_emmeans()` function on the `pwc` object. Then, we will specify the x variable as `x = "Condition"`, the y variable as `y = "emmean"` to plot the estimated marginal means rather than the group means, and change the label on the y axis to `"Mean Depression Scores"`. The ggpubr `ggline()` function ends up running the ggplot package underneath the hood and ggplot builds figure in layers. The `+` sign indicates that we are going to add another layer. The first layer we will add will display error bars () `geom_errorbar()`, the second layer adds the significance markers with the `stat_pvalue_manual()` function, and the third layer adds a caption and subtitle to display the ANCOVA omnibus test results and a caption to show the post hoc comparison approach.
 ```
 
 ```{r plot, fig.cap = 'Plot of post-treatment depression score means by Condition.', warning=FALSE}
@@ -137,7 +137,7 @@ ggerrorplot(get_emmeans(pwc),
 ```{r package refs, include = FALSE}
 knitr::write_bib(c("AMCP", "rstatix", "ggpubr", "tidyverse", "jmv", "base"), "", width = 60)
 ```
-### Wrap Up
+### Wrap up
 So far, we have seen that the jmv package is well suited for conducting between-subjects ANOVA and ANCOVA. However, we can also appreciate that the rstatix and ggpubr packages work well together for visualizing data. For this guide, the combination of the `emmeans_test()`, `add_xy_position()`, and `stat_pvalue_manual()` functions make plotting means and the statistical significance between them and added plus for preparing publication ready figures.
 
 

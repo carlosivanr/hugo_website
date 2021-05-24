@@ -23,6 +23,7 @@ nocite: |
   @R-rstatix, @R-AMCP, @R-jmv, @R-ggpubr, @R-tidyverse
 ---
 
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
 <style>
 pre code, pre, code {
   white-space: pre !important;
@@ -60,7 +61,7 @@ head(chapter_11_table_5)
 ## 6      110      107       96       91
 ```
 
-### Perform ANOVA Tests {#tests}
+### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="paired-t-test">}}
 
@@ -244,7 +245,7 @@ pwc
 ## 5 score Months36 Months48    33    -1.57  0.126   0.126   ns          
 ## 6 score Months42 Months48    33    -0.628 0.534   0.534   ns
 ```
-# n.b.
+### n.b.
 jmv implements emmeans_test. Field, Miles, & Field, 2012 use pairwise.t.test() which is the function underlying pairwise_t_test(). Maxwell, Delaney, & Kelly exercise caution for pwc w rm designs because of pwcs are much more sensitive to violations of sphericity. Even small departures from sphericity can lead to biased tests. You should use a separate variance estimate approach. Howell, stresses this too especially in cases where sphericity is violated. The correction protects the overall test, but becomes problematic with the pwcs. https://www.uvm.edu/~statdhtx/StatPages/More_Stuff/RepMeasMultComp/RepMeasMultComp.html. Also sounds like SPSS does paired samples t-tests.
 
 https://statistics.laerd.com/spss-tutorials/one-way-anova-repeated-measures-using-spss-statistics-2.php
@@ -306,7 +307,7 @@ ggerrorplot(rm_data,
 ### Interpretation  
 For the omnibus test, we obtain a significant effect of Age [F(33,3) = 3.03, p < 0.05] which suggests that the means of the 4 ages are not equal. The omega squared value is 0.04 which suggest the about 4% of the variance in scores is acounted for by age in the ages studied.
 
-### Wrap Up
+### Wrap up
 For one-way repeated measures ANOVA, using the jmv package in R will become tedious as each column will need to specified in the `rmCells = list(...` argument. This will become even more burdensome in two-way repeated measures ANOVA. 
 
 ### References

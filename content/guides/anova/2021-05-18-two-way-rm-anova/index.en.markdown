@@ -54,7 +54,7 @@ head(chapter_12_table_1)
 ## 6     360     420     360      360      480      540
 ```
 
-### Perform ANOVA Tests {#tests}
+### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" >}}
 
@@ -139,7 +139,7 @@ toc()
 ```
 
 ```
-## 3.22 sec elapsed
+## 3.257 sec elapsed
 ```
 {{< /tab >}}
 
@@ -207,7 +207,7 @@ toc()
 ```
 
 ```
-## 0.562 sec elapsed
+## 0.527 sec elapsed
 ```
 
 #### rstatix elapsed time
@@ -223,7 +223,7 @@ toc()
 
 - If no interaction, then test marginal means
 
-### Wrap Up
+### Wrap up
 jmv is much more tedious to code repeated measures. Yes the tables and plots are nice, but it can be a pain in the but to work with. If you have long data, you'll need to convert it to wide. And it's also very slow. I once ran a two-way repeated measures ANOVA on data from over 200 participants. WHile jmv took over a minute, rstatix computed the computation in less than one second. This could be a consideration when planing which package to use.
 
 With rstatix the syntax for repeated measures anova are much simpler. I wouldn't code two-way repeated measures in jmv. Rstatix is faster. 
