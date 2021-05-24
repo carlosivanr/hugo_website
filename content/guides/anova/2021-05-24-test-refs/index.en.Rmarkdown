@@ -1,0 +1,25 @@
+---
+title: TEST_Refs
+author: Carlos Rodriguez
+date: '2021-05-24'
+slug: test-refs
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-24T17:25:55-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+type: book
+bibliography: "../references/refs.bib"
+biblio-style: "apa"
+link-citations: true
+nocite: |
+  @RN583
+---

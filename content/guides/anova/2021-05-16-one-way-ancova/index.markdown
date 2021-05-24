@@ -26,14 +26,14 @@ nocite: |
 ---
 
 <!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
-<style>
-pre code, pre, code {
-  white-space: pre !important;
-  overflow-x: scroll !important;
-  word-break: keep-all !important;
-  word-wrap: initial !important;
-}
-</style>
+<!-- <style> -->
+<!-- pre code, pre, code { -->
+<!--   white-space: pre !important; -->
+<!--   overflow-x: scroll !important; -->
+<!--   word-break: keep-all !important; -->
+<!--   word-wrap: initial !important; -->
+<!-- } -->
+<!-- </style> -->
 
 A one-way analysis of covariance (ANCOVA) is an extension of the one-way ANOVA. In some situations, a researcher may wish to statistically control for a concomitant variable. A concomitant variable is one that "comes along" with other variables of interest. These variables are also known as covariates and to concretize this concept, let's take a look at the example data set.
 
@@ -92,25 +92,25 @@ ancova(formula = Post ~ Pre + Condition,
 ##  ANCOVA
 ## 
 ##  ANCOVA - Post                                                                               
-##  ─────────────────────────────────────────────────────────────────────────────────────────── 
-##                 Sum of Squares    df    Mean Square    F            p            η²p         
-##  ─────────────────────────────────────────────────────────────────────────────────────────── 
+##  ------------------------------------------------------------------------------------------- 
+##                 Sum of Squares    df    Mean Square    F            p            <U+03B7>²p         
+##  ------------------------------------------------------------------------------------------- 
 ##    Pre                313.3653     1      313.36526    10.772342    0.0029369    0.2929469   
 ##    Condition          217.1495     2      108.57474     3.732399    0.0375843    0.2230642   
 ##    Residuals          756.3347    26       29.08980                                          
-##  ─────────────────────────────────────────────────────────────────────────────────────────── 
+##  ------------------------------------------------------------------------------------------- 
 ## 
 ## 
 ##  POST HOC TESTS
 ## 
 ##  Post Hoc Comparisons - Condition                                                                         
-##  ──────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##  -------------------------------------------------------------------------------------------------------- 
 ##    Condition         Condition    Mean Difference    SE          df          t             p-bonferroni   
-##  ──────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##  -------------------------------------------------------------------------------------------------------- 
 ##    1            -    2                  -4.448279    2.415968    26.00000    -1.8411994       0.2310916   
 ##                 -    3                  -6.441874    2.413326    26.00000    -2.6692923       0.0387692   
 ##    2            -    3                  -1.993595    2.412766    26.00000    -0.8262695       1.0000000   
-##  ────────────────────────────────────────────────────────────────────────────────────────────────────────
+##  --------------------------------------------------------------------------------------------------------
 ```
 
 <div class="figure">
@@ -160,12 +160,12 @@ print(pwc)
 ```
 
 ```
-## # A tibble: 3 x 8
-##   .y.   group1 group2    df statistic      p  p.adj p.adj.signif
-## * <chr> <chr>  <chr>  <dbl>     <dbl>  <dbl>  <dbl> <chr>       
-## 1 Post  1      2         26    -1.84  0.0770 0.231  ns          
-## 2 Post  1      3         26    -2.67  0.0129 0.0388 *           
-## 3 Post  2      3         26    -0.826 0.416  1      ns
+## # A tibble: 3 x 9
+##   term          .y.   group1 group2    df statistic      p  p.adj p.adj.signif
+## * <chr>         <chr> <chr>  <chr>  <dbl>     <dbl>  <dbl>  <dbl> <chr>       
+## 1 Pre*Condition Post  1      2         26    -1.84  0.0770 0.231  ns          
+## 2 Pre*Condition Post  1      3         26    -2.67  0.0129 0.0388 *           
+## 3 Pre*Condition Post  2      3         26    -0.826 0.416  1      ns
 ```
 
 
@@ -201,9 +201,18 @@ ggerrorplot(get_emmeans(pwc),
 ### Wrap up
 So far, we have seen that the jmv package is well suited for conducting between-subjects ANOVA and ANCOVA. However, we can also appreciate that the rstatix and ggpubr packages work well together for visualizing data. For this guide, the combination of the `emmeans_test()`, `add_xy_position()`, and `stat_pvalue_manual()` functions make plotting means and the statistical significance between them and added plus for preparing publication ready figures.
 
+### Suggested reading
+<div id="refs" class="references csl-bib-body hanging-indent">
+
+<div id="ref-RN583" class="csl-entry">
+
+Miller, G. A., and J. P. Chapman. 2001. “Misunderstanding Analysis of Covariance.” Journal Article. *J Abnorm Psychol* 110 (1): 40–48. <https://doi.org/10.1037//0021-843x.110.1.40>.
+
+</div>
+
+</div>
 
 ### References
-
 <div id="refs" class="references">
 
 <div id="ref-R-ggpubr">
