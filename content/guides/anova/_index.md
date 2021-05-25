@@ -9,7 +9,9 @@ type: book
 <!-- {{< toc hide_on="xl" >}} -->
 
 ## Overview
-This following guides explore how to conduct various ANOVA statistical tests in R with freely available packages. Focus is placed on demonstrating how to implement ANOVA tests in R rather than providing a conceptual background. That task is best accomplished by picking up what's been described as the ANOVA bible --- Maxwell, Delaney, and Kelley's 3rd edition of ["Designing Experiments and Analyzing Data: A model comparison perspective"](https://designingexperiments.com/). For many of the modules, the AMCP package, which is the accompanying R package for the Maxwell et al. text, will be used for sample data sets.
+This following guides explore how to conduct various ANOVA statistical tests in R with freely available packages. Focus is placed on demonstrating how to implement ANOVA tests in R rather than providing a conceptual background. That task is best accomplished by picking up what's been described as the ANOVA bible --- Maxwell, Delaney, and Kelley's 3rd edition of ["Designing Experiments and Analyzing Data: A model comparison perspective"](https://designingexperiments.com/). For many of the guides, the accompanying R package for the Maxwell et al. text, will be used for sample data sets. 
+
+This site is best viewed on macOS or Windows machines with Chrome or Firefox browsers.
 
 <!-- ## Topics covered in this course
 - One-way ANOVA

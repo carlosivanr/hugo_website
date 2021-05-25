@@ -20,14 +20,14 @@ weight: 20
 ---
 
 <!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
-<style>
-pre code, pre, code {
-  white-space: pre !important;
-  overflow-x: scroll !important;
-  word-break: keep-all !important;
-  word-wrap: initial !important;
-}
-</style>
+<!-- <style> -->
+<!-- pre code, pre, code { -->
+<!--   white-space: pre !important; -->
+<!--   overflow-x: scroll !important; -->
+<!--   word-break: keep-all !important; -->
+<!--   word-wrap: initial !important; -->
+<!-- } -->
+<!-- </style> -->
 
 <!-- Limit the vertical height of output and source -->
 <style type="text/css">

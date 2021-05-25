@@ -21,14 +21,14 @@ draft: false
 ---
 
 <!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
-<style>
-pre code, pre, code {
-  white-space: pre !important;
-  overflow-x: scroll !important;
-  word-break: keep-all !important;
-  word-wrap: initial !important;
-}
-</style>
+<!-- <style> -->
+<!-- pre code, pre, code { -->
+<!--   white-space: pre !important; -->
+<!--   overflow-x: scroll !important; -->
+<!--   word-break: keep-all !important; -->
+<!--   word-wrap: initial !important; -->
+<!-- } -->
+<!-- </style> -->
 
 ### The data set
 For this demo, we will use the data from Chapter 12, Table 1 in the AMCP package. In this hypothetical study, 10 subjects are participating in an experiment that tests how visual information can interfere with recognizing letters. Each subject performs a letter recognition task in two conditions, noise absent or present. Noise refers to visual information that is presented along with either a letter T or I that the subject needs to identify. Whithin each condition, visual information was either presented at 0&deg; (directly in front of the participant), at 4&deg; (slightly offset to one side), or at 8&deg; (even more offset to the side). Finally, the dependent variable in this study is the latency in milliseconds needed to identify the letter.
