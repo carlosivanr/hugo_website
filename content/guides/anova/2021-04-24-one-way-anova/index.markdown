@@ -1,21 +1,21 @@
 ---
-title: "One-way ANOVA"
-author: "Carlos Rodriguez"
+title: One-way ANOVA
+author: Carlos Rodriguez
 date: '2021-04-24'
-output: pdf_document
+slug: one-way-anova
+categories: []
+tags: []
+subtitle: ''
+summary: 'Designs with one between-subjects factor.'
+authors: []
+lastmod: '2021-04-24T21:53:52-06:00'
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
-lastmod: '2021-04-24T21:53:52-06:00'
-categories: []
 projects: []
-slug: one-way-anova
-subtitle: ''
-summary: ''
-tags: []
-authors: []
+draft: false
 type: book
 weight: 10
 ---

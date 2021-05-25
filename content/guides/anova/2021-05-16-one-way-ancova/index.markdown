@@ -6,7 +6,7 @@ slug: ancova
 categories: []
 tags: []
 subtitle: ''
-summary: ''
+summary: 'Designs with one between-subjects factor and one continuous covariate.'
 authors: []
 lastmod: '2021-05-16T06:57:23-06:00'
 featured: no

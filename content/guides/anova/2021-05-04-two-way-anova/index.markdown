@@ -6,7 +6,7 @@ slug: two-way-anova
 categories: []
 tags: []
 subtitle: ''
-summary: ''
+summary: 'Designs with two between-subjects factors.'
 authors: []
 lastmod: '2021-05-04T19:37:58-06:00'
 featured: no

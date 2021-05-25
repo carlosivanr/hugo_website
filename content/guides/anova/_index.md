@@ -1,32 +1,31 @@
 ---
 title: ANOVA Guides
 linkTitle: ANOVA with R
-summary: The following are a set of guides for conducting various analysis of variance (ANOVA) tests in R. It's currently a work in progress and serves primarily as a an outlet for personal knowledge management, but may turn into a course some day.
+summary: The following are a set of guides for conducting various analysis of variance (ANOVA) tests in R. It's currently a work in progress and serves primarily as an outlet for personal knowledge management.
 date: '2021-05-12'
 type: book
 ---
 
-<!-- {{< toc hide_on="xl" >}} -->
+{{< toc hide_on="xl" >}} 
 
-## Overview
+# Overview
 This following guides explore how to conduct various ANOVA statistical tests in R with freely available packages. Focus is placed on demonstrating how to implement ANOVA tests in R rather than providing a conceptual background. That task is best accomplished by picking up what's been described as the ANOVA bible --- Maxwell, Delaney, and Kelley's 3rd edition of ["Designing Experiments and Analyzing Data: A model comparison perspective"](https://designingexperiments.com/). For many of the guides, the accompanying R package for the Maxwell et al. text, will be used for sample data sets. 
 
 This site is best viewed on macOS or Windows machines with Chrome or Firefox browsers.
 
-<!-- ## Topics covered in this course
-- One-way ANOVA
-- Welch's ANOVA
-- Two-way ANOVA
-- One-way ANCOVA
-- Repeated measures one-way ANOVA
+# Requirements
+- Working installation of RStudio & R
+- Packages:
+  - AMCP 
+  - jmv 
+  - rstatix
+  - ggpubr
+  - tidyverse
 
 
-
-## Topics covered:
-
-
+# Topics covered
 {{< list_children >}}
--->
+
 
 <!-- ## Meet your instructor
 {{< mention "admin" >}}
@@ -40,7 +39,7 @@ There are no prequisites, but a background in upper division or graduate level s
 Continuously, at your own pace.
 {{< /spoiler >}}
 
-
-{{< cta cta_text="Begin the course" cta_link="/statistics/rstats/one-way-anova" >}}
-
 -->
+
+{{< cta cta_text="Continue" cta_link="/guides/anova/one-way-anova" >}}
+

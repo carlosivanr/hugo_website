@@ -6,7 +6,7 @@ slug: one-way-rm-anova
 categories: []
 tags: []
 subtitle: ''
-summary: ''
+summary: 'Designs with one within-subjects factor.'
 authors: []
 lastmod: '2021-05-05360:40:40-06:00'
 featured: no
