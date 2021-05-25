@@ -20,7 +20,7 @@ type: book
 weight: 10
 ---
 
-<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
+<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally
 <style>
 pre code, pre, code {
   white-space: pre !important;
@@ -28,7 +28,7 @@ pre code, pre, code {
   word-break: keep-all !important;
   word-wrap: initial !important;
 }
-</style>
+</style>  -->
 
 <!-- Limit the vertical height of output and source -->
 <style type="text/css">
@@ -89,13 +89,12 @@ library(AMCP)
 data(C3E9)
 
 # Conduct ANOVA test
-anovaOneW(formula = Scores ~ Group, 
-          data = C3E9, 
-          fishers = TRUE, 
-          welchs = FALSE, 
+anovaOneW(formula = Scores ~ Group,
+          data = C3E9,
+          fishers = TRUE,
+          welchs = FALSE,
           descPlot = TRUE,
-          phMethod = 'tukey'
-          )
+          phMethod = 'tukey')
 ```
 
 ```
@@ -135,8 +134,22 @@ anovaOneW(formula = Scores ~ Group,
 <p class="caption">Figure 1: anovaOneW plot of means and 95% confidence intervals by group.</p>
 </div>
 
+<!-- Alternative jmv one way ANOVA -->
 
+```r
+ANOVA(formula = Scores ~ Group, 
+          data = C3E9,
+      ss = "3",
+      effectSize = 'partEta',
+      postHoc = ~ Group,
+      postHocCorr = 'bonf',
+      postHocES = "d",
+      emMeans = ~ Group,
+      emmPlots = TRUE,
+      ciWidthEmm = 95)
+```
 {{< /tab >}}
+
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
 The rstatix package is another way of programming statistical tests in R. One of the benefits of the rstatix package is that it meshes well with the pipe (`%>%`) operator from the tidyverse package. This facilitates grouping data with the `group_by()` function and conducting pairwise comparisons, generating summary data, and other statistical computations like calculating effect sizes. We'll see an example of this in the code chunk below. The same developer of the rstatix package also developed the ggpubr package which simplifies producing ggplot2 figures. In this demo, the ggpubr package is loaded primarily to simplify producing a jamovi style plot.
@@ -213,7 +226,7 @@ C3E9 %>%
 ```r
 # Effect sizes
 C3E9 %>% 
-  cohens_d(Scores ~ Group, var.equal = TRUE)
+  cohens_d(Scores ~ Group, var.equal = FALSE)
 ```
 
 ```
@@ -244,6 +257,16 @@ C3E9 %>%
 ## 3 3     Scores       3     4     8      6     5     7     2  2.96     6     2
 ## 4 4     Scores       3     8    12     10     9    11     2  2.96    10     2
 ## # … with 2 more variables: se <dbl>, ci <dbl>
+```
+
+
+```r
+# mean difference divided by pooled sd = D
+# mean differenct = D * pooled SD
+# mean difference / D = Pooled SD
+
+#s.p^2 = (n.1 - 1)*(s.1^2) + (n.2 - 1)*(s.2^2)/ n.1 + n.2 -2
+aov(Scores ~ Group, data = C3E9)
 ```
 
 <!-- To produce a jmv style plot, things get a little trickier. First, we will need to calculate means and confidence intervals. Luckily, `get_summary_stats()` can do this painlessly because of the pipe operator from the tidyverse package. Essentially, the C3E9 data is fed to `group_by()` which will separate the data by Group, then the output is fed in `get_summary_stats()` which will compute descriptive statistics such as means, medians, confidence intervals, and others. The summary_data is then what we will use to generate a plot with the `ggplot()` function.   -->
