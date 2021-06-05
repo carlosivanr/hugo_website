@@ -67,7 +67,7 @@ head(C3E9)
 {{< tab tabNum="1" >}}
 Jmv is a package that comes from the standalone <a href="https://jamovi.org/"> jamovi </a> statistical spreadsheet software. Jamovi was designed as an alternative to costly statistical analysis software packages like SPSS or SAS and runs R underneath the hood. The developers of jamovi also maintain an R package with all of the functions of their standalone version.  
 
-With the `ANOVA()` function, we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9 and `ss = "3"` to use the Type III sums of squares. The `effectSize = 'partEta'` will output the partial eta squared effect size for the omnibus test. We will also set the `postHocCorr  = 'bonf'` to conduct Bonferroni corrected post hoc tests (although `tukey` can be used as well),`postHocES = "d"` will compute Cohen's d effect sizes for the post hoc tests. Lastly, we want to set `emmMeans = ~ Group` and `emmPlots = TRUE` to plot estimated marginal means and confidence intervals.
+With the `ANOVA()` function, we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9 and `ss = "3"` to use the Type III sums of squares. The `effectSize = 'partEta'` will output the partial eta squared effect size for the omnibus test. We will also set the `postHocCorr  = 'bonf'` to conduct Bonferroni corrected post hoc tests (although `tukey` can be used as well), `postHocES = "d"` will compute Cohen's d effect sizes for the post hoc tests. Lastly, we want to set `emmMeans = ~ Group` and `emmPlots = TRUE` to plot estimated marginal means and confidence intervals.
 
 ```{r, plot1, fig.cap = 'anovaOneW plot of means and 95% confidence intervals by group.', warning=FALSE,  }
 library(jmv)
@@ -94,7 +94,7 @@ remotes::install_github('jamovi/jmv')
 ```
 
 #### One-way ANOVA with the `anovaOneW()` function
-The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results, although this example uses the `tukey` post hoc test correction method.
+The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results for the omnibus, although the `anvoaOneW()` function is limited to `tukey` post hoc tests.
 <!-- Alternative jmv one way ANOVA -->
 ```{r eval=FALSE, include=TRUE}
 anovaOneW(formula = Scores ~ Group,
