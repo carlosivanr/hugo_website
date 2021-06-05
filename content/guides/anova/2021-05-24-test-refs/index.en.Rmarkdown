@@ -3,18 +3,18 @@ title: TEST_Refs
 author: Carlos Rodriguez
 date: '2021-05-24'
 slug: test-refs
-categories: []
-tags: []
-subtitle: ''
-summary: ''
+categories: [Category]
+tags: [This is a tag]
+subtitle: 'This is the subtitle'
+summary: 'This is the summary'
 authors: []
 lastmod: '2021-05-24T17:25:55-06:00'
-featured: no
+featured: yes
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
-projects: []
+  preview_only: yes
+projects: [project-here]
 draft: true
 type: book
 bibliography: "../references/refs.bib"

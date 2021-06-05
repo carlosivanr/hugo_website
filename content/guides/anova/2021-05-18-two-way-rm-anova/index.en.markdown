@@ -6,7 +6,7 @@ slug: two-way-rm-anova
 categories: []
 tags: []
 subtitle: ''
-summary: 'Designs with two within-subjects factors'
+summary: 'Designs with two within-subjects factors.'
 authors: []
 lastmod: '2021-05-18T16:45:46-06:00'
 featured: no
@@ -100,8 +100,7 @@ anovaRM(
   effectSize = 'partEta',
   emMeans = ~ Condition:Angle,
   emmPlots = TRUE,
-  depLabel = "Mean Latency"
-)
+  depLabel = "Mean Latency")
 ```
 
 ```
@@ -141,7 +140,7 @@ toc()
 ```
 
 ```
-## 3.243 sec elapsed
+## 4.205 sec elapsed
 ```
 {{< /tab >}}
 
@@ -209,7 +208,7 @@ toc()
 ```
 
 ```
-## 0.692 sec elapsed
+## 0.783 sec elapsed
 ```
 
 #### rstatix elapsed time

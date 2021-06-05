@@ -30,23 +30,23 @@ weight: 20
 <!-- </style> -->
 
 <!-- Limit the vertical height of output and source -->
-<style type="text/css">
-pre {
-  max-height: 310px;
-  overflow-y: auto;
-}
+<!-- # ```{css, echo=FALSE} -->
+<!-- # pre { -->
+<!-- #   max-height: 310px; -->
+<!-- #   overflow-y: auto; -->
+<!-- # } -->
+<!-- #  -->
+<!-- # pre[class] { -->
+<!-- #   max-height: 100px; -->
+<!-- # } -->
+<!-- # ``` -->
 
-pre[class] {
-  max-height: 100px;
-}
-</style>
 
 
-
-In this guide, we will cover different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are an extension of one-ways ANOVAS and can be used for situations where the goal is to statistically compare means of two or more groups that differ along two categorical variables.
+In this guide, we will cover different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are an extension of one-ways ANOVAS and can be used for situations where the goal is to statistically compare means of two or more groups that differ along two or more independent variables.
 
 ### The data set
-We will utilize an example with the chapter_7_table_5 data from the AMCP package. In the example dataset, we have a hypothetical experiment that tests the presence or absence of biofeedback in combination with three different drugs on measures of blood pressure. The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to the dependent variable and measure blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design. We will also assume that the assumptions of independence, equality of variance, and normality are met for the sample dataset.
+We will utilize an example with the chapter_7_table_5 data from the AMCP package. In the example dataset, we have a hypothetical experiment that tests the presence or absence of biofeedback (first independent variable) in combination with three different drugs on measures of blood pressure (second independent variables). The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to the dependent variable and measure blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design. We will also assume that the assumptions of independence, equality of variance, and normality are met for the sample dataset.
 
 
 ```r
@@ -71,13 +71,12 @@ head(chapter_7_table_5)
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
-{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" >}}
+{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" tabName3="Welch's jmv" tabName4="Welch's rstatix"  >}}
 
 <!-- -----------------------Tab 1---------------------------------- -->
-{{< tab tabNum="1" >}}  
-We will begin by loading the jmv package and use `ANOVA()` function which can be used for both one-way and two-way designs. The following code will set Score as the dependent variable and Feedback and Drug as independent variables. The settings are set to use type III sums of squares, the effect size will be reported as partial eta squared, post hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be generated.
+{{< tab tabNum="1" >}}
 
-
+We will begin by loading the jmv package and use `ANOVA()` function which can be used for both one-way and two-way designs. The following code will set Score as the dependent variable and Feedback and Drug as independent variables. The call is set to use type III sums of squares, the effect size for omnibus test will be reported as partial eta squared, post hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be generated.
 
 ```r
 library(jmv)
@@ -89,11 +88,12 @@ ANOVA(formula = Score ~ Feedback * Drug,
       effectSize = 'partEta',
       postHoc = c('Feedback', 'Drug'),
       postHocCorr = 'none',
+      postHocES = "d",
       emMeans = ~ Feedback + Drug,
+      #emMeans = list(c("Feedback", "Drug")), #generates interaction plot
       emmPlots = TRUE,
       emmTables = TRUE,
-      ciWidthEmm = 95
-      )
+      ciWidthEmm = 95)
 ```
 
 ```
@@ -113,22 +113,24 @@ ANOVA(formula = Score ~ Feedback * Drug,
 ## 
 ##  POST HOC TESTS
 ## 
-##  Post Hoc Comparisons - Feedback                                                                    
-##  ────────────────────────────────────────────────────────────────────────────────────────────────── 
-##    Feedback         Feedback    Mean Difference    SE          df          t            p           
-##  ────────────────────────────────────────────────────────────────────────────────────────────────── 
-##    1           -    2                 -12.00000    4.557046    24.00000    -2.633285    0.0145635   
-##  ────────────────────────────────────────────────────────────────────────────────────────────────── 
+##  Post Hoc Comparisons - Feedback                                                                                  
+##  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    Feedback         Feedback    Mean Difference    SE          df          t            p            Cohen's d    
+##  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    1           -    2                 -12.00000    4.557046    24.00000    -2.633285    0.0145635    -0.9615397   
+##  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    Note. Comparisons are based on estimated marginal means
 ## 
 ## 
-##  Post Hoc Comparisons - Drug                                                                 
-##  ─────────────────────────────────────────────────────────────────────────────────────────── 
-##    Drug         Drug    Mean Difference    SE          df          t             p           
-##  ─────────────────────────────────────────────────────────────────────────────────────────── 
-##    1       -    2            -24.000000    5.581219    24.00000    -4.3001362    0.0002462   
-##            -    3            -21.000000    5.581219    24.00000    -3.7626192    0.0009578   
-##    2       -    3              3.000000    5.581219    24.00000     0.5375170    0.5958599   
-##  ─────────────────────────────────────────────────────────────────────────────────────────── 
+##  Post Hoc Comparisons - Drug                                                                               
+##  ───────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    Drug         Drug    Mean Difference    SE          df          t             p            Cohen's d    
+##  ───────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    1       -    2            -24.000000    5.581219    24.00000    -4.3001362    0.0002462    -1.9230794   
+##            -    3            -21.000000    5.581219    24.00000    -3.7626192    0.0009578    -1.6826945   
+##    2       -    3              3.000000    5.581219    24.00000     0.5375170    0.5958599     0.2403849   
+##  ───────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    Note. Comparisons are based on estimated marginal means
 ## 
 ## 
 ##  ESTIMATED MARGINAL MEANS
@@ -163,14 +165,10 @@ ANOVA(formula = Score ~ Feedback * Drug,
 <img src="{{< blogdown/postref >}}index_files/figure-html/plot1-2.png" alt="Estimated marginal means and confidence intervals." width="672" />
 <p class="caption">Figure 2: Estimated marginal means and confidence intervals.</p>
 </div>
-
-<!-- #### Comparisons of Cell Means with jmv -->
-<!-- Where things get a little more complicated for jmv, is in the comparisons of cell means. These would test all pairwise combinations of Drug within Factor for this example. The following code will produce the results of interest, but it will also produce quite a bit of output and so the code is commented -->
-
 {{< /tab >}}
 
 <!-- -----------------------Tab 2---------------------------------- -->
-{{< tab tabNum="2" >}}  
+{{< tab tabNum="2" >}}
 When using rstatix, it's useful to load the tidyverse package as well. This will make it so that we can use the pipe operator (`%>%`) and the `group_by()` function. Once we load our data, we will first want to convert Feedback and Drug to factor so the values get treated as categorical variable. Next, we will build an ANOVA model with the base R `aov()` function that predicts Score by Feedback and Drug. Finally, we will use the rstatix `anova_test()` function on our aov model to produce the output for the omnibus test.
 
 ```r
@@ -285,8 +283,6 @@ chapter_7_table_5 %>%
   get_summary_stats(Score) %>%
   select(Feedback, mean, sd, se)
 ```
-
-
 #### Drug
 
 ```r
@@ -348,43 +344,45 @@ ggerrorplot(get_emmeans(pwc),
 <p class="caption">Figure 4: Means and confidence intervals for Drug collapsed across Feedback. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant</p>
 </div>
 
+
+```r
+# Generate an interaction plot
+ggline(chapter_7_table_5, 
+       x = "Feedback", 
+       y = "Score",
+       color = "Drug",
+       add = "mean_se",
+       palette = "jama",
+       position = position_dodge(.2))
+```
+
 The two tests of marginal means will produce a couple of messages to remind us that the results could be misleading because of interactions. However, as we saw in the omnibus test, there was no significant interaction and can disregard the messages. The results of the `emmeans_test()` on Feedback indicate a significant effect and suggests that the participants undergoing biofeedback had lower bloodpressure scores than those without biofeedback. When examining the output of the results of the `emmeans_test()` on Drug, we see that the mean of Drug 1 is significantly lower than that of Drug 2 and Drug 3. However, the mean of Drug 2 is not significantly different than that of Drug 3.
 
-<!-- #### Alternative rstatix method for two-way ANOVA -->
-<!-- There is an additional way of using the `anova_test()` function. First, we will create a model with the base R `aov()` function. Then we can run the `anova_test()` function on our model. This form will have the added benefit of playing well the `emmeans_test()` function to correctly calculate the degrees of freedom for post-hoc tests. Also in this code block is the command to perform the the comparisons of cell means within each factor. -->
-
-
-
-
-<!-- #### Comparisons of cell means -->
-
-
-
-
-
-<!-- [Back to jmv](#jmv) -->
 {{< /tab >}}
 
-<!-- -----------------------Tab 3---------------------------------- -->
-<!-- {{< tab tabNum="3" >}} -->
-<!-- ### -->
-<!-- When using the base R function, it's wise to also load the car package. The default sums of squares in the `aov()` function is type II and in order to get ANOVA results with type III sums of squares, the car package is needed. Similar to the functions with rstatix, we will need to convert the Feedback and Drug data to factor before running the ANOVA. -->
-
-
-<!-- As for the post-hoc tests, we can use the built-in `TukeyHSD()` function. These values will match those produced by jmv and rstatix when setting the correction method to "tukey". There are other ways of  -->
-
-{{< /tab >}}
 {{< /tabs >}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 [Back to tabs](#tests)
 
 ### Wrap up
-The jmv and rstatix functions both produce the same results, as they should because they share many of the underlying statistical functions. The jmv package is a great place to start with statistical tests if you are beginning with R. One reason for this is because it simplifies some of the syntax, generates plots automatically, and it can automatically convert some of your numerical data to categorical. While it's a lot easier to code a 2x3 ANOVA with jmv there are some advantages to using rstatix and ggpubr. One advantage is that the ggpubr functions are designed to take in arguments from rstatix that make plotting significance markers relatively straightforward. In addition, ggpubr plots can be used as a starting point layer ggplot geometric elements like the `geom_errorbar()` element in Figures 3 and 4. 
+The jmv and rstatix functions both produce the same results, as they should because they share many of the underlying statistical functions. The jmv package is a great place to start with statistical tests if you are beginning with R. One reason for this is because it simplifies some of the syntax, generates plots automatically, and it can automatically convert some of your numerical data to categorical. While it's a lot easier to code a 2x3 ANOVA with jmv there are some advantages to using rstatix and ggpubr. One advantage is that the ggpubr functions are designed to take in arguments from rstatix that make plotting significance markers relatively straightforward. In addition, ggpubr plots can be used as a starting point to layer additional ggplot geometric elements like the `geom_errorbar()` in Figures 3 and 4. 
 
 
 ### References
-
-
 <div id="refs" class="references">
 
 <div id="ref-R-ggpubr">

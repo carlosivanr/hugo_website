@@ -12,13 +12,11 @@ email: ""
 highlight_name: false
 interests:
 - Resting state functional MRI
-- Graph theory
-- Data analysis
-- Data visualization
+- Data analysis & visualizaion
 - Promoting diversity in neuroscience
 organizations:
 - name: Mind Research Network
-  url: https://www.mrn.org
+  url: 
 role: Postdoctoral Fellow
 social:
 # - icon: envelope

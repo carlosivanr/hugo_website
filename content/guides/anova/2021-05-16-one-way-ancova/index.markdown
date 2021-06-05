@@ -38,7 +38,7 @@ nocite: |
 A one-way analysis of covariance (ANCOVA) is an extension of the one-way ANOVA. In some situations, a researcher may wish to statistically control for a concomitant variable. A concomitant variable is one that "comes along" with other variables of interest. These variables are also known as covariates and to concretize this concept, let's take a look at the example data set.
 
 ### The data set
-For this demo, we will use the data from Chapter 9, Table 7 in the AMCP package. In this hypothetical study, participants are randomly assigned to one of three conditions to examine the effectiveness of a treatment for depression. Participants received a selective serotonin reuptake inhibitor (SSRI) in condition 1, a placebo in condition 2, or were assigned to a wait list control in condition 3. Each participant was also assessed for depression in a pre- and post-treatment assessment. One might want to control for pre-treatment levels of depression when comparing across the three conditions. In this example, pre-treatment depression scores are treated as covariates. 
+For this demo, we will use the data from Chapter 9, Table 7 in the AMCP package. In this hypothetical study, participants are randomly assigned to one of three conditions to examine the effectiveness of a treatment for depression. Participants received a selective serotonin reuptake inhibitor (SSRI) in condition 1, a placebo in condition 2, or were assigned to a wait list control in condition 3. Each participant was also assessed for depression with a pre- and post-treatment inventory. In this type of study, one might want to control for pre-treatment levels of depression when comparing the three conditions in their post-treatment scores. As a result, pre-treatment depression scores can serve as covariates. 
 
 
 ```r
@@ -69,7 +69,7 @@ head(chapter_9_table_7)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
-The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared, to produce Bonferroni corrected post hoc tests to compare conditions. Finally, a plot of means by condition with 95% confidence intervals will be generated.
+The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared for the omnibus test, to produce Bonferroni corrected post hoc tests to compare conditions, and post hoc test effect sizes in Cohen's D. Finally, a plot of means by condition with 95% confidence intervals will be generated.
 
 ```r
 library(jmv)
@@ -81,9 +81,10 @@ ancova(formula = Post ~ Pre + Condition,
        effectSize = 'partEta',
        postHoc = ~ Condition,
        postHocCorr = 'bonf',
-       postHocES = 'd',
+       postHocES = "d",
        emMeans = ~ Condition,
        emmPlots = TRUE,
+       emmTables = TRUE,
        emmPlotError = "ci",
        ciWidthEmm = 95)
 ```
@@ -104,14 +105,29 @@ ancova(formula = Post ~ Pre + Condition,
 ## 
 ##  POST HOC TESTS
 ## 
-##  Post Hoc Comparisons - Condition                                                                                      
-##  ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
-##    Condition         Condition    Mean Difference    SE          df          t             p-bonferroni    Cohen's d   
-##  ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
-##    1            -    2                  -4.448279    2.415968    26.00000    -1.8411994       0.2310916    0.3361555   
-##                 -    3                  -6.441874    2.413326    26.00000    -2.6692923       0.0387692    0.4873439   
-##    2            -    3                  -1.993595    2.412766    26.00000    -0.8262695       1.0000000    0.1508555   
-##  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+##  Post Hoc Comparisons - Condition                                                                                       
+##  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    Condition         Condition    Mean Difference    SE          df          t             p-bonferroni    Cohen's d    
+##  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    1            -    2                  -4.448279    2.415968    26.00000    -1.8411994       0.2310916    -0.8247488   
+##                 -    3                  -6.441874    2.413326    26.00000    -2.6692923       0.0387692    -1.1943782   
+##    2            -    3                  -1.993595    2.412766    26.00000    -0.8262695       1.0000000    -0.3696294   
+##  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+##    Note. Comparisons are based on estimated marginal means
+## 
+## 
+##  ESTIMATED MARGINAL MEANS
+## 
+##  CONDITION
+## 
+##  Estimated Marginal Means - Condition                            
+##  ─────────────────────────────────────────────────────────────── 
+##    Condition    Mean         SE          Lower        Upper      
+##  ─────────────────────────────────────────────────────────────── 
+##    1             7.536616    1.707096     4.027629    11.04560   
+##    2            11.984895    1.706832     8.476452    15.49334   
+##    3            13.978489    1.705586    10.472608    17.48437   
+##  ───────────────────────────────────────────────────────────────
 ```
 
 <div class="figure">
@@ -147,7 +163,7 @@ get_anova_table(aocv.model)
 ```
 
 ### Post hoc tests
-To conduct the post hoc tests, we will use the `emmeans_test()` function specifying the formula `Post ~ Condition`, setting `covariate = Pre`, and the Bonferroni correction with `p.adjust.method = "bonferroni"`. In the following code chunk, we will also save the output to an object called pwc and then print it to the console with the `print()` function which will serve us when generating the [plot of means](#mean_plots).
+To conduct the post hoc tests, we will use the `emmeans_test()` function specifying the formula `Post ~ Condition`, setting `covariate = Pre`, and the Bonferroni correction with `p.adjust.method = "bonferroni"`. In the following code chunk, we will also save the output to an object called `pwc`. The `pwc` object can be used with the `get_emmeans()` function to disply the estimated marginal means for each group after accounting for the covariate. Finally, we can print `pwc` to the console with the `print()` to display the results of the post hoc tests.
 
 ```r
 # Pairwise comparisons
@@ -156,7 +172,21 @@ pwc <- chapter_9_table_7 %>%
                covariate = Pre,
                p.adjust.method = "bonferroni")
 
-# Print post hoc test
+# Print estimated marginal means
+get_emmeans(pwc)
+```
+
+```
+## # A tibble: 3 x 8
+##     Pre Condition emmean    se    df conf.low conf.high method      
+##   <dbl> <fct>      <dbl> <dbl> <dbl>    <dbl>     <dbl> <chr>       
+## 1  17.4 1           7.54  1.71    26     4.03      11.0 Emmeans test
+## 2  17.4 2          12.0   1.71    26     8.48      15.5 Emmeans test
+## 3  17.4 3          14.0   1.71    26    10.5       17.5 Emmeans test
+```
+
+```r
+# Print post hoc tests
 print(pwc)
 ```
 
@@ -168,19 +198,88 @@ print(pwc)
 ## 2 Post  1      3         26    -2.67  0.0129 0.0388 *           
 ## 3 Post  2      3         26    -0.826 0.416  1      ns
 ```
+### Effect sizes
+The process to calculate the effect sizes of the post hoc comparisons is a little more drawn out in this case. First, we will need the `MBESS` package. Next we will need three pieces of information, group means, standard deviations, and sample sizes. We will want the estimated marginal means for this situation because these means have been adjusted to take into consideration the covariate. We can also calculate the standard deviations by multiplying the standard error of each group by the square root of the group sample size. Finally, we can enter those values into the `smd()` function. A nice feature of the `smd()` is that we can calculate a standardized mean difference as biased or unbiased. In practice, it is recommended to set `Unbiased = TRUE` with small samples.
+
+```r
+library(MBESS)
+
+# Get sample sizes. For these data, each group had 10 so n <- c(10, 10,10) would have worked,
+# but the following code here will generalize to other datasets
+n <- chapter_9_table_7 %>% 
+  group_by(Condition) %>% 
+  get_summary_stats() %>% 
+  filter(variable == "Post") %>% 
+  select(n)
+
+# Need emmeans from pwc
+emm <- get_emmeans(pwc) %>% select(emmean)
+
+# Get standard deviations
+std <- get_emmeans(pwc)$se * sqrt(n)
+
+# Group 1 vs group 2
+smd(Mean.1 = emm[1,], 
+    Mean.2 = emm[2,], 
+    s.1 = std[1,], 
+    s.2 = std[2,], 
+    n.1 = n[1,], 
+    n.2 = n[2,],
+    Unbiased = FALSE)
+```
+
+```
+##       emmean
+## 1 -0.8240768
+```
+
+```r
+# Group 1 vs group 3
+smd(Mean.1 = emm[1,], 
+    Mean.2 = emm[3,], 
+    s.1 = std[1,], 
+    s.2 = std[3,], 
+    n.1 = n[1,], 
+    n.2 = n[3,],
+    Unbiased = FALSE)
+```
+
+```
+##      emmean
+## 1 -1.193841
+```
+
+```r
+# Group 2 vs group 3
+smd(Mean.1 = emm[2,], 
+    Mean.2 = emm[3,], 
+    s.1 = std[2,], 
+    s.2 = std[3,], 
+    n.1 = n[2,], 
+    n.2 = n[3,],
+    Unbiased = FALSE)
+```
+
+```
+##       emmean
+## 1 -0.3694917
+```
+
 
 
 
 ### Plot of means {#mean_plots}
-While the jmv approach is nice because we can get quite a bit of output (ANCOVA test, post hoc tests, and plots) from one function, the benefit of using rstatix is that we gain some additional features when it comes to plotting. The plot produced for this guide displays the estimated marginal means, confidence intervals, a significance marker, the results of the omnibust tests, and includes a caption displaying the test used to compare means and the multiple correction procedure.
+While the jmv approach is nice because we can get quite a bit of output (ANCOVA test, post hoc tests, and plots) from one function, the benefit of using rstatix is that we gain some additional features when it comes to plotting. The plot produced for this guide displays the estimated marginal means, confidence intervals, a significance marker, the results of the omnibust test, and includes a caption displaying the tests used to compare means and the multiple correction procedure.
 
 
 
 
 ```r
+# Add the x and y coordinates for plotting significance markers
 pwc <- pwc %>% add_xy_position(x = "Condition", 
                                fun = "mean_se")
 
+# Generate an error plot with significance markers, label, and caption
 ggerrorplot(get_emmeans(pwc), 
             x = "Condition", 
             y = "emmean", 
@@ -198,9 +297,15 @@ ggerrorplot(get_emmeans(pwc),
 {{< /tab >}}
 {{< /tabs >}}
 
+<!-- # ```{r package refs, include = FALSE} -->
+<!-- # knitr::write_bib(c("AMCP", "rstatix", "ggpubr", "tidyverse", "jmv", "base"), "", width = 60) -->
+<!-- # ``` -->
+
+### Interpretation
+When examining the results of ANCOVA model, we notice that the pre-treatment scores significantly predicted post-treatment scores. Additionally, after removing the effect of the pre-treatment scores, the effect of Condition is signficant. By examining Figure <a href="#fig:jmv">1</a> and the estimated marginal means seem lower for Condition 1. Post-hoc comparisons revealed a significant difference between Condition 1 and Condition 2, but not in any other pairwise test when correcting for multiple comparisons using the Bonferroni method.
 
 ### Wrap up
-So far, we have seen that the jmv package is well suited for conducting between-subjects ANOVA and ANCOVA. However, we can also appreciate that the rstatix and ggpubr packages work well together for visualizing data. For this guide, the combination of the `emmeans_test()`, `add_xy_position()`, and `stat_pvalue_manual()` functions make plotting means and the statistical significance between them and added plus for preparing publication ready figures.
+So far, we have seen that the jmv package is well suited for conducting between-subjects ANOVA and ANCOVA. However, we can also appreciate that the rstatix and ggpubr packages work well together for visualizing data. For this guide, the combination of the `emmeans_test()`, `add_xy_position()`, and `stat_pvalue_manual()` functions make plotting means and the statistical significance between them and added feature that can come in handy for preparing publication ready figures.
 
 ### Suggested reading
 <div id="refs" class="references csl-bib-body hanging-indent">

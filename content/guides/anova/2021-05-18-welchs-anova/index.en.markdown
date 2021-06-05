@@ -42,8 +42,7 @@ pre[class] {
 }
 </style>
 
-ANOVA is a commonly used statistical technique to compare means among two or more groups. The primary assumptions of ANOVA are independence between groups, normally distributed data, and homogeneity of variance. When the homogeneity of variance assumption is violated, a Welch's ANOVA can be conducted instead. The omnibus test of a Welch's ANOVA can then be followed by Games-Howell post-hoc tests. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way designs). This guide covers how to test for normality, homogeneity of variance and how to conduct a Welch's ANOVA followed by the appropriate post-hoc tests with the jmv and rstatix packages. The two approaches use the same example data set as the Fisher's one-way ANOVA.
-
+When the homogeneity of variance assumption is violated for a one-way ANOVA, a Welch's ANOVA can be conducted instead. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way designs). This guide covers how to test for normality, homogeneity of variance and how to conduct a Welch's ANOVA followed by the appropriate post-hoc tests with the jmv and rstatix packages. The two approaches use the same example data set as the Fisher's [one-way ANOVA](/guides/anova/one-way-anova).
 
 ### The data set
 For this module we will use the data from the Chapter 3, Exercise 9 in the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
@@ -146,9 +145,9 @@ anovaOneW(formula = Scores ~ Group,
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
-In rstatix, the `anova_test()` function can analyse several types of between and within subjects ANOVA designs. However, to conduct a Welch's ANOVA , the `welch_anova_test()` function is required. The syntax to conduct the actual test is rather simple. In the following code chunk, I've chosen to explicitly declare `formula = Scores ~ Group` and `data = C3E9`.  However, one could just as easily specify the dataframe and formula as long as data is the first entered variable. Similarly, data and formula do not need to be explicitly specified for the `games_howell_test()` function, but hare specified in the example for consistency. 
+In rstatix, the `anova_test()` function can analyse several types of between and within subjects ANOVA designs. However, to conduct a Welch's ANOVA , the `welch_anova_test()` function is required. The syntax to conduct the actual test is rather simple. In the following code chunk, I've chosen to explicitly declare `formula = Scores ~ Group` and `data = C3E9`. However, one could just as easily specify the dataframe and formula as long as data is the first entered variable. Similarly, data and formula do not need to be explicitly specified for the `games_howell_test()` function, but hare specified in the example for consistency. 
 
-To produce the Shapiro-Wilk's test of normality as in the jmv output, create an analysis of variance (aov) model with the base R `aov()` function. The rstatix package does contain its own `shapiro_test()` function, but it will not test normality of the residuals, only the actual values. In the guide, the `aov()` model is nested within the `residuals()` function, which is nested within the `shapiro.test()` function. This will conduct Shapiro-Wilk's test on the residuals. Finally, for the homogeneity of variance test, the rstatix `levene_test()` function specifying a formula and a dataframe does the job. Base R also can also plot the Residuals vs Fitted values and generate Q-Q (quantile-quantile) plots from an `aov()` object to examine homogeneity of variance and normality respectively.
+To produce the Shapiro-Wilk's test of normality as in the jmv output, we will need to create an analysis of variance (aov) model with the base R `aov()` function. The rstatix package does contain its own `shapiro_test()` function, but it will not test normality of the residuals, only the actual values. In the code snippet below, the `aov()` model is nested within the `residuals()` function, which is nested within the `shapiro.test()` function. This will conduct Shapiro-Wilk's test on the residuals of the aov object. Finally, for the homogeneity of variance test, the rstatix `levene_test()` function specifying a formula and a dataframe does the job. Base R also can also plot the Residuals vs Fitted values and generate Q-Q (quantile-quantile) plots from an `aov()` object to examine homogeneity of variance and normality respectively.
 
 #### Check normality
 
@@ -212,6 +211,11 @@ welch_anova_test(formula = Scores ~ Group,
 ##   .y.        n statistic   DFn   DFd     p method     
 ## * <chr>  <int>     <dbl> <dbl> <dbl> <dbl> <chr>      
 ## 1 Scores    12      7.69     3  4.44 0.032 Welch ANOVA
+```
+
+```r
+# Alternatively
+# welch_anova_test(C3E9, Scores ~ Group)
 ```
 
 #### Post hoc tests
