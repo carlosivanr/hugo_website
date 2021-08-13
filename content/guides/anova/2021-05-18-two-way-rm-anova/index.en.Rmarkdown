@@ -86,7 +86,7 @@ anovaRM(
       cell = c("Present", "8"))),
   rmTerms = ~ Condition + Angle + Condition:Angle,
   effectSize = 'partEta',
-  emMeans = ~ Condition:Angle,
+  emMeans = list(c("Angle", "Condition")),
   emmPlots = TRUE,
   depLabel = "Mean Latency")
 toc()
@@ -94,7 +94,7 @@ toc()
 {{< /tab >}}
 
 {{< tab tabNum="2" >}}
-As we encountered in guide for [one-way rm-ANOVA](/guides/anova/one-way-anova), we will want to convert our data set from wide format to long format before conducting the statistical test. This situation is a bit trickier because there are many more columns to deal with so I've written a separate walkthrough that can be found [here](/guides/r/wide-to-long) in order to emphasize the conducting the statistical tests on this page.
+As we encountered in the guide for [one-way rm-ANOVA](/guides/anova/one-way-anova), we will want to convert our data set from wide format to long format before conducting the statistical test. This situation is a bit trickier because there are many more columns to deal with so I've written a separate walkthrough that can be found [here](/guides/r/wide-to-long) in order to emphasize the conducting the statistical tests on this page.
 
 ```{r rstatix, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -153,6 +153,9 @@ toc()
 [Back to tabs](#tests)
 
 ### Interpretation
+The omnibus test reveals a significant interaction between Angle and Condition [F(2,18) = 45.31, p < 0.05] and suggests that the effect of Angle is different at each level of condition. The significant interaction was then followed up with simple effects. Simple effects can be thought of as conducting one-way repeated measures ANOVAs at each level of Condition.
+
+
 - If interaction, simple effects, then cell means
 
 - If no interaction, then test marginal means
