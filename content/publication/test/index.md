@@ -17,7 +17,7 @@ publication_types: ["2"]
 
 # Publication name and optional abbreviated publication name.
 publication: "Alcoholism: Clinical and Experimental Research (in press)"
-publication_short: "*ACER (in press)*"
+publication_short: "*Alcohol Clin Exp Res (in press)*"
 
 abstract: ""
 

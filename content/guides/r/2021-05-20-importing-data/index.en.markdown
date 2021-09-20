@@ -16,6 +16,7 @@ image:
   preview_only: no
 projects: []
 type: book
+weight: 5
 ---
 
 R is highly flexible in its ability to work with a number of different file types. I've used R to import .tsv, .csv, Excel, SPSS, and .txt files. Below are a handful of ways of importing data into R.

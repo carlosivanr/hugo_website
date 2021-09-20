@@ -28,8 +28,8 @@ main:
     weight: 20
     
 # - name: Courses
-#    url: courses/
-#    weight: 40
+#    url: '#courses'
+#    weight: 25
     
 #  - name: Contact
 #    url: '#contact'
