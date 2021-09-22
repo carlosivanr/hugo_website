@@ -1,9 +1,10 @@
 ---
 title: ANOVA
 linkTitle: ANOVA with R
-summary: The following are a set of guides for conducting analysis of variance (ANOVA) tests in R.
+summary: How to conduct analysis of variance (ANOVA) tests in R.
 date: '2021-05-12'
 type: book
+weight: 15
 ---
 
 {{< toc hide_on="xl" >}} 

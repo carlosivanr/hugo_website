@@ -1,10 +1,11 @@
 ---
 title: Data Manipulation
 linkTitle: Data Manipulation
-summary: The following are a set of guides for importing, manipulating, and visualizing data in R and Python.
+summary: How to import, manipulate, and visualize data in R and Python.
 date: '2021-04-25'
 type: book
 draft: false
+weight: 10
 ---
 <!--
 {{< figure src="featured.jpg" >}}

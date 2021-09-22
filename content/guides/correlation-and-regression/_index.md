@@ -1,7 +1,7 @@
 ---
 title: Correlation and Regression
 linkTitle: Correlation and Regression
-summary: The following are a set of guides for conducting regression analyses in R and Python.
+summary: How to perform regression analyses in R and Python.
 date: '2021-09-17'
 type: book
 draft: false

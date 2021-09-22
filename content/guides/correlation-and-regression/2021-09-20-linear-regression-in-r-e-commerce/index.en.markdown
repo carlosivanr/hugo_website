@@ -1,5 +1,5 @@
 ---
-title: Linear Regression Exercise 1 in R
+title: Linear Regression Exercise-1 in R
 author: Carlos Rodriguez
 date: '2021-09-20'
 slug: linear-regression-in-r-e-commerce
@@ -23,28 +23,6 @@ draft: True
 
 ### Load Packages
 
-```
-## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-```
-
-```
-## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
-## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-## ✓ readr   2.0.0     ✓ forcats 0.5.1
-```
-
-```
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-```
-
-```
-## Registered S3 method overwritten by 'GGally':
-##   method from   
-##   +.gg   ggplot2
-```
 
 ### Load and Inspect Data
 
@@ -86,6 +64,7 @@ head(df)
 
 
 ### Exploratory Data Analysis
+The GGally package comes in handy for performing exploratory data analysis. Here we will pass through the numeric columns of customers to the `ggpairs()` function. The output isn't pretty, but, it does communicate quite a bit of information.
 
 ```r
 ggpairs(customers[,c(4,5,6,7,8)])
@@ -93,7 +72,7 @@ ggpairs(customers[,c(4,5,6,7,8)])
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
-
+After inspecting the output, it is evident that there is a strong relationship between Length of Membership and Yearly Amount Spent. We can then use ggplot2 to display this relationship in a new plot.
 
 ```r
 # Use backticks when column names include spaces
@@ -106,6 +85,7 @@ ggplot(data = customers, aes(x = `Length of Membership`, y = `Yearly Amount Spen
 
 
 ### Prepare Data for Linear Regression
+In this step, we will split the data into training and testing sets. We will build a regression model with the training data, use the model to predict new values using the test data, and then compare the results of the predicted values with the actual values in the test data.
 
 ```r
 # Set the seed for reproducibility
@@ -125,6 +105,7 @@ test = customers[-train_index, ]
 ```
 
 ### Linear Regression Modeling
+After splitting our data, we can proceed to creating a linear regression model. We will predict Yearly Amount Spent (response variable), from the rest of the numerical predictor variables. Then we will take a look at the residuals which allow us to gauge the amount of error (how far off the data points are from the line generated in the model).
 
 ```r
 model <- lm(`Yearly Amount Spent` ~ ., data = train[,c(4,5,6,7,8)]) # the . means everything else, -subtracts the columns from the call
@@ -177,10 +158,6 @@ ggplot(data = res, aes(res)) +
          geom_histogram(fill = azl, alpha = 0.8)
 ```
 
-```
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-```
-
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 
 ```r
@@ -188,6 +165,7 @@ ggplot(data = res, aes(res)) +
 ```
 
 ### Predictions
+In this step, we will use the model created above, to make predictions using data that was not used in generating the model. Then we can plot the predicted values along with the actual values. We will see that our model performed quite well.
 
 ```r
 predictions <- predict(model, test[,c(4,5,6,7,8)])
@@ -203,7 +181,7 @@ ggplot(results, aes(x = predicted, y = actual)) +
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 
 
-
+### Model Evaluation ???
 
 
 

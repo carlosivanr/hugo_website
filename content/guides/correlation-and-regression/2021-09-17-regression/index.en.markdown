@@ -1,5 +1,5 @@
 ---
-title: Linear Regression Exercise in Python
+title: Linear Regression Exercise-1 in Python
 author: Carlos Rodriguez
 date: '2021-09-17'
 slug: regression
@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 10
-draft: True
+draft: False
 ---
 
 
@@ -90,7 +90,7 @@ sns.jointplot(x = 'Time on Website', y = 'Yearly Amount Spent', data = customers
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7ffac17fa7f0>
+## <seaborn.axisgrid.JointGrid object at 0x7fce5beba828>
 ```
 
 ```python
@@ -110,7 +110,7 @@ sns.jointplot(x = "Time on App", y = "Yearly Amount Spent", data = customers)
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7ffac25d4278>
+## <seaborn.axisgrid.JointGrid object at 0x7fce5dd932b0>
 ```
 
 ```python
@@ -129,7 +129,7 @@ sns.jointplot(x = "Time on App", y = "Length of Membership", data = customers, k
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7ffabe2dd278>
+## <seaborn.axisgrid.JointGrid object at 0x7fce599e3a20>
 ```
 
 ```python
@@ -277,7 +277,7 @@ sns.histplot((y_test-predictions),bins=50, kde = True) # We want the difference 
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7ffac56fe828>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7fce60dbe4a8>
 ```
 
 ```python

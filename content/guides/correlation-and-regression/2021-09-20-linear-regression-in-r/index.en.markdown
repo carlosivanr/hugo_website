@@ -1,5 +1,5 @@
 ---
-title: Linear Regression Exercise 2 in R 
+title: Linear Regression Exercise-2 in R 
 author: Carlos Rodriguez
 date: '2021-09-20'
 slug: linear-regression-in-r
@@ -26,47 +26,11 @@ Predict the total count of bikes rented during each hour covered by the test set
 
 ### Load Packages
 
-```
-## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-```
-
-```
-## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
-## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-## ✓ readr   2.0.0     ✓ forcats 0.5.1
-```
-
-```
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-```
 
 ### Load Data
 
 ```r
 df <- read_csv("bikeshare.csv")
-```
-
-```
-## Rows: 10886 Columns: 12
-```
-
-```
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: ","
-## dbl  (11): season, holiday, workingday, weather, temp, atemp, humidity, wind...
-## dttm  (1): datetime
-```
-
-```
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-```
-
-```r
 head(df)
 ```
 
