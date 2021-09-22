@@ -23,7 +23,7 @@ main:
 #    url: '#posts'
 #    weight: 30
     
-  - name: R Guides
+  - name: Data Analysis Guides
     url: guides/
     weight: 20
     

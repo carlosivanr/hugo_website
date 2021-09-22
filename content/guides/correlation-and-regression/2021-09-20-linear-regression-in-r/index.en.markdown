@@ -1,5 +1,5 @@
 ---
-title: Linear Regression in R
+title: Linear Regression Exercise 2 in R 
 author: Carlos Rodriguez
 date: '2021-09-20'
 slug: linear-regression-in-r
@@ -27,10 +27,6 @@ Predict the total count of bikes rented during each hour covered by the test set
 ### Load Packages
 
 ```
-## Warning: package 'tidyverse' was built under R version 4.0.2
-```
-
-```
 ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
 ```
 
@@ -39,30 +35,6 @@ Predict the total count of bikes rented during each hour covered by the test set
 ## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
 ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
 ## ✓ readr   2.0.0     ✓ forcats 0.5.1
-```
-
-```
-## Warning: package 'ggplot2' was built under R version 4.0.2
-```
-
-```
-## Warning: package 'tibble' was built under R version 4.0.2
-```
-
-```
-## Warning: package 'tidyr' was built under R version 4.0.2
-```
-
-```
-## Warning: package 'readr' was built under R version 4.0.2
-```
-
-```
-## Warning: package 'dplyr' was built under R version 4.0.2
-```
-
-```
-## Warning: package 'forcats' was built under R version 4.0.2
 ```
 
 ```
@@ -128,7 +100,7 @@ ggplot(data = df, aes(x = temp, y = count)) +
 
 ggplot(data = df, aes(x = datetime, y = count)) +
   geom_point(alpha = 0.2, aes(color=temp)) +
-  scale_color_continuous(low = "#55D8CE", high = "#FF6E2E")
+  scale_color_continuous(low = "#2166AC", high = "#B2182B")
 ```
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" />
@@ -174,10 +146,11 @@ df$hour <- sapply(df$datetime, function(x){format(x, "%H")})
 ### Scatterplot with new data (working days)
 
 ```r
+pal <- c("#2166AC", "#67A9CF",  "#D1E5F0", "#FDDBC7", "#EF8A62", "#B2182B")
 df %>% filter(workingday == 1) %>%
   ggplot(., aes(x = hour, y = count, color = temp)) +
   geom_point(position = position_jitter(w=1, h=0)) +
-  scale_color_gradientn(colors = c("dark blue","blue","light blue","light green","yellow","orange","red"))
+  scale_color_gradientn(colors = pal)
 ```
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" />
@@ -189,13 +162,13 @@ df %>% filter(workingday == 1) %>%
 df %>% filter(workingday != 1) %>%
   ggplot(., aes(x = hour, y = count, color = temp)) +
   geom_point(position = position_jitter(w=1, h=0)) +
-  scale_color_gradientn(colors = c("dark blue","blue","light blue","light green","yellow","orange","red"))
+  scale_color_gradientn(colors = pal)
 ```
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 
 
-### Building a model based on temperature
+### Build a model based on temperature
 
 ```r
 temp_model <- lm(count ~ temp, data = df)
@@ -241,11 +214,11 @@ predict(temp_model, data.frame(temp=c(25)))
 ```
 
 
-### Building more models
+### Building a more complex model
 
 ```r
 df$hour <- sapply(df$hour, as.numeric)
-model <- lm(count ~ . -casual -registered -datetime -atemp, data = df ) # the . means everything else, -subtracts the columsn from the call
+model <- lm(count ~ . -casual -registered -datetime -atemp, data = df) # the . means everything else, -subtracts the columsn from the call
 summary(model)
 ```
 

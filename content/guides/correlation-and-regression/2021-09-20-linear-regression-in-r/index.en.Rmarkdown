@@ -1,5 +1,5 @@
 ---
-title: Linear Regression in R
+title: Linear Regression Exercise 2 in R 
 author: Carlos Rodriguez
 date: '2021-09-20'
 slug: linear-regression-in-r
@@ -25,12 +25,12 @@ Bike sharing link: https://www.kaggle.com/c/bike-sharing-demand/data
 Predict the total count of bikes rented during each hour covered by the test set, using only information available prior to the rental period.
 
 ### Load Packages
-```{r, libraries, echo = FALSE, warning = FALSE}
+```{r, libraries, echo = FALSE, warning = FALSE, message=FALSE}
 library(tidyverse)
 ```
 
 ### Load Data
-```{r}
+```{r, message = FALSE}
 df <- read_csv("bikeshare.csv")
 head(df)
 ```
@@ -47,7 +47,7 @@ ggplot(data = df, aes(x = temp, y = count)) +
 
 ggplot(data = df, aes(x = datetime, y = count)) +
   geom_point(alpha = 0.2, aes(color=temp)) +
-  scale_color_continuous(low = "#55D8CE", high = "#FF6E2E")
+  scale_color_continuous(low = "#2166AC", high = "#B2182B")
 ```
 ### Correlation between temparature and count
 ```{r}
@@ -80,10 +80,11 @@ df$hour <- sapply(df$datetime, function(x){format(x, "%H")})
 
 ### Scatterplot with new data (working days)
 ```{r}
+pal <- c("#2166AC", "#67A9CF",  "#D1E5F0", "#FDDBC7", "#EF8A62", "#B2182B")
 df %>% filter(workingday == 1) %>%
   ggplot(., aes(x = hour, y = count, color = temp)) +
   geom_point(position = position_jitter(w=1, h=0)) +
-  scale_color_gradientn(colors = c("dark blue","blue","light blue","light green","yellow","orange","red"))
+  scale_color_gradientn(colors = pal)
 ```
 
 
@@ -92,7 +93,7 @@ df %>% filter(workingday == 1) %>%
 df %>% filter(workingday != 1) %>%
   ggplot(., aes(x = hour, y = count, color = temp)) +
   geom_point(position = position_jitter(w=1, h=0)) +
-  scale_color_gradientn(colors = c("dark blue","blue","light blue","light green","yellow","orange","red"))
+  scale_color_gradientn(colors = pal)
   
 ```
 
@@ -116,7 +117,7 @@ predict(temp_model, data.frame(temp=c(25)))
 ### Building a more complex model
 ```{r}
 df$hour <- sapply(df$hour, as.numeric)
-model <- lm(count ~ . -casual -registered -datetime -atemp, data = df ) # the . means everything else, -subtracts the columsn from the call
+model <- lm(count ~ . -casual -registered -datetime -atemp, data = df) # the . means everything else, -subtracts the columsn from the call
 summary(model)
 ```
 

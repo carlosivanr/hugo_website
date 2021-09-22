@@ -1,0 +1,130 @@
+---
+title: Linear Regression Exercise 1 in R
+author: Carlos Rodriguez
+date: '2021-09-20'
+slug: linear-regression-in-r-e-commerce
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-09-20T19:19:06-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 10
+draft: True
+---
+
+
+### Load Packages
+```{r, libraries, echo = FALSE, warning = FALSE, message=FALSE}
+library(caTools)
+library(tidyverse)
+library(GGally)
+library(ggpubr)
+```
+
+### Load and Inspect Data
+```{r}
+customers <- read_csv("Ecommerce Customers")
+head(df)
+```
+
+```{r blu, echo=FALSE}
+azl <- "#1565c0"
+```
+
+### Exploratory Data Analysis
+The GGally package comes in handy for performing exploratory data analysis. Here we will pass through the numeric columns of customers to the `ggpairs()` function. The output isn't pretty, but, it does communicate quite a bit of information.
+```{r}
+ggpairs(customers[,c(4,5,6,7,8)])
+```
+
+After inspecting the output, it is evident that there is a strong relationship between Length of Membership and Yearly Amount Spent. We can then use ggplot2 to display this relationship in a new plot.
+```{r}
+# Use backticks when column names include spaces
+ggplot(data = customers, aes(x = `Length of Membership`, y = `Yearly Amount Spent`)) +
+  geom_point(alpha = 0.8, color = azl)
+```
+
+```{r, include = FALSE}
+#ggdensity refers to kernel density estimation
+ggdensity(customers, x = "Time on Website",
+          rug = TRUE,
+          fill = azl,
+          color = azl)                                                                      
+
+gghistogram(customers, x = "Time on Website",
+            rug = TRUE,
+            color = azl,
+            fill = azl)
+```
+
+### Prepare Data for Linear Regression
+In this step, we will split the data into training and testing sets. We will build a regression model with the training data, use the model to predict new values using the test data, and then compare the results of the predicted values with the actual values in the test data.
+```{r}
+# Set the seed for reproducibility
+set.seed(101)
+
+# Get the sample size for the train set
+sample_size <- floor(0.7 * nrow(customers))
+
+# Get an index for the training set rows
+train_index <- sample(seq_len(nrow(customers)), size = sample_size)
+
+# Set the train set
+train = customers[train_index, ]
+
+# Set the hold out test set
+test = customers[-train_index, ]
+```
+
+### Linear Regression Modeling
+After splitting our data, we can proceed to creating a linear regression model. We will predict Yearly Amount Spent (response variable), from the rest of the numerical predictor variables. Then we will take a look at the residuals which allow us to gauge the amount of error (how far off the data points are from the line generated in the model).
+```{r, warning = FALSE, message=FALSE}
+model <- lm(`Yearly Amount Spent` ~ ., data = train[,c(4,5,6,7,8)]) # the . means everything else, -subtracts the columns from the call
+summary(model)
+
+res <- residuals(model)
+res <- as.data.frame(res)
+head(res)
+
+ggplot(data = res, aes(res)) +
+         geom_histogram(fill = azl, alpha = 0.8)
+
+#plot(model)
+```
+
+### Predictions
+In this step, we will use the model created above, to make predictions using data that was not used in generating the model. Then we can plot the predicted values along with the actual values. We will see that our model performed quite well.
+```{r}
+predictions <- predict(model, test[,c(4,5,6,7,8)])
+results <- cbind(predictions, test$`Yearly Amount Spent`)
+colnames(results) <-  c('predicted', 'actual')
+results <- as.data.frame(results)
+
+# Plot the 
+ggplot(results, aes(x = predicted, y = actual)) +
+  geom_point(color = azl)
+
+```
+
+
+### Model Evaluation ???
+
+
+
+
+
+
+
+
+
+
+
+

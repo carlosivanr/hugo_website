@@ -1,7 +1,7 @@
 ---
-title: R Guides
-linkTitle: R Guides
-summary: The following are a set of guides for working with data in R.
+title: Data Manipulation
+linkTitle: Data Manipulation
+summary: The following are a set of guides for importing, manipulating, and visualizing data in R and Python.
 date: '2021-04-25'
 type: book
 draft: false
