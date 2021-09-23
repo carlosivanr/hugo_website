@@ -11,9 +11,9 @@ education:
 email: ""
 highlight_name: false
 interests:
-- Resting state functional MRI
+- Neuroimaging & brain connectivity
 - Data analysis & visualizaion
-- Promoting diversity in neuroscience
+- Promoting diversity in research
 organizations:
 - name: Mind Research Network
   url: 
@@ -42,8 +42,9 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-I am currently a postdoctoral fellow at the Mind Research Network in Albuquerque, NM. I primarily use functional magnetic resonance imaging (fMRI) to study the influence of alcohol and drugs on functional brain connectivity.
-
-I also have experience in teaching university level introduction to behavioral neuroscience, leading efforts to implement psychological science research in university student success programs, and actively mentor students from under-represented groups interested in research careers.
+I am currently a postdoctoral research fellow at the Mind Research Network (MRN) in Albuquerque, NM. At the MRN, I primarily use functional neuroimaging to study the influence of alcohol and drugs on functional brain connectivity. My research experiences has provided a strong foundation in using MATLAB, R, and Python to manage and process data, perform statistical analyses, and produce data visualizations. I have disseminated my research findings via peer reviewed journals and orally through conference presentations. My professional experiences outside of research center on teaching, advising, and leading efforts to implement findings from the science of learning into university student success programs. Lastly, I have a longstanding commitment to mentor students from under-represented backgrounds in academic research.
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/carlos_rodriguez_cv.pdf" "newtab" >}}CV{{< /staticref >}}.
+
+
+{{< icon name="download" pack="fas" >}} Download my {{< staticref "media/carlos_rodriguez_resume.pdf" "newtab" >}}Resume{{< /staticref >}}.
