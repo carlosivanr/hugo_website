@@ -1,5 +1,5 @@
 ---
-title: Data Manipulation
+title: Data Manipulation and Visualization
 linkTitle: Data Manipulation
 summary: How to import, manipulate, and visualize data in R and Python.
 date: '2021-04-25'
