@@ -141,7 +141,7 @@ remotes::install_github('jamovi/jmv')
 ```
 
 #### One-way ANOVA with the `anovaOneW()` function
-The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results for the omnibus test using the `ANOVA()` function . One drawback of the `anvoaOneW()` function is that it is limited to `tukey` post hoc tests.
+The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results for the omnibus, although the `anvoaOneW()` function is limited to `tukey` post hoc tests.
 <!-- Alternative jmv one way ANOVA -->
 
 ```r
@@ -206,7 +206,7 @@ anova_test(Scores ~ Group,
 ## 1  Group   3   8 10 0.004     * 0.789
 ```
 ### Post hoc tests
-To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply a different correction procedure such as Bonferroni, Holm, or False Discover Rate (FDR). In addition, rstatix provides some convenient ways for producing effect sizes, and summary statistics.
+To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply a different correction procedure such Bonferroni, Holm, or False Discover Rate (FDR). In addition, rstatix provides some convenient ways for producing effect sizes, and summary statistics.
 
 **Tukey's Honest Significant Difference (HSD)**
 
@@ -217,15 +217,16 @@ C3E9 %>%
 ```
 
 ```
-## # A tibble: 6 x 8
-##   term  group1 group2 estimate conf.low conf.high   p.adj p.adj.signif
-## * <chr> <chr>  <chr>     <dbl>    <dbl>     <dbl>   <dbl> <chr>       
-## 1 Group 1      2             8    2.77     13.2   0.00523 **          
-## 2 Group 1      3             2   -3.23      7.23  0.63    ns          
-## 3 Group 1      4             6    0.771    11.2   0.0259  *           
-## 4 Group 2      3            -6  -11.2      -0.771 0.0259  *           
-## 5 Group 2      4            -2   -7.23      3.23  0.63    ns          
-## 6 Group 3      4             4   -1.23      9.23  0.144   ns
+## # A tibble: 6 × 9
+##   term  group1 group2 null.value estimate conf.low conf.high   p.adj
+## * <chr> <chr>  <chr>       <dbl>    <dbl>    <dbl>     <dbl>   <dbl>
+## 1 Group 1      2               0        8    2.77     13.2   0.00523
+## 2 Group 1      3               0        2   -3.23      7.23  0.63   
+## 3 Group 1      4               0        6    0.771    11.2   0.0259 
+## 4 Group 2      3               0       -6  -11.2      -0.771 0.0259 
+## 5 Group 2      4               0       -2   -7.23      3.23  0.63   
+## 6 Group 3      4               0        4   -1.23      9.23  0.144  
+## # … with 1 more variable: p.adj.signif <chr>
 ```
 
 
@@ -240,13 +241,13 @@ C3E9 %>%
 ```
 
 ```
-## # A tibble: 6 x 9
+## # A tibble: 6 × 9
 ##   .y.    group1 group2    n1    n2       p p.signif   p.adj p.adj.signif
 ## * <chr>  <chr>  <chr>  <int> <int>   <dbl> <chr>      <dbl> <chr>       
 ## 1 Scores 1      2          3     3 0.0012  **       0.00717 **          
 ## 2 Scores 1      3          3     3 0.256   ns       1       ns          
-## 3 Scores 1      4          3     3 0.00627 **       0.0376  *           
-## 4 Scores 2      3          3     3 0.00627 **       0.0376  *           
+## 3 Scores 2      3          3     3 0.00627 **       0.0376  *           
+## 4 Scores 1      4          3     3 0.00627 **       0.0376  *           
 ## 5 Scores 2      4          3     3 0.256   ns       1       ns          
 ## 6 Scores 3      4          3     3 0.04    *        0.24    ns
 ```
@@ -259,7 +260,7 @@ C3E9 %>%
 ```
 
 ```
-## # A tibble: 6 x 7
+## # A tibble: 6 × 7
 ##   .y.    group1 group2 effsize    n1    n2 magnitude
 ## * <chr>  <chr>  <chr>    <dbl> <int> <int> <ord>    
 ## 1 Scores 1      2           -4     3     3 large    
@@ -280,7 +281,7 @@ C3E9 %>%
 ```
 
 ```
-## # A tibble: 4 x 14
+## # A tibble: 4 × 14
 ##   Group variable     n   min   max median    q1    q3   iqr   mad  mean    sd
 ##   <fct> <chr>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 ## 1 1     Scores       3     2     6      4     3     5     2  2.96     4     2
