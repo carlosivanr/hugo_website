@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(kableExtra)
 ```
 
-In a recent paper published in [ACER](/publication/rn-566, I used R and the ggplot2 package to create all of the figures. In this post, I will walk you through how I used ggplot2 and a couple of extra packages to create the box plots in this publication.
+In a recent paper published in [ACER](/publication/rn-566), I used R and the ggplot2 package to create all of the figures. In this post, I will walk you through how I used ggplot2 and a couple of extra packages to create the box plots in this publication.
 
 
 ```{r, warning=FALSE, message=FALSE}
@@ -34,12 +34,13 @@ library(tidyverse)
 library(rstatix)
 library(ggpubr)
 library(AMCP)
+library(kableExtra)
 
 # Load the data
 data(chapter_12_table_1)
 
 # Display part of the data
-head(chapter_12_table_1)
+kable(head(chapter_12_table_1))
 
 # Create a new data frame with a subject id
 rm_data <- cbind(id = c(1:10), chapter_12_table_1)
@@ -64,7 +65,7 @@ rm_aov <- anova_test(data = rm_data,
                      effect.size = "pes")
 
 
-get_anova_table(rm_aov, correction = "none")
+kable(get_anova_table(rm_aov, correction = "none"))
 ```
       
 ### Basic ggplot boxplot

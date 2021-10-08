@@ -34,7 +34,6 @@ nocite: |
 <!-- </style> -->
 
 
-
 In this guide we will cover how to conduct one-way repeated measures ANOVA with the jmv and rstatix packages. Repeated measures ANOVA are used in cases where a particular observation from the same subject is taken multiple times. An example of this may be in an experiment of learning and memory where a rat is timed over several trials to measure how long it takes to find an escape platform in the Morris Water Task. Another example will be seen in our data set where scores for a cognitive assessment are compared at multiple ages.
 
 ### The data set
@@ -42,12 +41,12 @@ For this demo, we will use the chapter_11_table_5 dataset from the AMCP package.
 
 ```{r, warning = FALSE}
 library(AMCP)
-
+library(kableExtra)
 # Load data
 data("chapter_11_table_5")
 
 # Inspect data
-head(chapter_11_table_5)
+kable(head(chapter_11_table_5))
 ```
 
 ### Perform ANOVA tests {#tests}
@@ -113,9 +112,11 @@ rm_data <- rm_data %>%
   convert_as_factor(id, age)
 
 # Inspect data
-head(rm_data)
+kable(head(rm_data))
+```
 
-# Conduct repeated measures ANOVA
+### Conduct repeated measures ANOVA
+```{r}
 rm_aov <- anova_test(data = rm_data, 
                      dv = score, 
                      wid = id, 
@@ -124,27 +125,33 @@ rm_aov <- anova_test(data = rm_data,
                      detailed = TRUE)
 
 # Print anova table
-get_anova_table(rm_aov, correction = "none")
+kable(get_anova_table(rm_aov, correction = "none"))
+```
 
-# pairwise comparisons with pairwise_t_test
+### Pairwise comparisons with pairwise_t_test
+```{r}
 pwc <- rm_data %>%
   pairwise_t_test(score ~ age, 
                   paired = TRUE, 
                   p.adjust.method = "none")
-pwc
-
-# pairwise comparisons with emmeans_test
-rm.model <- aov(score ~ age + Error(id/age), data = rm_data)
-pwc <- rm_data %>%
-  emmeans_test(score ~ age,
-               p.adjust.method = "none",
-               model = rm.model)
-pwc
+kable(pwc)
 ```
-### n.b.
-jmv implements emmeans_test. Field, Miles, & Field, 2012 use pairwise.t.test() which is the function underlying pairwise_t_test(). Maxwell, Delaney, & Kelly exercise caution for pwc w rm designs because of pwcs are much more sensitive to violations of sphericity. Even small departures from sphericity can lead to biased tests. You should use a separate variance estimate approach. Howell, stresses this too especially in cases where sphericity is violated. The correction protects the overall test, but becomes problematic with the pwcs. https://www.uvm.edu/~statdhtx/StatPages/More_Stuff/RepMeasMultComp/RepMeasMultComp.html. Also sounds like SPSS does paired samples t-tests.
 
-https://statistics.laerd.com/spss-tutorials/one-way-anova-repeated-measures-using-spss-statistics-2.php
+<!-- ### Pairwise comparisons with emmeans_test -->
+<!-- ```{r} -->
+<!-- rm.model <- aov(score ~ age + Error(id/age), data = rm_data) -->
+<!-- pwc <- rm_data %>% -->
+<!--   emmeans_test(score ~ age, -->
+<!--                p.adjust.method = "none", -->
+<!--                model = rm.model) -->
+<!-- kable(pwc) -->
+<!-- ``` -->
+
+<!-- ### Nota Bene -->
+<!-- jmv implements emmeans_test. Field, Miles, & Field, 2012 use pairwise.t.test() which is the function underlying pairwise_t_test(). Maxwell, Delaney, & Kelly exercise caution for pair wise comparisons with repeated measures designs designs because the approach is much more sensitive to violations of sphericity. Even small departures from sphericity can lead to biased tests. Therefore they recommend a separate variance estimate approach. Howell, stresses this too especially in cases where sphericity is violated. Although a sphericity correction can protect the overall test, it may become problematic with the pairwise comparisons. https://www.uvm.edu/~statdhtx/StatPages/More_Stuff/RepMeasMultComp/RepMeasMultComp.html.  -->
+
+<!-- This may also be an issue in SPSS since it performs paired samples t-tests. -->
+<!-- https://statistics.laerd.com/spss-tutorials/one-way-anova-repeated-measures-using-spss-statistics-2.php -->
 
 ### Plot the data
 To plot the data, we can use the `ggerrorplot()` function. We will use the converted long-form rm_data rather than the wide chapter_11_table_5 dataframe. Then we just need to specify what to plot on the x and y axes, set `add = "mean", desc_stat = "mean_ci", `error.plot = "errorbar", and `width = .1`.

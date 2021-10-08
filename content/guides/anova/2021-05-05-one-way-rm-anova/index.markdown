@@ -34,7 +34,6 @@ nocite: |
 <!-- </style> -->
 
 
-
 In this guide we will cover how to conduct one-way repeated measures ANOVA with the jmv and rstatix packages. Repeated measures ANOVA are used in cases where a particular observation from the same subject is taken multiple times. An example of this may be in an experiment of learning and memory where a rat is timed over several trials to measure how long it takes to find an escape platform in the Morris Water Task. Another example will be seen in our data set where scores for a cognitive assessment are compared at multiple ages.
 
 ### The data set
@@ -43,23 +42,62 @@ For this demo, we will use the chapter_11_table_5 dataset from the AMCP package.
 
 ```r
 library(AMCP)
-
+library(kableExtra)
 # Load data
 data("chapter_11_table_5")
 
 # Inspect data
-head(chapter_11_table_5)
+kable(head(chapter_11_table_5))
 ```
 
-```
-##   Months30 Months36 Months42 Months48
-## 1      108       96      110      122
-## 2      103      117      127      133
-## 3       96      107      106      107
-## 4       84       85       92       99
-## 5      118      125      125      116
-## 6      110      107       96       91
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Months30 </th>
+   <th style="text-align:right;"> Months36 </th>
+   <th style="text-align:right;"> Months42 </th>
+   <th style="text-align:right;"> Months48 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 108 </td>
+   <td style="text-align:right;"> 96 </td>
+   <td style="text-align:right;"> 110 </td>
+   <td style="text-align:right;"> 122 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 103 </td>
+   <td style="text-align:right;"> 117 </td>
+   <td style="text-align:right;"> 127 </td>
+   <td style="text-align:right;"> 133 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 96 </td>
+   <td style="text-align:right;"> 107 </td>
+   <td style="text-align:right;"> 106 </td>
+   <td style="text-align:right;"> 107 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 84 </td>
+   <td style="text-align:right;"> 85 </td>
+   <td style="text-align:right;"> 92 </td>
+   <td style="text-align:right;"> 99 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 118 </td>
+   <td style="text-align:right;"> 125 </td>
+   <td style="text-align:right;"> 125 </td>
+   <td style="text-align:right;"> 116 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 110 </td>
+   <td style="text-align:right;"> 107 </td>
+   <td style="text-align:right;"> 96 </td>
+   <td style="text-align:right;"> 91 </td>
+  </tr>
+</tbody>
+</table>
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
@@ -133,12 +171,12 @@ anovaRM(
 ##  ───────────────────────────────────────────────────────────────────────────────────────────────────────────── 
 ##    Age-in-months         Age-in-months    Mean Difference    SE          df          t             p           
 ##  ───────────────────────────────────────────────────────────────────────────────────────────────────────────── 
-##    30               -    36                     -4.000000    3.182972    33.00000    -1.2566870    0.2176899   
-##                     -    42                     -7.000000    3.182972    33.00000    -2.1992022    0.0349787   
-##                     -    48                     -9.000000    3.182972    33.00000    -2.8275457    0.0079113   
-##    36               -    42                     -3.000000    3.182972    33.00000    -0.9425152    0.3527782   
-##                     -    48                     -5.000000    3.182972    33.00000    -1.5708587    0.1257555   
-##    42               -    48                     -2.000000    3.182972    33.00000    -0.6283435    0.5341039   
+##    30               -    36                     -4.000000    2.579053    11.00000    -1.5509568    0.1491893   
+##                     -    42                     -7.000000    3.045115    11.00000    -2.2987635    0.0421235   
+##                     -    48                     -9.000000    3.692745    11.00000    -2.4372115    0.0329854   
+##    36               -    42                     -3.000000    2.757909    11.00000    -1.0877807    0.2999517   
+##                     -    48                     -5.000000    4.316985    11.00000    -1.1582156    0.2713044   
+##    42               -    48                     -2.000000    2.232677    11.00000    -0.8957855    0.3895495   
 ##  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -169,21 +207,54 @@ rm_data <- rm_data %>%
   convert_as_factor(id, age)
 
 # Inspect data
-head(rm_data)
+kable(head(rm_data))
 ```
 
-```
-##   id      age score
-## 1  1 Months30   108
-## 2  2 Months30   103
-## 3  3 Months30    96
-## 4  4 Months30    84
-## 5  5 Months30   118
-## 6  6 Months30   110
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> id </th>
+   <th style="text-align:left;"> age </th>
+   <th style="text-align:right;"> score </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:right;"> 108 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:right;"> 103 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:right;"> 96 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:right;"> 118 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 6 </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:right;"> 110 </td>
+  </tr>
+</tbody>
+</table>
+
+### Conduct repeated measures ANOVA
 
 ```r
-# Conduct repeated measures ANOVA
 rm_aov <- anova_test(data = rm_data, 
                      dv = score, 
                      wid = id, 
@@ -192,63 +263,165 @@ rm_aov <- anova_test(data = rm_data,
                      detailed = TRUE)
 
 # Print anova table
-get_anova_table(rm_aov, correction = "none")
+kable(get_anova_table(rm_aov, correction = "none"))
 ```
 
-```
-## ANOVA Table (type III tests)
-## 
-##        Effect DFn DFd    SSn  SSd       F        p p<.05   pes
-## 1 (Intercept)   1  11 559872 6624 929.739 5.59e-12     * 0.988
-## 2         age   3  33    552 2006   3.027 4.30e-02     * 0.216
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Effect </th>
+   <th style="text-align:right;"> DFn </th>
+   <th style="text-align:right;"> DFd </th>
+   <th style="text-align:right;"> SSn </th>
+   <th style="text-align:right;"> SSd </th>
+   <th style="text-align:right;"> F </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:left;"> p&lt;.05 </th>
+   <th style="text-align:right;"> pes </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (Intercept) </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 559872 </td>
+   <td style="text-align:right;"> 6624 </td>
+   <td style="text-align:right;"> 929.739 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.988 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> age </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:right;"> 552 </td>
+   <td style="text-align:right;"> 2006 </td>
+   <td style="text-align:right;"> 3.027 </td>
+   <td style="text-align:right;"> 0.043 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.216 </td>
+  </tr>
+</tbody>
+</table>
+
+### Pairwise comparisons with pairwise_t_test
 
 ```r
-# pairwise comparisons with pairwise_t_test
 pwc <- rm_data %>%
   pairwise_t_test(score ~ age, 
                   paired = TRUE, 
                   p.adjust.method = "none")
-pwc
+kable(pwc)
 ```
 
-```
-## # A tibble: 6 x 10
-##   .y.   group1   group2      n1    n2 statistic    df     p p.adj p.adj.signif
-## * <chr> <chr>    <chr>    <int> <int>     <dbl> <dbl> <dbl> <dbl> <chr>       
-## 1 score Months30 Months36    12    12    -1.55     11 0.149 0.149 ns          
-## 2 score Months30 Months42    12    12    -2.30     11 0.042 0.042 *           
-## 3 score Months30 Months48    12    12    -2.44     11 0.033 0.033 *           
-## 4 score Months36 Months42    12    12    -1.09     11 0.3   0.3   ns          
-## 5 score Months36 Months48    12    12    -1.16     11 0.271 0.271 ns          
-## 6 score Months42 Months48    12    12    -0.896    11 0.39  0.39  ns
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> .y. </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> n1 </th>
+   <th style="text-align:right;"> n2 </th>
+   <th style="text-align:right;"> statistic </th>
+   <th style="text-align:right;"> df </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:right;"> p.adj </th>
+   <th style="text-align:left;"> p.adj.signif </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> score </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:left;"> Months36 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> -1.5509568 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.149 </td>
+   <td style="text-align:right;"> 0.149 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> score </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:left;"> Months42 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> -2.2987635 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.042 </td>
+   <td style="text-align:right;"> 0.042 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> score </td>
+   <td style="text-align:left;"> Months30 </td>
+   <td style="text-align:left;"> Months48 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> -2.4372115 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.033 </td>
+   <td style="text-align:right;"> 0.033 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> score </td>
+   <td style="text-align:left;"> Months36 </td>
+   <td style="text-align:left;"> Months42 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> -1.0877807 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.300 </td>
+   <td style="text-align:right;"> 0.300 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> score </td>
+   <td style="text-align:left;"> Months36 </td>
+   <td style="text-align:left;"> Months48 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> -1.1582156 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.271 </td>
+   <td style="text-align:right;"> 0.271 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> score </td>
+   <td style="text-align:left;"> Months42 </td>
+   <td style="text-align:left;"> Months48 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> -0.8957855 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.390 </td>
+   <td style="text-align:right;"> 0.390 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+</tbody>
+</table>
 
-```r
-# pairwise comparisons with emmeans_test
-rm.model <- aov(score ~ age + Error(id/age), data = rm_data)
-pwc <- rm_data %>%
-  emmeans_test(score ~ age,
-               p.adjust.method = "none",
-               model = rm.model)
-pwc
-```
+<!-- ### Pairwise comparisons with emmeans_test -->
+<!-- ```{r} -->
+<!-- rm.model <- aov(score ~ age + Error(id/age), data = rm_data) -->
+<!-- pwc <- rm_data %>% -->
+<!--   emmeans_test(score ~ age, -->
+<!--                p.adjust.method = "none", -->
+<!--                model = rm.model) -->
+<!-- kable(pwc) -->
+<!-- ``` -->
 
-```
-## # A tibble: 6 x 8
-##   .y.   group1   group2      df statistic       p   p.adj p.adj.signif
-## * <chr> <chr>    <chr>    <dbl>     <dbl>   <dbl>   <dbl> <chr>       
-## 1 score Months30 Months36    33    -1.26  0.218   0.218   ns          
-## 2 score Months30 Months42    33    -2.20  0.0350  0.0350  *           
-## 3 score Months30 Months48    33    -2.83  0.00791 0.00791 **          
-## 4 score Months36 Months42    33    -0.943 0.353   0.353   ns          
-## 5 score Months36 Months48    33    -1.57  0.126   0.126   ns          
-## 6 score Months42 Months48    33    -0.628 0.534   0.534   ns
-```
-### n.b.
-jmv implements emmeans_test. Field, Miles, & Field, 2012 use pairwise.t.test() which is the function underlying pairwise_t_test(). Maxwell, Delaney, & Kelly exercise caution for pwc w rm designs because of pwcs are much more sensitive to violations of sphericity. Even small departures from sphericity can lead to biased tests. You should use a separate variance estimate approach. Howell, stresses this too especially in cases where sphericity is violated. The correction protects the overall test, but becomes problematic with the pwcs. https://www.uvm.edu/~statdhtx/StatPages/More_Stuff/RepMeasMultComp/RepMeasMultComp.html. Also sounds like SPSS does paired samples t-tests.
+<!-- ### Nota Bene -->
+<!-- jmv implements emmeans_test. Field, Miles, & Field, 2012 use pairwise.t.test() which is the function underlying pairwise_t_test(). Maxwell, Delaney, & Kelly exercise caution for pair wise comparisons with repeated measures designs designs because the approach is much more sensitive to violations of sphericity. Even small departures from sphericity can lead to biased tests. Therefore they recommend a separate variance estimate approach. Howell, stresses this too especially in cases where sphericity is violated. Although a sphericity correction can protect the overall test, it may become problematic with the pairwise comparisons. https://www.uvm.edu/~statdhtx/StatPages/More_Stuff/RepMeasMultComp/RepMeasMultComp.html.  -->
 
-https://statistics.laerd.com/spss-tutorials/one-way-anova-repeated-measures-using-spss-statistics-2.php
+<!-- This may also be an issue in SPSS since it performs paired samples t-tests. -->
+<!-- https://statistics.laerd.com/spss-tutorials/one-way-anova-repeated-measures-using-spss-statistics-2.php -->
 
 ### Plot the data
 To plot the data, we can use the `ggerrorplot()` function. We will use the converted long-form rm_data rather than the wide chapter_11_table_5 dataframe. Then we just need to specify what to plot on the x and y axes, set `add = "mean", desc_stat = "mean_ci", `error.plot = "errorbar", and `width = .1`.

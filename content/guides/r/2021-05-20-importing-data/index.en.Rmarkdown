@@ -1,5 +1,5 @@
 ---
-title: Importing Data
+title: Importing Data in R
 author: Carlos Rodriguez
 date: '2021-05-20'
 slug: importing-data

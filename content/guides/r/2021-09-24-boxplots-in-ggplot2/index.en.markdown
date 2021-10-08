@@ -23,7 +23,7 @@ draft: False
 
 
 
-In a recent paper published in [ACER](/publication/rn-566, I used R and the ggplot2 package to create all of the figures. In this post, I will walk you through how I used ggplot2 and a couple of extra packages to create the box plots in this publication.
+In a recent paper published in [ACER](/publication/rn-566), I used R and the ggplot2 package to create all of the figures. In this post, I will walk you through how I used ggplot2 and a couple of extra packages to create the box plots in this publication.
 
 
 
@@ -32,23 +32,77 @@ library(tidyverse)
 library(rstatix)
 library(ggpubr)
 library(AMCP)
+library(kableExtra)
 
 # Load the data
 data(chapter_12_table_1)
 
 # Display part of the data
-head(chapter_12_table_1)
+kable(head(chapter_12_table_1))
 ```
 
-```
-##   Absent0 Absent4 Absent8 Present0 Present4 Present8
-## 1     420     420     480      480      600      780
-## 2     420     480     480      360      480      600
-## 3     480     480     540      660      780      780
-## 4     420     540     540      480      780      900
-## 5     540     660     540      480      660      720
-## 6     360     420     360      360      480      540
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Absent0 </th>
+   <th style="text-align:right;"> Absent4 </th>
+   <th style="text-align:right;"> Absent8 </th>
+   <th style="text-align:right;"> Present0 </th>
+   <th style="text-align:right;"> Present4 </th>
+   <th style="text-align:right;"> Present8 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 600 </td>
+   <td style="text-align:right;"> 780 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 600 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 780 </td>
+   <td style="text-align:right;"> 780 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 780 </td>
+   <td style="text-align:right;"> 900 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 720 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 540 </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 # Create a new data frame with a subject id
@@ -74,17 +128,51 @@ rm_aov <- anova_test(data = rm_data,
                      effect.size = "pes")
 
 
-get_anova_table(rm_aov, correction = "none")
+kable(get_anova_table(rm_aov, correction = "none"))
 ```
 
-```
-## ANOVA Table (type III tests)
-## 
-##            Effect DFn DFd      F        p p<.05   pes
-## 1       Condition   1   9 33.766 2.56e-04     * 0.790
-## 2           Angle   2  18 40.719 2.09e-07     * 0.819
-## 3 Condition:Angle   2  18 45.310 9.42e-08     * 0.834
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Effect </th>
+   <th style="text-align:right;"> DFn </th>
+   <th style="text-align:right;"> DFd </th>
+   <th style="text-align:right;"> F </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:left;"> p&lt;.05 </th>
+   <th style="text-align:right;"> pes </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Condition </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 33.766 </td>
+   <td style="text-align:right;"> 2.56e-04 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.790 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Angle </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 40.719 </td>
+   <td style="text-align:right;"> 2.00e-07 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.819 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Condition:Angle </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 45.310 </td>
+   <td style="text-align:right;"> 1.00e-07 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.834 </td>
+  </tr>
+</tbody>
+</table>
       
 ### Basic ggplot boxplot
 To create a ggplot boxplot, we need 4 basic ingredients: 1) data in long format, 2) specify the variable to be displayed on the x axis, 2) specify the variable to be displayed on the y axis, and 3) a call to the geom_boxplot geometric element. When adding or changing layers to a ggplot we will use the + sign incrementally to modify the plot. The code chunk below gets us started, but as you may notice, our data are also grouped by Condition.
