@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 10
-draft: true
+draft: True
 ---
 
 

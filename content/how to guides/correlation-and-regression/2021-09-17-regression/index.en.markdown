@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 10
-draft: False
+draft: True
 ---
 
 
@@ -223,7 +223,7 @@ sns.scatterplot(x = y_test, y = predictions, data = pd.DataFrame(y_test, predict
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7fa926afe3c8>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7fedb897d4a8>
 ```
 
 ```python
@@ -263,7 +263,7 @@ sns.histplot((y_test-predictions),bins=50, kde = True)
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7fa924033748>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7fedb6935668>
 ```
 
 ```python
