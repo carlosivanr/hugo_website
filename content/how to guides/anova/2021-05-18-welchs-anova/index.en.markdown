@@ -192,7 +192,7 @@ levene_test(formula = Scores ~ Group,
 ```
 
 ```
-## # A tibble: 1 x 4
+## # A tibble: 1 × 4
 ##     df1   df2 statistic     p
 ##   <int> <int>     <dbl> <dbl>
 ## 1     3     8  6.93e-33     1
@@ -207,7 +207,7 @@ welch_anova_test(formula = Scores ~ Group,
 ```
 
 ```
-## # A tibble: 1 x 7
+## # A tibble: 1 × 7
 ##   .y.        n statistic   DFn   DFd     p method     
 ## * <chr>  <int>     <dbl> <dbl> <dbl> <dbl> <chr>      
 ## 1 Scores    12      7.69     3  4.44 0.032 Welch ANOVA
@@ -230,7 +230,7 @@ games_howell_test(formula = Scores ~ Group,
 ```
 
 ```
-## # A tibble: 6 x 8
+## # A tibble: 6 × 8
 ##   .y.    group1 group2 estimate conf.low conf.high p.adj p.adj.signif
 ## * <chr>  <chr>  <chr>     <dbl>    <dbl>     <dbl> <dbl> <chr>       
 ## 1 Scores 1      2             8    1.35     14.6   0.027 *           

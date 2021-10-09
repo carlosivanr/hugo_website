@@ -22,7 +22,7 @@ weight: 10
 
 
 
-<p>This guide explains how to convert a wide dataset to long using tidyverse. The data are from the AMCP package and were created to run a two-way repeated measures ANOVA. While some statistical packages can indeed perform the aforementioned analysis on wide data, others will require long-format data including rstatix and base R.</p>
+<p>Structured datasets tend to come in one of two formats, wide or long. In the wide format, each row contains data related to a particular subject or event where each column contains a different variable taken from that subject. On the other hand, long data format is when all variables are placed in a column. Some R functions work best with wide or long data so it is important to know how to reshape data. This guide explains how to convert a wide format dataset to long format using tidyverse. The data are from the AMCP package and were created to run a two-way repeated measures ANOVA.</p>
 <pre class="r"><code>library(tidyverse)
 library(AMCP)
 library(kableExtra)
@@ -31,10 +31,11 @@ library(kableExtra)
 data(chapter_12_table_1)</code></pre>
 <div id="wide-data" class="section level2">
 <h2>Wide Data</h2>
-<p>In the wide format data, each row represents a subject In the example, each contains data for one participant and each column represents one of six different measurements. Each column is a combination of two factors, Absent or Present as levels of the first factors, and 0, 4, or 8 as levels of the second factor. The design is from a 2 x 3 repeated measures design.</p>
-<pre class="r"><code># Display the data
-kable(chapter_12_table_1)</code></pre>
+<p>In the wide format data, each row represents a subject. Each column is a combination of two main factors Condition and Angle. Condition is a two level factor, while Angle is a three level factor. Thus there are six columns for all possible combinations of Condition and Angle. Each cell along the rows represent a unique dependent variable taken from the same subject. In this case, the numerical values are reaction times in milliseconds.</p>
 <table>
+<caption>
+<span id="tab:unnamed-chunk-2">Table 1: </span>Wide data format.
+</caption>
 <thead>
 <tr>
 <th style="text-align:right;">
@@ -263,9 +264,11 @@ Present8
 </div>
 <div id="long-data" class="section level2">
 <h2>Long Data</h2>
-<p>In the long data format, each row represents an observation. Instead of having six columns with all of the dependent variables in one row, we want all of our dependent variables in one column. In addition, we will want additional columns that will contain the information that was specified by the column names. Notice that the values in 1st row of the wide data are now the first six values in the new column “Reaction_Time.” So one way to think about this conversion is that we are going to take the values of each row, transpose the row to convert it to column, and then begin to concatenate or stack the remaining rows. At the same time, we will want to keep information about Condition wether noise was present or absent, and the angle at wich a stimulus was presented.</p>
-<pre class="r"><code>kable(head(rm_data))</code></pre>
+In the long data format, each row represents an observation. Instead of having six columns with all of the dependent variables in one row, we want all of our dependent variables in one column. In addition, we will want additional columns that will contain the information that was specified by the column names. Notice that the values in 1st row of the wide data are now the first six values in the new column “Reaction_Time.” One way to think about creating the “Reaction_Time” column is that we are going to take the values of each row, transpose them to column, and then begin to concatenate or stack all of the values. At the same time, we will want to keep information about Condition wether noise was present or absent, and the angle at wich a stimulus was presented so will need to create two additional columns to contain that information.
 <table>
+<caption>
+<span id="tab:unnamed-chunk-4">Table 2: </span>Long data format.
+</caption>
 <thead>
 <tr>
 <th style="text-align:left;">
@@ -360,10 +363,12 @@ long.data &lt;- cbind(id = c(1:10), chapter_12_table_1)</code></pre>
 <div id="gather-dependent-variables" class="section level3">
 <h3>2. Gather dependent variables</h3>
 <p>Next, we will use the <code>gather()</code> function which will stack each column of the wide data under a column called reaction_time and create a new column that will add the column name of the wide data as a value in a new column called condition.angle. The <code>-id</code> is used to prevent getting the id number into the condition.angle column.</p>
-<pre class="r"><code>kable(head(long.data %&gt;% gather(key = condition.angle,
-                     value = reaction_time, -id)
-))</code></pre>
+<pre class="r"><code>long.data %&gt;% gather(key = condition.angle,
+                     value = reaction_time, -id)</code></pre>
 <table>
+<caption>
+<span id="tab:unnamed-chunk-7">Table 3: </span>Results after applying the <code>gather()</code> function.
+</caption>
 <thead>
 <tr>
 <th style="text-align:right;">
@@ -447,17 +452,20 @@ Absent0
 </tbody>
 </table>
 </div>
-<div id="separate-characters" class="section level3">
-<h3>3. Separate characters</h3>
-<p>So far we’re on a good track, but the column condition.angle should be two. One to specify condition, and the other to specify angle. The <code>separate()</code> function can help split the one column into two. It will essentially separate <code>condition.angle</code> into <code>condition</code> and <code>angle</code>. The <code>sep = -1</code> argument tells the <code>separate()</code> function to split the values 1 character from the end. This separates the last character which contains an angle number into a separate column. Try substituting different numbers such as -2 or 1, to get a feel for what the function is doing here.</p>
-<pre class="r"><code>kable(head(long.data %&gt;% gather(key = condition.angle,
+<div id="separate-the-condition.angle-column" class="section level3">
+<h3>3. Separate the condition.angle column</h3>
+<p>So far we’re on a good track, but the column condition.angle needs to be two. One to specify condition, and the other to specify angle. The <code>separate()</code> function can help us out here by splitting the condition.angle column into two columns, <code>condition</code> and <code>angle</code>. The <code>sep = -1</code> argument tells the <code>separate()</code> function to split the values 1 character from the end. This separates the last character which contains a single digit angle number into a separate column. Try substituting different numbers such as -2 or 1, to get a feel for what the function is doing here.</p>
+<pre class="r"><code>long.data %&gt;% 
+  gather(key = condition.angle,
                      value = reaction_time, 
                      -id) %&gt;%
   separate(col = condition.angle, 
            into = c(&quot;condition&quot;, &quot;angle&quot;), 
-           sep = -1)
-))</code></pre>
+           sep = -1)</code></pre>
 <table>
+<caption>
+<span id="tab:unnamed-chunk-9">Table 4: </span>Results after separating condition.angle with the <code>separate()</code> function.
+</caption>
 <thead>
 <tr>
 <th style="text-align:right;">
@@ -564,19 +572,21 @@ Absent
 </div>
 <div id="sort-the-data" class="section level3">
 <h3>4. Sort the data</h3>
-<p>At this point, we’ve done most of what is needed to convert the wide data to long data. The next layer in the series of tidyverse functions is to sort the data. To get the output displayed above, we will want to sort the data by subject id, then by condition, then by angle. To accomplish this we will use the <code>arrange()</code> function an will display the reaction_time values as a column of the transposed rows from the wide data set. We will re-save this manipulation as long.data. Notice how the number of data frames is now 60 whereas we started with 10.</p>
-<pre class="r"><code>long.data &lt;- long.data %&gt;% gather(key = condition.angle,
-                     value = reaction_time, 
-                     -id) %&gt;%
+<p>At this point, we’ve done most of what is needed to convert the wide data to long data. The next step in the series of tidyverse functions is to sort the data. To get the output displayed above, we will want to sort the data by subject id, then by condition, then by angle. To accomplish this we will use the <code>arrange()</code> function an will display the reaction_time values as a column of the transposed rows from the wide data set. We will re-save this manipulation as long.data. Notice how the number of data frames is now 60 whereas we started with 10.</p>
+<pre class="r"><code>long.data &lt;- long.data %&gt;% 
+  gather(key = condition.angle,
+         value = reaction_time, 
+         -id) %&gt;%
   separate(col = condition.angle, 
            into = c(&quot;condition&quot;, &quot;angle&quot;), 
            sep = -1) %&gt;%
-      arrange(id, 
+  arrange(id, 
           condition, 
-          angle)
-
-kable(head(long.data))</code></pre>
+          angle)</code></pre>
 <table>
+<caption>
+<span id="tab:unnamed-chunk-11">Table 5: </span>First 6 rows of long.data after applying steps 1-3 and overwriting our original data.
+</caption>
 <thead>
 <tr>
 <th style="text-align:right;">
@@ -690,12 +700,12 @@ long.data$angle &lt;- as.factor(long.data$angle)</code></pre>
 </div>
 <div id="bonus-with-other-helper-functions" class="section level3">
 <h3>Bonus with other helper functions</h3>
-<p>We could also do this with an additional function, <code>convert_as_factor()</code> from the rstatix package. Instead of typing out the commands to convert the columns to factor, we add another piped function at the end of the layers we’ve built.</p>
+<p>We could also convert variable to factor with the <code>convert_as_factor()</code> function from the rstatix package. We can pipe each of the steps above and add the <code>convert_as_factor()</code> function at the end setting the columns we would like to conver.</p>
 <pre class="r"><code>library(rstatix)
 # Create a new data frame with a subject id
 rm_data &lt;- cbind(id = c(1:10), chapter_12_table_1)
 
-# Convert the data from wide to long
+# Convert the data from wide to long and convert id, Condition and Angle to factor
 rm_data &lt;-  rm_data %&gt;% 
   gather(key = Condition.Angle, 
          value = Reaction_Time, 
@@ -706,10 +716,7 @@ rm_data &lt;-  rm_data %&gt;%
   arrange(id, 
           Condition, 
           Angle) %&gt;%
-  convert_as_factor(id, Condition, Angle)
-
-# Display the example long data
-kable(head(rm_data %&gt;% select(-id)))</code></pre>
+  convert_as_factor(id, Condition, Angle)</code></pre>
 <table>
 <thead>
 <tr>
