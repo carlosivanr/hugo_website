@@ -23,8 +23,6 @@ draft: false
 
 In this guide, I will walk through how to use the rstatix package to perform Pearson product moment correlations in R. I will use a sample data file from the first edition of ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/) by Field, Miles, and Field [^1]. The sample data contain scores from a hypothetical anxiety measure, test scores, and the number of hours spent studying (revising) before the exam.
 
-[^1]: DSUR is an excellent introductory resource for learning more about the theory, background, and execution of several statistical analyses including correlation, regression, t-tests, and analysis of variance in R. At the time of this writing, the second edition is slated to be released in 2022 which should have some welcome updates to new R syntax, packages, and functions. I am definitely looking forward to getting a copy for myself.
-
 ### Load packages
 ```{r, warning=FALSE, message=FALSE}
 
@@ -78,12 +76,18 @@ kable(correlations %>% mutate(cod = cor^2, percnt = cor^2*100))
 ```
 
 ### Interpretation
-In this guide, we used sample data to reveal a negative relationship between pre-test anxiety and exam performance. Additionally, we also notice a negative relationship between pre-test anxiety and the amount of hours spent studying. Both of these relationships are satistically significant, but in this case we would also want to pay attention to the confidence intervals. The confidence intervals in the two correlations do no cross zero, which indicate that the value of the correlations in these two relationships is negative in the population. Pre-test anxiety accounts for about 19% of the variability exams scores while the number of hours spent studying account for about 50% of the variability in exams scores. In this example, we did not examine the relationship between the number of hours spent studying and exam scores which may help explain some of the variance is still unaccounted for. We also did not examine how these relationships may differ when separated by gender. However, the main goal of this guide was to showcase the `cor_test()` function from the rstatix package to perform Pearson product moment correlations.
+In this guide, we used sample data to reveal a negative relationship between pre-test anxiety and exam performance. Additionally, we also noticed a negative relationship between pre-test anxiety and the amount of hours spent studying. Both of these relationships are satistically significant, but in this case we would also want to pay attention to the confidence intervals. The confidence intervals in the two correlations do no cross zero, which indicate that the value of the correlations in these two relationships is likely to be negative in the population. Pre-test anxiety accounts for about 19% of the variability exams scores while the number of hours spent studying account for about 50% of the variability in exams scores. In this example, we did not examine the relationship between the number of hours spent studying and exam scores which may help explain some of the variance that is still unaccounted for. We also did not examine how these relationships may differ when separated by gender. However, the main goal of this guide was to showcase the `cor_test()` function from the rstatix package to perform Pearson product moment correlations.
 
 ### References
 <!-- Need references for Andy Field and kableExtra packages -->
 
 <div id="refs" class="references">
+
+<div id="ref-AMCP">
+
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
+
+</div>
 
 
 <div id="ref-R-rstatix">
@@ -102,6 +106,7 @@ Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*.
 </div>
 
 ### Footnotes
+[^1]: DSUR is an excellent introductory resource for learning more about the theory, background, and execution of several statistical analyses including correlation, regression, t-tests, and analysis of variance in R. At the time of this writing, the second edition is slated to be released in 2022 which should have some welcome updates to new R syntax, packages, and functions. I am definitely looking forward to getting a copy for myself when it is released.
 
 <!-- # ```{r, warning=FALSE, message=FALSE} -->
 <!-- # # Load Packages #### -->
