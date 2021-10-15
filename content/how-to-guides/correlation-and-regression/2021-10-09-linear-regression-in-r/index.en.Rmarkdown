@@ -1,0 +1,107 @@
+---
+title: Regression Pt. 1 - Simple Linear Regression
+author: Carlos Rodriguez
+date: '2021-10-09'
+slug: linear-regression-in-r
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-09T20:24:33-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: false
+type: book
+weight: 15
+---
+
+This guide is the first part in a series on regression. I will walk through how to build a simple linear regression model with one outcome variable and one predictor variable. The dataset for this guide comes from Field, Miles, and Field's ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/). The Supermodels dataset contains salary per working day, amount of experience in years, age, and a measure of beauty as determined by a panel of judges. Our job is to help determine what are the factors that best predict salary. We will start out with simple linear regression model before moving on to more complex models in subsequent guides.
+
+### Load packages
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)  # for data importing and visualization
+library(broom)      # for linear model
+library(kableExtra) # for displaying tables
+```
+
+### Load data
+```{r}
+data <- read.table(file = "Supermodel.dat", header = TRUE)
+kable(
+  head(data)
+  )
+```
+
+### Visualize data
+Let's begin by visualizing the data with one predictor varialbe, AGE. We'll turn to a ggplot call to plot SALARY as a function of AGE. We can see that there is moderate and positive relationship between age and salary. Salary tends to increase with age.
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(data, aes(x = AGE, y = SALARY)) +
+  geom_point(alpha = 0.7, color = "#1565c0") +
+  geom_smooth(method = "lm", se = TRUE, color = "#1565c0") +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
+```{r, include=FALSE}
+# Histogram of age
+ggplot(data, aes(x = AGE)) +
+  geom_histogram()
+
+# Histogram of salary
+ggplot(data, aes(x = SALARY)) +
+  geom_histogram()
+
+```
+
+### Model the data
+For our first model we will try to predict salary from age. To build a regression model in R, we will use the `lm()` function. The `lm()` function needs two main argument. First, we enter a formula that is 
+in the form of outcome ~ predictor ( outcome by predictor)[^1]. Then, we specify the dataframe to use. Finally, we can obtain output from our model with the `summary()` function.
+
+```{r}
+model <- lm(SALARY ~ AGE, data = data)
+summary(model)
+```
+
+### Walkthrough of the output
+The output of the `summary()` can be thought of 4 chunks of related information. 
+  * Beginning with the top, the first section is the "**Call:**," which is simply a reproduction of the `lm()` function used to create the model. 
+  * The next section, "**Residuals:**" contains information about the differences between the model predictions along the model and the actual values. 
+  * In the third, "**Coefficients:**," section we find information regarding the model parameters which can also be referred to as beta coefficients. Each model will have an intercept, which isn't really a predictor variable, but can be interpreted as the predicted outcome when the predictor = 0. In our case, the predicted salary is -36.18 when age = 0. This doesn't make a ton of sense since we are unlikely to encounter Supermodels at age 0. Again, the data are fabricated and are simply analyzed here for demonstrative purposes. The AGE coefficient is interpreted as what the model predicts as an increase in the outcome variable for every unit increase in age. In other words, we would predict salary to increase by 2.63 units every year. In the same section we find a standard error, t-value, and p-value. The t-values are the results of a t-test that the coeffient is not zero and the Pr(>|t|) column displays the p-value of this test statistic. This section is concluded with a key of the significance markers. 
+  * Finally, the last section displays information about the **overall fit** of the model. In this example, the Multiple R-squared value is interpreted as 15.8% of the variance in SALARY can be accounted for by AGE. The last line of this section displays the results of an analysis of variance and can be interpreted as the regression model resulting in a significantly better prediction of SALARY than using the mean salary.
+
+### Tidy models
+With the `tidy()` function in the broom package. We can "clean up" the output of the `summary()` functions by displaying it without all of the information.
+```{r}
+kable(
+  tidy(model)
+)
+```
+
+### Make predictions with the model
+Since our model is better than using the mean and age is a significant predictor of salary, we can then use the model to predict outcomes from a given predictor. We will create a new dataframe with at least one value, change its column name to match that of the dataframe that was used to generate the model, and then use the `predict()` function to get the predicted value. In this case we would expect 24.31 units of salary for a 23-year old model. I simply used a single value to illustrate the use of the `predict()` function, but an entire column vector of ages could just as easily be use to predict salary.
+```{r}
+# Predict salary at age of 23
+new_data <- as.data.frame(c(23))  # Create a new data frame with a prediction
+names(new_data)[1] <- "AGE"       # Change the column name to match the lm() predictor column name
+predict(model, new_data)          # Predict new values 
+
+```
+### References
+
+<div id="refs" class="references">
+
+<div id="ref-AMCP">
+
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
+
+</div>
+</div>
+
+### Footnotes
+[^1]: The terms outcome and predictor variables correspond to the terms response and explanatory variables respectively.
+

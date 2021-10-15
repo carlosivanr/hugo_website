@@ -8,16 +8,20 @@ education:
   - course: M.S. in Psychology
     institution: University of New Mexico
     year: 2015
+  - course: B.A. in Psychology
+    institution: Western Colorado University
+    year: 2007
 email: ""
 highlight_name: false
 interests:
 - Neuroimaging & brain connectivity
-- Data analysis & visualizaion
+- Statistics
+- Data visualizaion
 - Promoting diversity in research
 organizations:
 - name: Mind Research Network
   url: 
-role: Postdoctoral Fellow
+role: Postdoctoral Research Fellow
 social:
 # - icon: envelope
 #   icon_pack: fas
@@ -39,10 +43,10 @@ social:
   link: https://github.com/carlosivanr
 
 superuser: true
-title: Carlos I. Rodriguez, Ph.D.
+title: Carlos I. Rodriguez
 ---
 
-Welcome, I am a postdoctoral research fellow at the Mind Research Network (MRN) in Albuquerque, NM. At the MRN, I primarily use functional neuroimaging to study the influence of alcohol and drugs on brain connectivity. My research experiences have provided a strong foundation in using MATLAB, R, and Python to manage and process data, and perform statistical analyses. I have disseminated my research via peer reviewed journals and orally through conference presentations and invited talks. My professional experiences outside of research center on teaching, advising, and leading efforts to implement research findings from the science of learning into university student success programs. Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research. Feel free to reach out to me to learn more about my work.
+I am a postdoctoral research fellow at the Mind Research Network (MRN) in Albuquerque, NM. At the MRN, I use functional neuroimaging to study the influence of alcohol and drugs on brain connectivity. My professional and educational experiences have provided a solid foundation in experimental design, statistical analyses, and public speaking. In addition, I am experienced in using MATLAB, R, and Python to manage, process, and analyse data. I have disseminated my research via peer reviewed journals and orally through conference presentations and invited talks. My professional experiences outside of research center on teaching, advising, and leading efforts to implement research findings from the science of learning into university student success programs. Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research. Feel free to reach out to me to learn more about my work.
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/carlos_rodriguez_cv.pdf" "newtab" >}}CV{{< /staticref >}}.
 

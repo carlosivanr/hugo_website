@@ -1,0 +1,70 @@
+---
+title: Regression Pt. 2 - Multiple Linear Regression
+author: Carlos Rodriguez
+date: '2021-10-10'
+slug: multiple-linear-regression
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-10T07:07:28-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+type: book
+weight: 20
+---
+
+In the previous guide, we built a simple linear regression model to predict salary from age in a sample of super models. In this second part, we continue to build a more complex model to predict salary from  age, and other variables including years of experience, and a rating of attractiveness.
+
+```{r, warning=FALSE, message=FALSE, include=FALSE}
+#library(tidyverse)  # for data importing and visualization
+library(kableExtra) # for displaying tables
+data <- read.table(file = "Supermodel.dat", header = TRUE)
+```
+
+### Update the model
+The `update()` function is a quick way to add variables to an existing `lm()` object. In this example, we simply pass in our regression model object and the added variables we want to update our model with to a new `lm()` object.
+```{r}
+simple  <- lm(SALARY ~ AGE, data = data)
+multiple <- update(simple, .~. + BEAUTY + YEARS)      
+
+summary(multiple)
+```
+
+### Interpretation of the model summary
+As a reminder, the multiple R-squared value is one indicator of the variability in the outcome variable that is accounted for by the predictors. In the multiple regression model this value is .18 or 18%, leaving a substantial portion of the variance (82%) unaccounted for. Only two variables significantly predict SALARY, AGE and YEARS. Notice that the coefficient for AGE is positive, indicating a positive relationship between SALARY and AGE. However, the coefficient for YEARS is negative, indicating a negative relationship between SALARY and YEARS. For each unit increase in AGE, the model predicts a 6.23 unit increase in salary. In contrast, for each unit increase in YEARS, the model predics a 5.56 unit drop in salary. BEAUTY does not significantly predict salary.
+
+### Interpretation of regression coefficients
+Some prefer to interpret standardized coefficients because the units of measurement are no longer in that of the variables. This facilitates direct comparisons between coefficients, but one has to consider that the interpretation will be standard deviations. For example, as SALARY increases by one standard deviation, then age increased by .94 standard deviations. Finally, because all coefficients are directly comparable, we can determine that AGE is the most important predictor in the model.
+```{r, warning=FALSE, message=FALSE}
+library(QuantPsyc)
+# Print standardized regression coefficients
+lm.beta(multiple)
+```
+
+### Confidence intervals of the regression coefficients
+Confidence intervals represent the upper and lower boundaries of the true regression coeffient values for 95% of samples collected measuring the exact same variables. Notice that the confidence interval for BEAUTY contains positive and negative values. This indicates that in some samples the relationship between SALARY and BEAUTY is positive, while in others, it is negative. Ideally, we would want a consistent relationship between outcome and predictors. As a result, when confidence intervals contain zero, it is interpreted as evidence of a poor model.
+```{r}
+confint(multiple)
+```
+
+<!-- ### Compare regression models -->
+<!-- We can compare the overall fit of the simple and the multiple regression models to understand if the variance accounted for in one model is significantly higher than the other. This can be accomplished by using the `anova()`function [^1]. to determine if including additional variables if the multiple R-squared value  suggests that there is a significant improved fit of the mulitple versus the simple model.  -->
+<!-- ```{r} -->
+<!-- anova(simple, multiple) -->
+<!-- ``` -->
+
+<!-- ```{r, include = FALSE, eval=FALSE} -->
+<!-- library(car) -->
+<!-- Anova(simple, multiple, type = 3) -->
+
+<!-- ``` -->
+
+<!-- ### Footnotes -->
+<!-- [^1]: Notice this function is a lower-case-a `anova()` and not an upper-case-A `Anova()`. While the former is a built-in base R function, the latter is included in the car package where car stands for Companion to Applied Regression.  -->
