@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 11
-draft: true
+draft: false
 ---
 
 In this second part, we continue to examing the Exam Anxiety data set to look at the separate correlations between the variables of interest in males and females. We then proceed to test if there is a difference between males and females.
