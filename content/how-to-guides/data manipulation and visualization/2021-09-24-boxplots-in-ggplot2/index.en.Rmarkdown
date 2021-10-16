@@ -125,8 +125,8 @@ p6 <- ggplot(data = rm_data, aes(x = Angle, y = Latency, color = Condition, fill
 p6
 ```
 
-### Add statistical significance markers *
-If you are conducting pairwise t-tests on your data, it's possible to add statistical significance markers to boxplots. This process is facilitated by some helper functions in the ggpubr and tidyverse packages. Here, rm_data is piped to the `group_by()` function. The argument used in this line is "Angle", since we might want to compare the two conditions within angle. The output is then piped into the `pairwise_t_test()` function which will take additional arguments. First, we want to add a formula `Latency ~ Condition` to compare latencies across conditions. Next, we add a multiple comparison correction method, in this case its Bonferroni. Finally, we will need to specify whether or not to pool the standard deviation which will depend on your design and its sample size. The output of this chain of functions is saved to a data frame called pwd. The final step is to pass pwc with the pipe operator to the `add_xy_position()` function. This function works under the hood to get the appropriate x and y coordinates which are used to tell ggplot where to display the significance markers in the coordinate system of the plot.
+### Add statistical significance markers [^1]
+If you are conducting pairwise t-tests on your data, it's possible to add statistical significance markers to boxplots. This process is facilitated by some helper functions in the ggpubr and tidyverse packages. Here, rm_data is piped to the `group_by()` function. The argument used in this line is "Angle", since we might want to compare the two conditions within angle. The output is then piped into the `pairwise_t_test()` function which will take additional arguments. First, we want to add a formula `Latency ~ Condition` to compare latencies across conditions. Next, we add a multiple comparison correction method, in this case its Bonferroni[^2]. Finally, we will need to specify whether or not to pool the standard deviation which will depend on your design and its sample size. The output of this chain of functions is saved to a data frame called pwd. The final step is to pass pwc with the pipe operator to the `add_xy_position()` function. This function works under the hood to get the appropriate x and y coordinates which are used to tell ggplot where to display the significance markers in the coordinate system of the plot.
 ```{r}
 pwc <- rm_data %>%
       group_by(Angle) %>%
@@ -144,7 +144,6 @@ kable(pwc)
 ```
 
 ### Plot significance markers
-
 Once we have a pwc with the x, xmin, and xmax columns, we can use that data frame to pass it into the `stat_pvalue_manual()` layer and setting the inherit.aes argument to FALSE, hide.ns = TRUE, and tip.length to 0. However feel free to play with the settings to get the plot to communicate what you want to your audience.
 ```{r}
 p7 <- ggplot(data = rm_data, aes(x = Angle, y = Latency, color = Condition, fill = Condition)) +
@@ -183,12 +182,14 @@ I hope this helps provide a frame work for creating publication quality plots in
 
 
 
-### * Footnote
-The data presented here are from a repeated measures ANOVA design and it is not generally advisable to conduct pairwise comparisons between groups for reasons beyond the scope of this post. The approach here is simply for demonstrative purposes only. Also, if you print pwc to the console, it will display the results of all of the pairwise tests and notice that even though "bonferroni" was set as a correction method, the adjusted p-values are the same as the non-adjusted p-values. The pairwise_t_test() function views each test within angle as an independent test. If we had a third condition, then pair_wise_t_test would correct for three comparisons (0.05/3) within angle. There are some who may not agree with this approach and would want to correct for all three t-test. If so, then the list of p-values can be adjusted and replaced into the pwc data frame manually. Similarly the significance markers can be modified as well to correspond with the adjusted p-values. The main point of all of this though is that the pwc table provides a nice way to visualize the statistical significance of tests.
-```{r}
-# Replace p-values with Bonferroni corrected values
-pwc$p.adj <- p.adjust(pwc$p, method = "bonferroni")
+### Footnotes
+[^1]: The data presented here are from a repeated measures ANOVA design and it is not generally advisable to conduct pairwise comparisons between groups for reasons beyond the scope of this post. The approach here is simply for demonstrative purposes only.
+[^2]: If you print pwc to the console, it will display the results of all of the pairwise tests and notice that even though "bonferroni" was set as a correction method, the adjusted p-values are the same as the non-adjusted p-values. The pairwise_t_test() function views each test within angle as an independent test. If we had a third condition, then pair_wise_t_test would correct for three comparisons (0.05/3) within angle. There are some who may not agree with this approach and would want to correct for all three t-tests. If so, then the list of p-values can be adjusted and replaced into the pwc data frame manually. Similarly the significance markers can be modified as well to correspond with the adjusted p-values. The main point of all of this though is that the pwc table provides a nice way to visualize the statistical significance of tests.
 
-# Replace significance markers with other characters
-pwc$p.adj.signif <- c("ns", "^^", "^^^")
-```
+<!-- ```{r} -->
+<!-- # Replace p-values with Bonferroni corrected values -->
+<!-- pwc$p.adj <- p.adjust(pwc$p, method = "bonferroni") -->
+
+<!-- # Replace significance markers with other characters -->
+<!-- pwc$p.adj.signif <- c("ns", "^^", "^^^") -->
+<!-- ``` -->
