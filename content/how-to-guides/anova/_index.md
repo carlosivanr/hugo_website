@@ -1,6 +1,6 @@
 ---
-title: ANOVA
-linkTitle: ANOVA with R
+title: ANOVA in R
+linkTitle: ANOVA in R
 summary: How to conduct analysis of variance (ANOVA) tests in R.
 date: '2021-05-12'
 type: book
@@ -40,5 +40,5 @@ Continuously, at your own pace.
 
 -->
 
-{{< cta cta_text="Continue" cta_link="/guides/anova/one-way-anova" >}}
+{{< cta cta_text="Continue" cta_link="/how-to-guides/anova/one-way-anova" >}}
 

@@ -20,7 +20,9 @@ type: book
 weight: 40
 ---
 
-We continue the series on regression by exploring the assumptions of our model. We focus on the assumptions of independence of residuals, multicolinearity, and normality of residuals
+We continue the series on regression by exploring the assumptions of our model. We focus on the assumptions of independence of residuals, multicolinearity, and normality of residuals.
+
+
 
 
 ### Assumption of independent errors: Durbin-Watson test
@@ -58,7 +60,7 @@ dwt(multiple)
 
 ```
 ##  lag Autocorrelation D-W Statistic p-value
-##    1     -0.03061432      2.057416   0.676
+##    1     -0.03061432      2.057416   0.686
 ##  Alternative hypothesis: rho != 0
 ```
 

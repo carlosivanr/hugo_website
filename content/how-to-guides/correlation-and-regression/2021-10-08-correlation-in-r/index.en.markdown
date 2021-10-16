@@ -1,5 +1,5 @@
 ---
-title: Correlation in R
+title: 'Correlation in R Pt. 1 - Pearson Product Moment Correlations'
 author: Carlos Rodriguez
 date: '2021-10-08'
 slug: correlation-in-r
@@ -20,8 +20,10 @@ weight: 10
 draft: false
 ---
 
+<!-- Add Citations -->
+<!-- https://blogdown-demo.rbind.io/2017/08/28/adding-citations-to-posts/ -->
 
-In this guide, I will walk through how to use the rstatix package to perform Pearson product moment correlations in R. I will use a sample data file from the first edition of ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/) by Field, Miles, and Field [^1]. The sample data contain scores from a hypothetical anxiety measure, test scores, and the number of hours spent studying (revising) before the exam.
+In this guide, I will walk through how to use the rstatix package to perform Pearson product moment correlations in R. I will use a sample data file from the 1st edition of ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/) by Field, Miles, and Field [^1]. The sample data contain scores from a hypothetical anxiety measure, exam test scores, and the number of hours spent studying (revising) before the exam.
 
 ### Load packages
 
@@ -223,31 +225,149 @@ kable(correlations %>% mutate(cod = cor^2, percnt = cor^2*100))
 ### Interpretation
 In this guide, we used sample data to reveal a negative relationship between pre-test anxiety and exam performance. Additionally, we also noticed a negative relationship between pre-test anxiety and the amount of hours spent studying. Both of these relationships are satistically significant, but in this case we would also want to pay attention to the confidence intervals. The confidence intervals in the two correlations do no cross zero, which indicate that the value of the correlations in these two relationships is likely to be negative in the population. Pre-test anxiety accounts for about 19% of the variability exams scores while the number of hours spent studying account for about 50% of the variability in exams scores. In this example, we did not examine the relationship between the number of hours spent studying and exam scores which may help explain some of the variance that is still unaccounted for. We also did not examine how these relationships may differ when separated by gender. However, the main goal of this guide was to showcase the `cor_test()` function from the rstatix package to perform Pearson product moment correlations.
 
-### References
+### Plot by Gender
+We can also visualize the data by grouping by Gender and then calculated separate correlations by Gender.
 
-<div id="refs" class="references">
+```r
+colors = c( "#440154FF","#1565c0")
+ggplot(data, aes(x = Anxiety, y = Exam, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  scale_color_manual(values = colors) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
 
-<div id="ref-AMCP">
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 
-Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
+### Correlations by Gender
 
-</div>
+```r
+correlations <- data %>% 
+  group_by(Gender) %>%  
+  cor_test(.,
+           vars = c("Anxiety"),
+           vars2 = c("Exam", "Revise"),
+           method = "pearson",
+           use = "pairwise.complete.obs")
+kable(correlations)
+```
 
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Gender </th>
+   <th style="text-align:left;"> var1 </th>
+   <th style="text-align:left;"> var2 </th>
+   <th style="text-align:right;"> cor </th>
+   <th style="text-align:right;"> statistic </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:right;"> conf.low </th>
+   <th style="text-align:right;"> conf.high </th>
+   <th style="text-align:left;"> method </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:left;"> Anxiety </td>
+   <td style="text-align:left;"> Exam </td>
+   <td style="text-align:right;"> -0.38 </td>
+   <td style="text-align:right;"> -2.887975 </td>
+   <td style="text-align:right;"> 5.76e-03 </td>
+   <td style="text-align:right;"> -0.5944857 </td>
+   <td style="text-align:right;"> -0.1182269 </td>
+   <td style="text-align:left;"> Pearson </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:left;"> Anxiety </td>
+   <td style="text-align:left;"> Exam </td>
+   <td style="text-align:right;"> -0.51 </td>
+   <td style="text-align:right;"> -4.144756 </td>
+   <td style="text-align:right;"> 1.31e-04 </td>
+   <td style="text-align:right;"> -0.6841707 </td>
+   <td style="text-align:right;"> -0.2700554 </td>
+   <td style="text-align:left;"> Pearson </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:left;"> Anxiety </td>
+   <td style="text-align:left;"> Revise </td>
+   <td style="text-align:right;"> -0.82 </td>
+   <td style="text-align:right;"> -10.079994 </td>
+   <td style="text-align:right;"> 0.00e+00 </td>
+   <td style="text-align:right;"> -0.8944820 </td>
+   <td style="text-align:right;"> -0.7054746 </td>
+   <td style="text-align:left;"> Pearson </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:left;"> Anxiety </td>
+   <td style="text-align:left;"> Revise </td>
+   <td style="text-align:right;"> -0.60 </td>
+   <td style="text-align:right;"> -5.267088 </td>
+   <td style="text-align:right;"> 2.90e-06 </td>
+   <td style="text-align:right;"> -0.7482821 </td>
+   <td style="text-align:right;"> -0.3876660 </td>
+   <td style="text-align:left;"> Pearson </td>
+  </tr>
+</tbody>
+</table>
 
-<div id="ref-R-rstatix">
+### Compare correlation values between genders
+Filed, Miles, and Field provide the code for a function to compare two correlation values[^2]. This function takes in as input the correlation and sample size for each group. Entering our values into the function results in a z-difference score of -.80 and p-value of .21 which suggests there is no statistical difference between the correlations between Anxiety and Exam scores in females and males.
 
-Kassambara, Alboukadel. 2020. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+```r
+kable(data %>% count(Gender))
+```
 
-</div>
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Gender </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 51 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 52 </td>
+  </tr>
+</tbody>
+</table>
 
+```r
+zdifference <- function(r1, r2, n1, n2){
+  zd <- (atanh(r1)-atanh(r2))/sqrt(1/(n1-3)+1/(n2-3))
+	p <- 1 - pnorm(abs(zd))
+	print(paste("Z Difference: ", zd))
+	print(paste("One-Tailed P-Value: ", p))
+	print(paste("Two-Tailed P-Value: ", (2*p)))
+	}
+	
+zdifference(-0.51, -0.38, 52, 51)
+```
 
-<div id="ref-R-tidyverse">
+```
+## [1] "Z Difference:  -0.801014866962209"
+## [1] "One-Tailed P-Value:  0.211561519563112"
+## [1] "Two-Tailed P-Value:  0.423123039126223"
+```
 
-Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+<!-- ### Assumptions -->
+<!-- The rstatix package has a nice pipe friendly function to assess the normality of the Anxiety, Exam, and Revise variables.  -->
+<!-- ```{r} -->
+<!-- kable( -->
+<!--   data %>% shapiro_test(Anxiety, Exam, Revise) -->
+<!-- ) -->
+<!-- ``` -->
 
-</div>
-
-</div>
 
 ### Footnotes
 [^1]: DSUR is an excellent introductory resource for learning more about the theory, background, and execution of several statistical analyses including correlation, regression, t-tests, and analysis of variance in R. At the time of this writing, the second edition is slated to be released in 2022 which should have some welcome updates to new R syntax, packages, and functions. I am definitely looking forward to getting a copy for myself when it is released.
+[^2]: Pearson correlation values can be converted to z-scores with the arc tangent function, `atanh()`. Converting correlations to z-scores before conducting other statistics is necessary because correlations values are bounded by -1 and +1. Conversely, 

@@ -20,7 +20,9 @@ type: book
 weight: 40
 ---
 
-We continue the series on regression by exploring the assumptions of our model. We focus on the assumptions of independence of residuals, multicolinearity, and normality of residuals
+We continue the series on regression by exploring the assumptions of our model. We focus on the assumptions of independence of residuals, multicolinearity, and normality of residuals.
+
+
 ```{r, warning=FALSE, message=FALSE, include=FALSE}
 library(tidyverse)
 #library(kableExtra)

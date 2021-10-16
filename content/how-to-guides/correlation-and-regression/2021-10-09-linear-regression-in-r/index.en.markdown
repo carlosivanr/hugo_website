@@ -194,13 +194,22 @@ predict(model, new_data)          # Predict new values
 ```
 ### References
 
+### References
+
 <div id="refs" class="references">
 
-<div id="ref-AMCP">
+<div id="ref-DSUR">
 
 Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
 
 </div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
 </div>
 
 ### Footnotes

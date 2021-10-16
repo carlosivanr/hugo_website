@@ -89,6 +89,16 @@ confint(multiple)
 ## YEARS        -9.7429381  -1.3795536
 ```
 
+### References
+<div id="refs" class="references">
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+</div>
 <!-- ### Compare regression models -->
 <!-- We can compare the overall fit of the simple and the multiple regression models to understand if the variance accounted for in one model is significantly higher than the other. This can be accomplished by using the `anova()`function [^1]. to determine if including additional variables if the multiple R-squared value  suggests that there is a significant improved fit of the mulitple versus the simple model.  -->
 <!-- ```{r} -->
