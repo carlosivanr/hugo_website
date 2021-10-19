@@ -1,5 +1,5 @@
 ---
-title: Regression Pt. 3 - Casewise Diagnostics
+title: Linear Regression Pt. 3 - Casewise Diagnostics
 author: Carlos Rodriguez
 date: '2021-10-11'
 slug: regression-diagnostics

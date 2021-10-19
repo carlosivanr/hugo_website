@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 11
-draft: true
+draft: false
 ---
 
 In this second part, we continue to examing the Exam Anxiety data set to look at the separate correlations between the variables of interest in males and females. We then proceed to test if there is a difference between males and females.
@@ -170,4 +170,4 @@ zdifference(-0.51, -0.38, 52, 51)
 
 
 ### Footnotes
-[^2]: Pearson correlation values can be converted to z-scores with the arc tangent function, `atanh()`. Converting correlations to z-scores before conducting other statistics is necessary because correlations values are bounded by -1 and +1. Conversely, 
+[^2]: Pearson correlation values can be converted to z-scores with the arc tangent function, `atanh()`. Converting correlations to z-scores before conducting other statistics is necessary because correlations values are bounded by -1 and +1. Conversely, the hyperbolic tangent `tanh()` function can be used to convert z-scores back to correlation values.

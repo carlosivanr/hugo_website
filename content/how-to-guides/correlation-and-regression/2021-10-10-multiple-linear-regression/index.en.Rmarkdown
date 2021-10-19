@@ -1,5 +1,5 @@
 ---
-title: Regression Pt. 2 - Multiple Linear Regression
+title: Linear Regression Pt. 2 - Multiple Linear Regression
 author: Carlos Rodriguez
 date: '2021-10-10'
 slug: multiple-linear-regression

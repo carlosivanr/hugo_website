@@ -1,5 +1,5 @@
 ---
-title: Regression Pt. 1 - Simple Linear Regression
+title: Linear Regression Pt. 1 - Simple Linear Regression
 author: Carlos Rodriguez
 date: '2021-10-09'
 slug: linear-regression-in-r

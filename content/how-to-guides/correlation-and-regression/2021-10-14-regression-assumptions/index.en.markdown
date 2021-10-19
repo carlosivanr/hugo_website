@@ -1,5 +1,5 @@
 ---
-title: Regression Pt. 4 - Model Assumptions
+title: Linear Regression Pt. 4 - Model Assumptions
 author: Carlos Rodriguez
 date: '2021-10-14'
 slug: regression-assumptions
@@ -60,7 +60,7 @@ dwt(multiple)
 
 ```
 ##  lag Autocorrelation D-W Statistic p-value
-##    1     -0.03061432      2.057416   0.686
+##    1     -0.03061432      2.057416   0.708
 ##  Alternative hypothesis: rho != 0
 ```
 
@@ -119,7 +119,7 @@ ggplot(data, aes(x = studentized.residuals)) +
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/histogram-1.png" width="672" />
 
 ### Assumptions about residuals: Q-Q Plot
 The Q-Q plot displays the values' deviation from normality. A straight diagonal line would represent a normal distribution. However, in our case, we observe a fair amount of deviation from a straight diagnoal line further indicating that the assumption regarding the normality of residuals has been violated
@@ -130,10 +130,10 @@ qplot(sample = data$studentized.residuals) +
   labs(x = "Theoretical Values", y = "Observed Values")
 ```
 
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/qq-plot-1.png" width="672" />
 
 ### Assumptions about residuals: Fitted Values vs Residuals
-This las figure plots the fitted values agains the residuals. We notice that the data funnel out with Studentized Residuals display a greater range as Fitted Values increases. This can be taken as evidence of heteroscedasticity in the data. 
+This last figure plots the fitted values agains the residuals. We notice that the data funnel out with Studentized Residuals display a greater range as Fitted Values increases. This can be taken as evidence of heteroscedasticity in the data. 
 
 ```r
 # Scatter plot of the studentized residuals vs predicted values
@@ -147,7 +147,7 @@ ggplot(data, aes(x = fitted, y = studentized.residuals)) +
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/scatter-plot-1.png" width="672" />
 
 ### Interpretation
 Given that our model demonstrates violates numerous assumptions such as normality of errors, multicolinearity, and heteroscedasticity, we have reason to believe that this model is unreliable.

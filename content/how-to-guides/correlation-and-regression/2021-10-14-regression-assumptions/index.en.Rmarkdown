@@ -1,5 +1,5 @@
 ---
-title: Regression Pt. 4 - Model Assumptions
+title: Linear Regression Pt. 4 - Model Assumptions
 author: Carlos Rodriguez
 date: '2021-10-14'
 slug: regression-assumptions
@@ -70,7 +70,7 @@ mean(vif(multiple))
 
 ### Assumptions about residuals: Histogram
 A histogram and kernel density estimation of the residuals indicate that the data are positively skewed, which indicates that the assumption regarding the normality of residuals has been violated. 
-```{r, include = TRUE, warning=TRUE}
+```{r, histogram, include = TRUE, warning=TRUE}
 data$studentized.residuals <- rstudent(multiple)
 
 # Histogram of the residuals
@@ -83,15 +83,15 @@ ggplot(data, aes(x = studentized.residuals)) +
 
 ### Assumptions about residuals: Q-Q Plot
 The Q-Q plot displays the values' deviation from normality. A straight diagonal line would represent a normal distribution. However, in our case, we observe a fair amount of deviation from a straight diagnoal line further indicating that the assumption regarding the normality of residuals has been violated
-```{r}
+```{r, qq-plot}
 # QQ Plot
 qplot(sample = data$studentized.residuals) +
   labs(x = "Theoretical Values", y = "Observed Values")
 ```
 
 ### Assumptions about residuals: Fitted Values vs Residuals
-This las figure plots the fitted values agains the residuals. We notice that the data funnel out with Studentized Residuals display a greater range as Fitted Values increases. This can be taken as evidence of heteroscedasticity in the data. 
-```{r}
+This last figure plots the fitted values agains the residuals. We notice that the data funnel out with Studentized Residuals display a greater range as Fitted Values increases. This can be taken as evidence of heteroscedasticity in the data. 
+```{r, scatter-plot}
 # Scatter plot of the studentized residuals vs predicted values
 ggplot(data, aes(x = fitted, y = studentized.residuals)) +
   geom_point(alpha = 0.7, color = "#1565c0") +

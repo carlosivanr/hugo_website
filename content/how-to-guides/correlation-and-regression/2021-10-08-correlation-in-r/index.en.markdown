@@ -23,9 +23,9 @@ draft: false
 <!-- Add Citations -->
 <!-- https://blogdown-demo.rbind.io/2017/08/28/adding-citations-to-posts/ -->
 
-In this guide, I will walk through how to use the rstatix package to perform Pearson product moment correlations in R. I will use a sample data file from the 1st edition of ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/) by Field, Miles, and Field [^1]. The sample data contain scores from a hypothetical anxiety measure, exam test scores, and the number of hours spent studying (revising) before the exam.
+In this guide, I will walk through how to use the rstatix package to perform Pearson product moment correlations in R. I will use a sample data file from the 1st edition of ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/) by Field, Miles, and Field [^1]. The sample data contain scores from a hypothetical anxiety measure, exam test scores, and the number of hours spent studying (revising) before the exam. We will perform a correlation analysis to characterize the relationships between exam performance and two other variables, anxiety and hours spent studying.
 
-### Load packages
+### Load packages[^3]
 
 ```r
 library(tidyverse)  # for data importing and visualization
@@ -171,6 +171,86 @@ kable(correlations)
 </tbody>
 </table>
 
+To produce a correlation matrix, use the `cor_mat()` function and pass in a vector of the variables and specify the method to be used. The function `cor_pmat()` can be used in a similar way to obtain the p-values.
+
+```r
+matrix <- cor_mat(data, 
+        vars = c("Exam", "Anxiety", "Revise"), 
+        method = "pearson")
+
+kable(matrix)
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> rowname </th>
+   <th style="text-align:right;"> Exam </th>
+   <th style="text-align:right;"> Anxiety </th>
+   <th style="text-align:right;"> Revise </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Exam </td>
+   <td style="text-align:right;"> 1.00 </td>
+   <td style="text-align:right;"> -0.44 </td>
+   <td style="text-align:right;"> 0.40 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Anxiety </td>
+   <td style="text-align:right;"> -0.44 </td>
+   <td style="text-align:right;"> 1.00 </td>
+   <td style="text-align:right;"> -0.71 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Revise </td>
+   <td style="text-align:right;"> 0.40 </td>
+   <td style="text-align:right;"> -0.71 </td>
+   <td style="text-align:right;"> 1.00 </td>
+  </tr>
+</tbody>
+</table>
+
+```r
+pvals <- cor_pmat(data, 
+        vars = c("Exam", "Anxiety", "Revise"), 
+        method = "pearson")
+
+kable(pvals)
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> rowname </th>
+   <th style="text-align:right;"> Exam </th>
+   <th style="text-align:right;"> Anxiety </th>
+   <th style="text-align:right;"> Revise </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Exam </td>
+   <td style="text-align:right;"> 0.00e+00 </td>
+   <td style="text-align:right;"> 3.1e-06 </td>
+   <td style="text-align:right;"> 3.34e-05 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Anxiety </td>
+   <td style="text-align:right;"> 3.10e-06 </td>
+   <td style="text-align:right;"> 0.0e+00 </td>
+   <td style="text-align:right;"> 0.00e+00 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Revise </td>
+   <td style="text-align:right;"> 3.34e-05 </td>
+   <td style="text-align:right;"> 0.0e+00 </td>
+   <td style="text-align:right;"> 0.00e+00 </td>
+  </tr>
+</tbody>
+</table>
+
 ### Coefficients of Determination
 The coefficient of determination or R squared value is one way to help interpret correlation values. To calculate the coefficient of determination we simply square the correlation values. The coefficient of determination can also be multiplied by 100 to obtain a percentage that assess the amount of variance in one variable that can be accounted by another. In order to do this in R we can use the `mutate()` function from the tidyverse package. This function will display two new columns, cod and percnt, in the correlations data frame with these values.
 
@@ -237,4 +317,4 @@ In this guide, we used sample data to reveal a negative relationship between pre
 
 ### Footnotes
 [^1]: DSUR is an excellent introductory resource for learning more about the theory, background, and execution of several statistical analyses including correlation, regression, t-tests, and analysis of variance in R. At the time of this writing, the second edition is slated to be released in 2022 which should have some welcome updates to new R syntax, packages, and functions. I am definitely looking forward to getting a copy for myself when it is released.
-[^2]: Pearson correlation values can be converted to z-scores with the arc tangent function, `atanh()`. Converting correlations to z-scores before conducting other statistics is necessary because correlations values are bounded by -1 and +1. Conversely, 
+[^3]: I use the kableExtra package to print/output better looking tables, and is not necessary for carrying out any of the analyses.
