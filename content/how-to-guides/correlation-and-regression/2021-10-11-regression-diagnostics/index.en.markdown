@@ -15,7 +15,7 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
-draft: true
+draft: false
 type: book
 weight: 30
 ---
@@ -23,8 +23,6 @@ weight: 30
 
 
 After building our simple and multiple regression model, we turn our attention to casewise diagnostics to learn about which outliers are present in the sample and which data points have undue influence on our model which could affect the models stability. We will focus on the standardized residuals, Cook's distance, and leverage/hat values, but there are several other measures to assess model diagnostics. 
-
-`* Calculate the lower and upper bound limits of the covariance ratio. Values outside of the bounds could be problematic.`
 
 ### Outliers and standardized residuals
 Residuals help us understand how well the model fits the sample data. Standardized residuals are derived by dividing the non-standardized residuals by an estimate of their standard deviation. Standardized residuals can obtained by applying the `rstandard()` function on our multiple regression model. Standardized residuals primarily serve two roles. First, they facilitate interpretation across different models because the units are in standard deviations rather than the unit of the outcome variable. Second, they serve as an indicator of outliers that may bias the estimated regression coefficients. A couple of general rules are that no more than 5% of the absolute values of the standardized residuals are greater than 2 and no more than 1% of the absolute values of the standardized residuals are greater than 2.5. In our example dataset, about 5.2% of the standardized residuals values are beyond the +/-2 boundary which is evidence that our model may not represent our outcome data well.
@@ -304,3 +302,5 @@ kable(
 <!-- Several values are below the bottom boundary, below .948 and above 1.052. There are many values here that are well below this lower bound. But the cooks distance for these values is OK.  -->
 <!-- CVR > 1 + (3 * (k+1)/n) -->
 <!-- CVR < 1 - (3 * (k+1)/n) -->
+
+<!-- `* Calculate the lower and upper bound limits of the covariance ratio. Values outside of the bounds could be problematic.` -->
