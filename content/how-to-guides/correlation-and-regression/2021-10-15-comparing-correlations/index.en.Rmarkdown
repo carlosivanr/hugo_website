@@ -20,7 +20,7 @@ weight: 11
 draft: false
 ---
 
-In this second part, we continue to examing the Exam Anxiety data set to look at the separate correlations between the variables of interest in males and females. We then proceed to test if there is a difference between males and females.
+In this second part, we continue to examine the Exam Anxiety dataset to look at the separate correlations between the variables of interest in males and females. We then proceed to test if there is a difference between those two correlations.
 
 ```{r, warning=FALSE, message=FALSE, include=FALSE}
 library(tidyverse)  # for data importing and visualization
@@ -34,7 +34,7 @@ data <- read.table(file = file_path, header = TRUE)
 ```
 
 ### Plot by Gender
-We can also visualize the data by grouping by Gender and then calculated separate correlations by Gender.
+We can plot the data by Gender to see if the relationship between pre-test anxiety and exam scores are different between genders. This is accomplished by adding the color = Gender argument to the aes() portion of the ggplot call.
 ```{r, warning=FALSE, message=FALSE}
 colors = c( "#440154FF","#1565c0")
 ggplot(data, aes(x = Anxiety, y = Exam, color = Gender)) +
@@ -46,6 +46,7 @@ ggplot(data, aes(x = Anxiety, y = Exam, color = Gender)) +
 ```
 
 ### Correlations by Gender
+The `group_by()` function is compatible with the rstatix `cor_test()` to produce two separate correlations, one ofr males and one for females. We simply pipe data to `group_by()` and then pipe that output to `cor_test()`.
 ```{r}
 correlations <- data %>% 
   group_by(Gender) %>%  
