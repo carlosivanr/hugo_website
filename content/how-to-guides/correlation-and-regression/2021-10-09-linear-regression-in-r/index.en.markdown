@@ -104,9 +104,7 @@ ggplot(data, aes(x = AGE, y = SALARY)) +
 
 
 ### Model the data
-For our first model we will try to predict salary from age. To build a regression model in R, we will use the `lm()` function. The `lm()` function needs two main argument. First, we enter a formula that is 
-in the form of outcome ~ predictor ( outcome by predictor)[^1]. Then, we specify the dataframe to use. Finally, we can obtain output from our model with the `summary()` function.
-
+For our first model we will try to predict salary from age. To build a regression model in R, we will use the `lm()` function. The `lm()` function needs two main arguments. First, we enter a formula that is in the form of outcome ~ predictor (read outcome by predictor)[^1]. Then, we specify the dataframe to use. Finally, we can obtain output from our model with the `summary()` function.
 
 ```r
 model <- lm(SALARY ~ AGE, data = data)
@@ -193,9 +191,6 @@ predict(model, new_data)          # Predict new values
 ## 24.31036
 ```
 ### References
-
-### References
-
 <div id="refs" class="references">
 
 <div id="ref-DSUR">

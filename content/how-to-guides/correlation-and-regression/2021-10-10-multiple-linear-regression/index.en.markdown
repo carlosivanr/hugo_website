@@ -78,16 +78,42 @@ lm.beta(multiple)
 Confidence intervals represent the upper and lower boundaries of the true regression coeffient values for 95% of samples collected measuring the exact same variables. Notice that the confidence interval for BEAUTY contains positive and negative values. This indicates that in some samples the relationship between SALARY and BEAUTY is positive, while in others, it is negative. Ideally, we would want a consistent relationship between outcome and predictors. As a result, when confidence intervals contain zero, it is interpreted as evidence of a poor model.
 
 ```r
-confint(multiple)
+kable(
+  confint(multiple)
+  )
 ```
 
-```
-##                   2.5 %      97.5 %
-## (Intercept) -93.3957556 -28.3837443
-## AGE           3.4536617   9.0152299
-## BEAUTY       -0.4965992   0.1038264
-## YEARS        -9.7429381  -1.3795536
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> 2.5 % </th>
+   <th style="text-align:right;"> 97.5 % </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (Intercept) </td>
+   <td style="text-align:right;"> -93.3957556 </td>
+   <td style="text-align:right;"> -28.3837443 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AGE </td>
+   <td style="text-align:right;"> 3.4536617 </td>
+   <td style="text-align:right;"> 9.0152299 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> BEAUTY </td>
+   <td style="text-align:right;"> -0.4965992 </td>
+   <td style="text-align:right;"> 0.1038264 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> YEARS </td>
+   <td style="text-align:right;"> -9.7429381 </td>
+   <td style="text-align:right;"> -1.3795536 </td>
+  </tr>
+</tbody>
+</table>
 
 ### References
 <div id="refs" class="references">

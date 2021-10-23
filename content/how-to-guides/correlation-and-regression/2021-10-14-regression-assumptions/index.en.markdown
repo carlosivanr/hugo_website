@@ -26,7 +26,7 @@ We continue the series on regression by exploring the assumptions of our model. 
 
 
 ### Assumption of independent errors: Durbin-Watson test
-We can test the assumption of independent errors with the Durbin-Watson test. The car (companion to applied regression) package contains the `dwt()` function to perform this test. The Durbin-Watson function tests for serial correlation in the residuals and produces a value that lies between 0 and 4. A value of 2 indicates that the residuals are uncorrelated. Values greater than 2 indicate a negative correlation while values less than 2 indicate a positive correlation among adjacent residuals. As a conservative rule, values less than 1 or greater than 3 may indicate the assumption of independent errors may be violated. Our D-W statistic, 2.06, falls within this range.
+We can test the assumption of independent errors with the Durbin-Watson test. The car (companion to applied regression) package contains the `dwt()` function to perform this test. The Durbin-Watson function tests for serial correlation in the residuals and produces a value that lies between 0 and 4. A value of 2 indicates that the residuals are uncorrelated. Values greater than 2 indicate a negative correlation while values less than 2 indicate a positive correlation among adjacent residuals. As a conservative rule, values less than 1 or greater than 3 may indicate the assumption of independent errors may be violated. Our D-W statistic, 2.06, falls within the normal range of these values.
 
 ```r
 library(car)
@@ -60,7 +60,7 @@ dwt(multiple)
 
 ```
 ##  lag Autocorrelation D-W Statistic p-value
-##    1     -0.03061432      2.057416   0.708
+##    1     -0.03061432      2.057416   0.712
 ##  Alternative hypothesis: rho != 0
 ```
 
@@ -122,7 +122,7 @@ ggplot(data, aes(x = studentized.residuals)) +
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/histogram-1.png" width="672" />
 
 ### Assumptions about residuals: Q-Q Plot
-The Q-Q plot displays the values' deviation from normality. A straight diagonal line would represent a normal distribution. However, in our case, we observe a fair amount of deviation from a straight diagnoal line further indicating that the assumption regarding the normality of residuals has been violated
+The Q-Q plot displays the values' deviation from normality. A straight diagonal line would represent a normal distribution. In our case, we observe a fair amount of deviation from a straight diagonal line indicating that the assumption regarding the normality of residuals has been violated.
 
 ```r
 # QQ Plot

@@ -51,7 +51,9 @@ lm.beta(multiple)
 ### Confidence intervals of the regression coefficients
 Confidence intervals represent the upper and lower boundaries of the true regression coeffient values for 95% of samples collected measuring the exact same variables. Notice that the confidence interval for BEAUTY contains positive and negative values. This indicates that in some samples the relationship between SALARY and BEAUTY is positive, while in others, it is negative. Ideally, we would want a consistent relationship between outcome and predictors. As a result, when confidence intervals contain zero, it is interpreted as evidence of a poor model.
 ```{r}
-confint(multiple)
+kable(
+  confint(multiple)
+  )
 ```
 
 ### References

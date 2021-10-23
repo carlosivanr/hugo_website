@@ -40,7 +40,7 @@ kable(head(data))
 ```
 
 ### Visualize the data
-A quick visualization of the exam and anxiety scores indicates that there is a relationship between these two variables. As pre-test anxiety goes up, exam performance declines.
+A scatterplot of the exam and anxiety scores indicates that there is a relationship between these two variables. As pre-test anxiety goes up, exam performance declines.
 ```{r, warning=FALSE, message=FALSE}
 ggplot(data, aes(x = Anxiety, y = Exam)) +
   geom_point(alpha = 0.7, color = "#1565c0") +
@@ -60,7 +60,7 @@ ggplot(data, aes(x = Anxiety, y = Revise)) +
 
 
 ### Correlations with rstatix
-To perform the statistical test of significance for correlations, I like to use the rstatix package and its `cor_test()` function. The `cor_test()` function can take multiple variables that need to be tested through the vars and vars2 arguments. Simply add additional columns if they are in an analysis. `cor_test()` can also perfrom multiple types of correlation tests including the Pearson product moment correlation, Spearman's rank correlation, and Kendall's tau (non-parametric). The function can also take a [use = "pairwise.complete.obs"] argument to include only data that have complete observations. This is a useful feature in cases where you may have missing data. Finally, although it is not shown, the function can take an argument to specify confidence intervals. The output produces a correlation value, a test statistic, a p value, and confidence intervals.
+To perform the statistical test of significance for correlations, I like to use the rstatix package and its `cor_test()` function. The `cor_test()` function can take multiple variables that need to be tested through the vars and vars2 arguments. Simply add additional columns if they are in an analysis. `cor_test()` can also perfrom multiple types of correlation tests including the Pearson product moment correlation, Spearman’s rank correlation, and Kendall’s tau (non-parametric). The function can also take a [use = “pairwise.complete.obs”] argument to include only data that have complete observations. This is a useful feature in cases where you may have missing data. The output of this function produces a correlation value, a test statistic, a p value, and confidence intervals for each combination of variables in the vars and vars2 arguments.
 ```{r}
 correlations <- cor_test(data,
                          vars = c("Anxiety"),

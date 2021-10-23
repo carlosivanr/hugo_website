@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression
+title: Logistic Regression (work in progress)
 author: Carlos Rodriguez
 date: '2021-10-17'
 slug: logistic-regression

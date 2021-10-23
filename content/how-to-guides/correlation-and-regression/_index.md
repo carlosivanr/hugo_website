@@ -14,7 +14,7 @@ draft: false
 {{< toc hide_on="xl" >}}
 
 # Overview
-The following how-to guides explore how to conduct correlation and regression analyses in R. Focus is placed on how to implement simple and multiple regression in R rather than providing a conceptual background. That task can be accomplished by picking up a copy of Field, Miles, and Field's 1st edition of ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/). The Field et al. text is an excellent introduction to many different types of statistical analyses and how to conduct them in R. I will also use the sample data sets to demonstrate these performing correlation and regression in R.
+The following how-to guides explore how to conduct correlation and regression analyses in R. Focus is placed on how to implement these analyses in R rather than providing a conceptual background. For an introductory background, I suggest Field, Miles, and Field’s 1st edition of ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/). The Field et al. text is an excellent introduction to many different types of statistical analyses and how to conduct them in R. I will also use sample datasets from the Field et al. text to demonstrate these analyses in R.
 
 This site is best viewed on macOS or Windows machines with Chrome or Firefox browsers.
 
