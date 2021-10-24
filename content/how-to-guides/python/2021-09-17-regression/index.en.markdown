@@ -47,21 +47,14 @@ customers = pd.read_csv('Ecommerce Customers')
 ```
 
 ### Inspect Data
-Before analysing and visualizing the data, we will take a look at the structure of the data and make note of all of different variables. As of this writing, pandas tables do not readily display well within R markdown. To get around this snag, I took advantage of R's reticulate and kableExtra packages to display the first few rows of the data frame.
+Before analysing and visualizing the data, we will take a look at the structure of the data and make note of all of different variables.
+
+
+*Head*
 
 ```python
 customers.head(3)
-customers.describe()
-customers.info()
 ```
-
-
-```r
-#R code to display pandas table
-df <- reticulate::py$customers
-kable(head(df, n=3))
-```
-
 <table>
  <thead>
   <tr>
@@ -111,6 +104,116 @@ Cobbborough, DC 99414-7564 </td>
   </tr>
 </tbody>
 </table>
+
+*Info*
+
+```python
+customers.info()
+```
+
+```
+## <class 'pandas.core.frame.DataFrame'>
+## RangeIndex: 500 entries, 0 to 499
+## Data columns (total 8 columns):
+##  #   Column                Non-Null Count  Dtype  
+## ---  ------                --------------  -----  
+##  0   Email                 500 non-null    object 
+##  1   Address               500 non-null    object 
+##  2   Avatar                500 non-null    object 
+##  3   Avg. Session Length   500 non-null    float64
+##  4   Time on App           500 non-null    float64
+##  5   Time on Website       500 non-null    float64
+##  6   Length of Membership  500 non-null    float64
+##  7   Yearly Amount Spent   500 non-null    float64
+## dtypes: float64(5), object(3)
+## memory usage: 31.4+ KB
+```
+
+*Describe*
+
+```python
+customers.describe()
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Avg. Session Length </th>
+   <th style="text-align:right;"> Time on App </th>
+   <th style="text-align:right;"> Time on Website </th>
+   <th style="text-align:right;"> Length of Membership </th>
+   <th style="text-align:right;"> Yearly Amount Spent </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> count </td>
+   <td style="text-align:right;"> 500.0000000 </td>
+   <td style="text-align:right;"> 500.0000000 </td>
+   <td style="text-align:right;"> 500.000000 </td>
+   <td style="text-align:right;"> 500.0000000 </td>
+   <td style="text-align:right;"> 500.00000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mean </td>
+   <td style="text-align:right;"> 33.0531935 </td>
+   <td style="text-align:right;"> 12.0524879 </td>
+   <td style="text-align:right;"> 37.060445 </td>
+   <td style="text-align:right;"> 3.5334616 </td>
+   <td style="text-align:right;"> 499.31404 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> std </td>
+   <td style="text-align:right;"> 0.9925631 </td>
+   <td style="text-align:right;"> 0.9942156 </td>
+   <td style="text-align:right;"> 1.010489 </td>
+   <td style="text-align:right;"> 0.9992775 </td>
+   <td style="text-align:right;"> 79.31478 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> min </td>
+   <td style="text-align:right;"> 29.5324290 </td>
+   <td style="text-align:right;"> 8.5081522 </td>
+   <td style="text-align:right;"> 33.913847 </td>
+   <td style="text-align:right;"> 0.2699011 </td>
+   <td style="text-align:right;"> 256.67058 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 25% </td>
+   <td style="text-align:right;"> 32.3418220 </td>
+   <td style="text-align:right;"> 11.3881534 </td>
+   <td style="text-align:right;"> 36.349257 </td>
+   <td style="text-align:right;"> 2.9304497 </td>
+   <td style="text-align:right;"> 445.03828 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 50% </td>
+   <td style="text-align:right;"> 33.0820076 </td>
+   <td style="text-align:right;"> 11.9832313 </td>
+   <td style="text-align:right;"> 37.069367 </td>
+   <td style="text-align:right;"> 3.5339750 </td>
+   <td style="text-align:right;"> 498.88788 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 75% </td>
+   <td style="text-align:right;"> 33.7119850 </td>
+   <td style="text-align:right;"> 12.7538497 </td>
+   <td style="text-align:right;"> 37.716432 </td>
+   <td style="text-align:right;"> 4.1265019 </td>
+   <td style="text-align:right;"> 549.31383 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> max </td>
+   <td style="text-align:right;"> 36.1396625 </td>
+   <td style="text-align:right;"> 15.1269943 </td>
+   <td style="text-align:right;"> 40.005182 </td>
+   <td style="text-align:right;"> 6.9226893 </td>
+   <td style="text-align:right;"> 765.51846 </td>
+  </tr>
+</tbody>
+</table>
+
 
 ### Exploratory Data Analysis with Seaborn
 After taking a look the tabulated data, we can make some basic visualizations to show the relationships between all of the numerical variables such as Time on Website, Time on App, Length of Membership, and Yearly Amount Spent. One place to start is to display paired plots with the Seaborn package.
@@ -212,7 +315,7 @@ sns.scatterplot(x = y_test, y = predictions, data = pd.DataFrame(y_test, predict
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7fcec6bfe5c0>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7fcbbccb5198>
 ```
 
 ```python
@@ -248,7 +351,7 @@ sns.histplot((y_test-predictions),bins=50, kde = True)
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7fcec386b9b0>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7fcbbd298358>
 ```
 
 ```python

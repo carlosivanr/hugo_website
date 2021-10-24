@@ -52,18 +52,37 @@ customers = pd.read_csv('Ecommerce Customers')
 ```
 
 ### Inspect Data
-Before analysing and visualizing the data, we will take a look at the structure of the data and make note of all of different variables. As of this writing, pandas tables do not readily display well within R markdown. To get around this snag, I took advantage of R's reticulate and kableExtra packages to display the first few rows of the data frame.
+Before analysing and visualizing the data, we will take a look at the structure of the data and make note of all of different variables.
+
+
+*Head*
 ```{python, eval = FALSE}
 customers.head(3)
-customers.describe()
-customers.info()
 ```
-
-```{r}
+```{r, echo = FALSE}
 #R code to display pandas table
 df <- reticulate::py$customers
 kable(head(df, n=3))
 ```
+
+*Info*
+```{python}
+customers.info()
+```
+
+*Describe*
+```{python, describe, eval = FALSE}
+customers.describe()
+```
+```{python, prep-describe, echo = FALSE}
+describe = customers.describe()
+```
+```{r, display-describe, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$describe
+kable(df)
+```
+
 
 ### Exploratory Data Analysis with Seaborn
 After taking a look the tabulated data, we can make some basic visualizations to show the relationships between all of the numerical variables such as Time on Website, Time on App, Length of Membership, and Yearly Amount Spent. One place to start is to display paired plots with the Seaborn package.

@@ -20,7 +20,7 @@ weight: 70
 draft: False
 ---
 
-
+The following describes a Python-based workflow for creating a logistic regression model to examine  behavioral data from online users. The task at hand is to build a model that can predict whether or not a an online user will click on an ad based on their Age, Area Income, whether or not they self-identify as Male, and a couple of behavioral features related to internet use. Since clicking on an ad is a binary event, either it happens or it doesn't, logistic regression is one way to build a model to answer our question. All data are fabricated and were sourced from the Python for Data Science and Machine Learning Bootcamp by Pieran Data hosted on Udemy.com.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE)
@@ -33,42 +33,61 @@ use_condaenv("r-reticulate")
 
 
 ### Import packages
-```{python}
+```{python, packages}
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 ```
 
 ### Load data
-```{python}
+```{python, load-data}
 ad_data = pd.read_csv("advertising.csv")
 ```
 
-### Display the first three rows
-```{python, eval = FALSE}
+### Insepect the data
+Before performing any visualizations or analyses, let's take a look at the structure of the data and make note of all of different variables. We will use the `.head()`, `.describe()`, and `.info()` methods on the customers dataframe. Notice that our variable of interest, "Clicked on Ad" is coded as a binary event with either a 0 (no click), or a 1 (clicked). In addition to this information, we see variables related to age, internet usage , location, area income, time, and the type of ad. Using the `.info()` method we see a list of all of the variables, counts of those variables, and their corresponding data types (or class for R users). Finally, with the `.describe()` method, we can examine basic measures of central tendency such as the mean and dispersion such as the minimum, maximum, and standard deviation for all of the numerical variables. 
+
+
+
+
+
+
+
+**Head**
+```{python, head, eval = FALSE}
 ad_data.head(3)
 ```
-```{r, head, echo = FALSE}
+```{r, display-head, echo = FALSE}
 #R code to display pandas table
 df <- reticulate::py$ad_data
 kable(head(df, n=3))
 ```
 
-### Display Info
-```{python}
+**Info**
+```{python, info}
 ad_data.info()
 ```
 
-### Describe Data
-```{python}
+**Describe**
+```{python, describe, eval = FALSE}
 ad_data.describe()
 ```
+```{python, prep-describe, echo = FALSE}
+describe = ad_data.describe()
+```
+```{r, display-describe, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$describe
+kable(df)
+```
 
-### Histogram of Age
+### Exploratory Data Analysis
+**Histogram of Age** -
+We can begin exploratory data analysis by creating a histogram of Age to better understand the distribution of this variable. The data has a bell curve shape, but does show a slight skew which may expected if the hypothetical website targets users over the age of 20. In addition, we may expect less older users utilizing the website as compared to younger users.
 ```{python, plot1, fig.cap = 'Histogram of Age.'}
 sns.histplot(ad_data, x = "Age", bins = 30)
 plt.show()
@@ -77,7 +96,8 @@ plt.show()
 plt.close()
 ```
 
-### Jointplot of Age and Area Income
+**Jointplot of Age and Area Income** -
+Next, a jointplot combines a scatterplot with histograms of the designated variables. In this plot area income displays a distribution that is similar to that of Age, except it has a slight negative skew. The data indicates that higher area incomes are concentrated among the lower age ranges, possibly due to individuals retiring in older age, or reflecting the lack of data from older individuals.
 ```{python, plot2, fig.cap = 'Jointplot of Age and Area Income.'}
 sns.jointplot(data=ad_data, x = "Age", y = "Area Income", height = 5)
 plt.tight_layout()
@@ -87,9 +107,10 @@ plt.show()
 plt.close()
 ```
 
-### Kernel Density Estimation Plot of Age and Area Income
-```{python, plot3, fig.cap = 'KDE plot of Age and Area Income.'}
-sns.jointplot(data=ad_data, x = "Age", y = "Area Income", kind = 'kde', height = 5)
+**Kernel Density Estimation Plot of Age and Daily Time Spent on Site** -
+The jointplots from the seaborn package can also be set to different kinds. One kind is the kernel density estimation which displays a distribution of the data in a form of line. In this plot, we can see that Daily Time Spent on Site has a slight bi-modal distribution. One of the peaks is concentrated in the range of 60-90 minutes among 20-40 year olds, and another peak around 40 minutes among 35-45 year-olds.
+```{python, plot3, fig.cap = 'KDE plot of Age and Daily Time Spent on Site.'}
+sns.jointplot(data=ad_data, x = "Age", y = "Daily Time Spent on Site", kind = "kde", height = 5)
 plt.tight_layout()
 plt.show()
 ```
@@ -97,7 +118,8 @@ plt.show()
 plt.close()
 ```
 
-### Jointplot of Daily Time Spent on Site and Daily Internet Usage
+**Jointplot of Daily Time Spent on Site and Daily Internet Usage** -
+A third jointplot of Daily Time Spent on Sity and Daily Internet Usage demonstrates two clusters. One cluster spends a higher amount of daily time using the internet which is associated with a higher amount of time spent on the site. On the other hand, another cluster spends less daily time on the internet which is associated with less time spent on the site. 
 ```{python, plot4, fig.cap = 'Jointplot plot of Daily Time Spent on Site and Daily Internet Usage.'}
 sns.jointplot(data = ad_data, x = "Daily Time Spent on Site", y = "Daily Internet Usage", height = 5)
 plt.show()
@@ -106,7 +128,8 @@ plt.show()
 plt.close()
 ```
 
-### Pairplot of ad_data
+**Pairplot of ad_data** -
+We can make similar plots for all of the numerical data using the `pairplot()` function. Additionally, we can specify to color the data points based on whether or not the user clicked on the ad.
 ```{python, plot5, fig.cap = 'Pairplot of ad_data.'}
 sns.pairplot(data = ad_data, hue = "Clicked on Ad")
 ```
@@ -114,21 +137,27 @@ sns.pairplot(data = ad_data, hue = "Clicked on Ad")
 plt.close()
 ```
 
-### Split data into training and testing sets
+### Modeling
+**Split data into training and testing sets** -
+To begin modeling the data we will first create two dataframes. The first dataframe, X, will consist of all of our predictor variables. Since the dataset contains non-numeric variables such as City, Ad Topic Line, Country, and Timestamp, these variables will be excluded. Next we proceed to create the y data frame which will consist of our binary response or outcome variable, Clicked on Ad. Finally, we will use the `train_test_split()` to split the dataset into separate training and testing sets with the test set size set to 30% of the ad_data dataframe.
 ```{python}
 #ad_data.columns # used to print out columns to select the predictor variables
-X = ad_data[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage', 'Male']]
+X = ad_data[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage", "Male"]]
 y = ad_data["Clicked on Ad"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=101)
 ```
 
-### Train and fit logistic regression model to the training set
+**Model fitting** -
+After preparing and splitting the data set, we can proceed to fitting a logistic regression model. This is a two-step process that begins with creating an instantiation of a logistic regregression model, followed by passing the X_train and y_train datasets to the `.fit()` method.
 ```{python}
 logmodel = LogisticRegression() #creates an instantiation of logistic regression model
 logmodel.fit(X_train,y_train)
 ```
 
 ### Predictions and evaluations
+After building our model, we can use the X_test dataset to make predictions. In other words, we will use the test predictor values to predict outcome values and save the predictions to a data frame. Then, we can compare our predictions with the actual y values in the test dataset to evaluate how well the model performs in predicting whether or not someone will click on the ad. One way to evaluate performance is to display the classification report. We notice that this model is 93% accurate at predicting if someone will click on the ad based on the included variables.
+
+**Classification Report**
 ```{python}
 predictions = logmodel.predict(X_test)
 ```
@@ -146,5 +175,18 @@ df = pd.DataFrame(report).transpose()
 ```{r, classification report, echo = FALSE}
 #R code to display pandas table
 df <- reticulate::py$df
+kable(df)
+```
+
+**Confusion Matrix**
+```{python, eval = FALSE}
+confusion_matrix(y_test, predictions)
+```
+```{python, prep-c-mat, echo = FALSE}
+cmat = confusion_matrix(y_test, predictions)
+```
+```{r, display-cmat, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$cmat
 kable(df)
 ```
