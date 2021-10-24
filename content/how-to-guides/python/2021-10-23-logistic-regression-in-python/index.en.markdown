@@ -156,7 +156,7 @@ sns.histplot(ad_data, x = "Age", bins = 30)
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7fd1788f8780>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7ffe1b7f9780>
 ```
 
 ```python
@@ -168,9 +168,6 @@ plt.show()
 <p class="caption">Figure 1: Histogram of Age.</p>
 </div>
 
-```python
-plt.close()
-```
 
 ### Jointplot of Age and Area Income
 
@@ -179,7 +176,7 @@ sns.jointplot(data=ad_data, x = "Age", y = "Area Income", height = 5)
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7fd178acf278>
+## <seaborn.axisgrid.JointGrid object at 0x7ffe1b87f278>
 ```
 
 ```python
@@ -192,9 +189,6 @@ plt.show()
 <p class="caption">Figure 2: Jointplot of Age and Area Income.</p>
 </div>
 
-```python
-plt.close()
-```
 
 ### Kernel Density Estimation Plot of Age and Area Income
 
@@ -203,7 +197,7 @@ sns.jointplot(data=ad_data, x = "Age", y = "Area Income", kind = 'kde', height =
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7fd178e73710>
+## <seaborn.axisgrid.JointGrid object at 0x7ffe1bc23710>
 ```
 
 ```python
@@ -216,9 +210,6 @@ plt.show()
 <p class="caption">Figure 3: KDE plot of Age and Area Income.</p>
 </div>
 
-```python
-plt.close()
-```
 
 ### Jointplot of Daily Time Spent on Site and Daily Internet Usage
 
@@ -227,7 +218,7 @@ sns.jointplot(data = ad_data, x = "Daily Time Spent on Site", y = "Daily Interne
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7fd1797e4a58>
+## <seaborn.axisgrid.JointGrid object at 0x7ffe1c525a20>
 ```
 
 ```python
@@ -239,9 +230,6 @@ plt.show()
 <p class="caption">Figure 4: Jointplot plot of Daily Time Spent on Site and Daily Internet Usage.</p>
 </div>
 
-```python
-plt.close()
-```
 
 ### Pairplot of ad_data
 
@@ -254,9 +242,6 @@ sns.pairplot(data = ad_data, hue = "Clicked on Ad", height = 6)
 <p class="caption">Figure 5: Pairplot of ad_data.</p>
 </div>
 
-```python
-plt.close()
-```
 
 ### Split data into training and testing sets
 

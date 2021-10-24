@@ -73,7 +73,7 @@ ad_data.describe()
 sns.histplot(ad_data, x = "Age", bins = 30)
 plt.show()
 ```
-```{python}
+```{python, echo=FALSE}
 plt.close()
 ```
 
@@ -83,7 +83,7 @@ sns.jointplot(data=ad_data, x = "Age", y = "Area Income", height = 5)
 plt.tight_layout()
 plt.show()
 ```
-```{python}
+```{python, echo=FALSE}
 plt.close()
 ```
 
@@ -93,7 +93,7 @@ sns.jointplot(data=ad_data, x = "Age", y = "Area Income", kind = 'kde', height =
 plt.tight_layout()
 plt.show()
 ```
-```{python}
+```{python, echo=FALSE}
 plt.close()
 ```
 
@@ -102,7 +102,7 @@ plt.close()
 sns.jointplot(data = ad_data, x = "Daily Time Spent on Site", y = "Daily Internet Usage", height = 5)
 plt.show()
 ```
-```{python}
+```{python, echo=FALSE}
 plt.close()
 ```
 
@@ -110,7 +110,7 @@ plt.close()
 ```{python, plot5, fig.cap = 'Pairplot of ad_data.'}
 sns.pairplot(data = ad_data, hue = "Clicked on Ad", height = 6)
 ```
-```{python}
+```{python, echo=FALSE}
 plt.close()
 ```
 
