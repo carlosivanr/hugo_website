@@ -1,0 +1,150 @@
+---
+title: Logistic Regression in Python
+author: Carlos Rodriguez
+date: '2021-10-23'
+slug: logistic-regression-in-python
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-23T19:57:25-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 70
+draft: False
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+library(kableExtra)
+library(reticulate)
+
+#conda_list() #lists conda environments
+use_condaenv("r-reticulate")
+```
+
+
+### Import packages
+```{python}
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+```
+
+### Load data
+```{python}
+ad_data = pd.read_csv("advertising.csv")
+```
+
+### Display the first three rows
+```{python, eval = FALSE}
+ad_data.head(3)
+```
+```{r, head, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$ad_data
+kable(head(df, n=3))
+```
+
+### Display Info
+```{python}
+ad_data.info()
+```
+
+### Describe Data
+```{python}
+ad_data.describe()
+```
+
+### Histogram of Age
+```{python, plot1, fig.cap = 'Histogram of Age.'}
+sns.histplot(ad_data, x = "Age", bins = 30)
+plt.show()
+```
+```{python}
+plt.close()
+```
+
+### Jointplot of Age and Area Income
+```{python, plot2, fig.cap = 'Jointplot of Age and Area Income.'}
+sns.jointplot(data=ad_data, x = "Age", y = "Area Income", height = 5)
+plt.tight_layout()
+plt.show()
+```
+```{python}
+plt.close()
+```
+
+### Kernel Density Estimation Plot of Age and Area Income
+```{python, plot3, fig.cap = 'KDE plot of Age and Area Income.'}
+sns.jointplot(data=ad_data, x = "Age", y = "Area Income", kind = 'kde', height = 5)
+plt.tight_layout()
+plt.show()
+```
+```{python}
+plt.close()
+```
+
+### Jointplot of Daily Time Spent on Site and Daily Internet Usage
+```{python, plot4, fig.cap = 'Jointplot plot of Daily Time Spent on Site and Daily Internet Usage.'}
+sns.jointplot(data = ad_data, x = "Daily Time Spent on Site", y = "Daily Internet Usage", height = 5)
+plt.show()
+```
+```{python}
+plt.close()
+```
+
+### Pairplot of ad_data
+```{python, plot5, fig.cap = 'Pairplot of ad_data.'}
+sns.pairplot(data = ad_data, hue = "Clicked on Ad", height = 6)
+```
+```{python}
+plt.close()
+```
+
+### Split data into training and testing sets
+```{python}
+#ad_data.columns # used to print out columns to select the predictor variables
+X = ad_data[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage', 'Male']]
+y = ad_data["Clicked on Ad"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=101)
+```
+
+### Train and fit logistic regression model to the training set
+```{python}
+logmodel = LogisticRegression() #creates an instantiation of logistic regression model
+logmodel.fit(X_train,y_train)
+```
+
+### Predictions and evaluations
+```{python}
+predictions = logmodel.predict(X_test)
+```
+```{python, eval = FALSE}
+print(classification_report(y_test,predictions))
+```
+```{python, prep-report, echo = FALSE}
+# This chunk will save the classification report as a dictionary which can then be
+# transposed and saved as a pandas data frame. Then the data frame can be loaded
+# into the R workspace to display it with the kable() function, and make the out-
+# put more readable.
+report = classification_report(y_test,predictions, output_dict=True)
+df = pd.DataFrame(report).transpose()
+```
+```{r, classification report, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$df
+kable(df)
+```
