@@ -108,7 +108,7 @@ plt.close()
 
 ### Pairplot of ad_data
 ```{python, plot5, fig.cap = 'Pairplot of ad_data.'}
-sns.pairplot(data = ad_data, hue = "Clicked on Ad", height = 6)
+sns.pairplot(data = ad_data, hue = "Clicked on Ad")
 ```
 ```{python, echo=FALSE}
 plt.close()

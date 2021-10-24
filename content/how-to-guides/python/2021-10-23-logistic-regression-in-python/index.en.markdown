@@ -156,7 +156,7 @@ sns.histplot(ad_data, x = "Age", bins = 30)
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7ffe1b7f9780>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7ffc06379748>
 ```
 
 ```python
@@ -176,7 +176,7 @@ sns.jointplot(data=ad_data, x = "Age", y = "Area Income", height = 5)
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7ffe1b87f278>
+## <seaborn.axisgrid.JointGrid object at 0x7ffc0663f128>
 ```
 
 ```python
@@ -197,7 +197,7 @@ sns.jointplot(data=ad_data, x = "Age", y = "Area Income", kind = 'kde', height =
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7ffe1bc23710>
+## <seaborn.axisgrid.JointGrid object at 0x7ffc06678c88>
 ```
 
 ```python
@@ -218,7 +218,7 @@ sns.jointplot(data = ad_data, x = "Daily Time Spent on Site", y = "Daily Interne
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7ffe1c525a20>
+## <seaborn.axisgrid.JointGrid object at 0x7ffc08cfe9b0>
 ```
 
 ```python
@@ -234,11 +234,11 @@ plt.show()
 ### Pairplot of ad_data
 
 ```python
-sns.pairplot(data = ad_data, hue = "Clicked on Ad", height = 6)
+sns.pairplot(data = ad_data, hue = "Clicked on Ad")
 ```
 
 <div class="figure">
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/plot5-9.png" alt="Pairplot of ad_data." width="1540" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/plot5-9.png" alt="Pairplot of ad_data." width="674" />
 <p class="caption">Figure 5: Pairplot of ad_data.</p>
 </div>
 
