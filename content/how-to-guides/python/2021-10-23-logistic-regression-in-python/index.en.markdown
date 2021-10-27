@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression in Python
+title: Logistic Regression
 author: Carlos Rodriguez
 date: '2021-10-23'
 slug: logistic-regression-in-python
@@ -241,7 +241,7 @@ sns.histplot(ad_data, x = "Age", bins = 30)
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7f98416f9898>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7fa5a5779898>
 ```
 
 ```python
@@ -262,7 +262,7 @@ sns.jointplot(data=ad_data, x = "Age", y = "Area Income", height = 5)
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7f98417770b8>
+## <seaborn.axisgrid.JointGrid object at 0x7fa5a63110b8>
 ```
 
 ```python
@@ -284,7 +284,7 @@ sns.jointplot(data=ad_data, x = "Age", y = "Daily Time Spent on Site", kind = "k
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7f98422606d8>
+## <seaborn.axisgrid.JointGrid object at 0x7fa5a640db70>
 ```
 
 ```python
@@ -306,7 +306,7 @@ sns.jointplot(data = ad_data, x = "Daily Time Spent on Site", y = "Daily Interne
 ```
 
 ```
-## <seaborn.axisgrid.JointGrid object at 0x7f98427dce10>
+## <seaborn.axisgrid.JointGrid object at 0x7fa5a64c5e10>
 ```
 
 ```python

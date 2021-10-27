@@ -15,54 +15,93 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
+type: book
+weight: 75
 draft: true
 ---
 
 
+Logistic regression is used in cases where you have a binary outcome or response variable. 
+
+Did someone die or not, did they survive the hospital stay or not. 
+
 ```r
 library(car)
-```
-
-```
-## Loading required package: carData
-```
-
-```r
+library(kableExtra)
 #library(mlogit)
 ```
 
+### Load Data
 
 ```r
 #load data
-eelData<-read.delim("eel.dat", header = TRUE)
-
-
-#look at first 6 cases of data
-head(eelData)
+eelData <- read.delim("eel.dat", header = TRUE)
 ```
 
-```
-##       Cured Intervention Duration
-## 1 Not Cured No Treatment        7
-## 2 Not Cured No Treatment        7
-## 3 Not Cured No Treatment        6
-## 4     Cured No Treatment        8
-## 5     Cured Intervention        7
-## 6     Cured No Treatment        6
-```
+### Inspect Data
 
 ```r
-#Alternatively Re-orders the levels of the factyor so that Not Cured and No Treatment are the baseline categories
-eelData$Cured<-factor(eelData$Cured, levels = c("Not Cured", "Cured"))
-eelData$Intervention<-factor(eelData$Intervention, levels = c("No Treatment", "Intervention"))
+#look at first 6 cases of data
+kable(head(eelData))
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Cured </th>
+   <th style="text-align:left;"> Intervention </th>
+   <th style="text-align:right;"> Duration </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:left;"> Intervention </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+</tbody>
+</table>
+
+### Prepare data
+Before building our logistic regression model, we will need to convert Cured and Intervention to factors. Additionally, we will need to order the levels so that Not Cured and No Treatment are the baseline categories and set as 0 rather than 1.
+
+```r
+eelData$Cured <- factor(eelData$Cured, levels = c("Not Cured", "Cured"))
+eelData$Intervention <- factor(eelData$Intervention, levels = c("No Treatment", "Intervention"))
 ```
 
 ### Model 1
+Logistic regression models fall under the generalized linear model (GLM) family, which is why we will use the `glm()` function. In our first model, we will try to predict whether or not a patient was cured or not, based on the type of intervention they received. The GLM family includes several types of model that include logistic, poisson, negative binomial, gamma, and ordered logistic models. For logistic regression, we will need to set family = binomial() to specify the random component of our model.
 
 ```r
-eelModel.1 <- glm(Cured ~ Intervention, data = eelData, family = binomial())
+eel_model.1 <- glm(Cured ~ Intervention, data = eelData, family = binomial())
 
-summary(eelModel.1)
+summary(eel_model.1)
 ```
 
 ```
@@ -90,39 +129,15 @@ summary(eelModel.1)
 ## Number of Fisher Scoring iterations: 4
 ```
 
-```r
-#Just to prove what the null deviance is
-eelModel.0 <- glm(Cured ~ 1, data = eelData, family = binomial())
-summary(eelModel.0)
-```
 
-```
-## 
-## Call:
-## glm(formula = Cured ~ 1, family = binomial(), data = eelData)
-## 
-## Deviance Residuals: 
-##    Min      1Q  Median      3Q     Max  
-## -1.309  -1.309   1.052   1.052   1.052  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(>|z|)
-## (Intercept)   0.3032     0.1903   1.593    0.111
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 154.08  on 112  degrees of freedom
-## Residual deviance: 154.08  on 112  degrees of freedom
-## AIC: 156.08
-## 
-## Number of Fisher Scoring iterations: 4
-```
+
+### Chi square model on deviance
 
 ```r
-modelChi <- eelModel.1$null.deviance - eelModel.1$deviance
-chidf <- eelModel.1$df.null - eelModel.1$df.residual
-chisq.prob <- 1 - pchisq(modelChi, chidf)
-modelChi; chidf; chisq.prob
+chi_model <- eel_model.1$null.deviance - eel_model.1$deviance
+chidf <- eel_model.1$df.null - eel_model.1$df.residual
+chisq.prob <- 1 - pchisq(chi_model, chidf)
+chi_model; chidf; chisq.prob
 ```
 
 ```
@@ -138,7 +153,8 @@ modelChi; chidf; chisq.prob
 ```
 
 ```r
-R2.hl<-modelChi/eelModel.1$null.deviance
-R.cs <- 1 - exp ((eelModel.1$deviance - eelModel.1$null.deviance)/113)
-R.n <- R.cs /( 1- ( exp (-(eelModel.1$null.deviance/ 113))))
+R2.hl <- chi_model/eel_model.1$null.deviance
+R.cs <- 1 - exp ((eel_model.1$deviance - eel_model.1$null.deviance)/113)
+R.n <- R.cs /( 1- ( exp (-(eel_model.1$null.deviance/ 113))))
 ```
+

@@ -1,0 +1,188 @@
+---
+title: K Nearest Neighbors
+author: Carlos Rodriguez
+date: '2021-10-26'
+slug: k-nearest-neighbors
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-26T20:59:00-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 75
+draft: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+library(kableExtra)
+library(reticulate)
+
+#conda_list() #lists conda environments
+use_condaenv("r-reticulate")
+```
+
+### Import packages
+```{python, packages}
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+```
+
+### Load data
+```{python, load-data}
+df = pd.read_csv("KNN_Project_Data")
+```
+
+```{python, head, eval = FALSE}
+df.head(3)
+```
+```{r, display-head, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$df
+kable(head(df, n=3))
+```
+
+### Exploratory Data Analysis
+```{python, eda, fig.cap = "Pairplot of all variables."}
+sns.pairplot(df,hue='TARGET CLASS',palette='coolwarm')
+```
+
+### Standardize Variables
+```{python, standardize variables}
+scaler = StandardScaler()
+scaler.fit(df.drop('TARGET CLASS', axis=1))
+scaled_features = scaler.transform(df.drop('TARGET CLASS', axis=1))
+df_feat = pd.DataFrame(scaled_features,columns=df.columns[:-1])
+```
+```{python, eval = FALSE}
+df_feat.head()
+```
+```{r, display-head_feat, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$df
+kable(head(df, n=3))
+```
+
+### Train Test Split
+```{python, train-test split}
+X_train, X_test, y_train, y_test = train_test_split(scaled_features,df['TARGET CLASS'], test_size=0.30)
+```
+
+### Use KNN
+```{python}
+knn = KNeighborsClassifier(n_neighbors=1)
+knn.fit(X_train,y_train)
+```
+
+### Predictions and Evaluations
+```{python}
+predictions = knn.predict(X_test)
+```
+
+
+**Classification Report **
+```{python, eval = FALSE}
+print(classification_report(y_test,predictions))
+```
+```{python, prep-report, echo = FALSE}
+# This chunk will save the classification report as a dictionary which can then be
+# transposed and saved as a pandas data frame. Then the data frame can be loaded
+# into the R workspace to display it with the kable() function, and make the out-
+# put more readable.
+report = classification_report(y_test, predictions, output_dict=True)
+df = pd.DataFrame(report).transpose()
+```
+```{r, classification report, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$df
+kable(df)
+```
+
+**Confusion Matrix**
+```{python, eval = FALSE}
+confusion_matrix(y_test, predictions)
+```
+```{python, prep-c-mat, echo = FALSE}
+cmat = confusion_matrix(y_test, predictions)
+```
+```{r, display-cmat, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$cmat
+kable(df)
+```
+
+
+
+### Choosing a K value
+```{python, fig.cap = "Error rate as a function of k-value. This plot visualizes the elbow criterion to determine the optimal k-value."}
+error_rate = []
+
+# Will take some time
+for i in range(1,40):
+    
+    knn = KNeighborsClassifier(n_neighbors=i)
+    knn.fit(X_train,y_train)
+    predictions_i = knn.predict(X_test)
+    error_rate.append(np.mean(predictions_i != y_test))
+
+plt.figure(figsize=(10,6))
+plt.plot(range(1,40),error_rate,color='blue', linestyle='dashed', marker='o',
+         markerfacecolor='red', markersize=10)
+plt.title('Error Rate vs. K Value')
+plt.xlabel('K')
+plt.ylabel('Error Rate')
+```
+
+### Retrain with new K value
+```{python}
+# NOW WITH K=30
+knn = KNeighborsClassifier(n_neighbors=30)
+
+knn.fit(X_train,y_train)
+predictions = knn.predict(X_test)
+```
+
+**Classification Report**
+```{python, eval = FALSE}
+print(classification_report(y_test,predictions))
+```
+```{python, prep-report2, echo = FALSE}
+# This chunk will save the classification report as a dictionary which can then be
+# transposed and saved as a pandas data frame. Then the data frame can be loaded
+# into the R workspace to display it with the kable() function, and make the out-
+# put more readable.
+report = classification_report(y_test, predictions, output_dict=True)
+df = pd.DataFrame(report).transpose()
+```
+```{r, classification report2, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$df
+kable(df)
+```
+
+**Confusion Matrix**
+```{python, eval = FALSE}
+confusion_matrix(y_test, predictions)
+```
+```{python, prep-c-mat2, echo = FALSE}
+cmat = confusion_matrix(y_test, predictions)
+```
+```{r, display-cmat2, echo = FALSE}
+#R code to display pandas table
+df <- reticulate::py$cmat
+kable(df)
+```

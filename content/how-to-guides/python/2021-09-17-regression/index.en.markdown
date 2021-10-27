@@ -1,5 +1,5 @@
 ---
-title: Linear Regression in Python
+title: Linear Regression
 author: Carlos Rodriguez
 date: '2021-09-17'
 slug: regression-python
@@ -315,7 +315,7 @@ sns.scatterplot(x = y_test, y = predictions, data = pd.DataFrame(y_test, predict
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7fcbbccb5198>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7fb77bc64cc0>
 ```
 
 ```python
@@ -351,7 +351,7 @@ sns.histplot((y_test-predictions),bins=50, kde = True)
 ```
 
 ```
-## <matplotlib.axes._subplots.AxesSubplot object at 0x7fcbbd298358>
+## <matplotlib.axes._subplots.AxesSubplot object at 0x7fb77be1e3c8>
 ```
 
 ```python

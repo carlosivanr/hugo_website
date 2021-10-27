@@ -15,46 +15,63 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
+type: book
+weight: 75
 draft: true
 ---
 
-```{r, warning=FALSE}
+
+Logistic regression is used in cases where you have a binary outcome or response variable. 
+
+Did someone die or not, did they survive the hospital stay or not. 
+```{r, warning=FALSE, message=FALSE}
 library(car)
+library(kableExtra)
 #library(mlogit)
 ```
 
+### Load Data
 ```{r}
 #load data
-eelData<-read.delim("eel.dat", header = TRUE)
+eelData <- read.delim("eel.dat", header = TRUE)
+```
 
-
+### Inspect Data
+```{r}
 #look at first 6 cases of data
-head(eelData)
+kable(head(eelData))
+```
 
-#Alternatively Re-orders the levels of the factyor so that Not Cured and No Treatment are the baseline categories
-eelData$Cured<-factor(eelData$Cured, levels = c("Not Cured", "Cured"))
-eelData$Intervention<-factor(eelData$Intervention, levels = c("No Treatment", "Intervention"))
-
-
-
+### Prepare data
+Before building our logistic regression model, we will need to convert Cured and Intervention to factors. Additionally, we will need to order the levels so that Not Cured and No Treatment are the baseline categories and set as 0 rather than 1.
+```{r}
+eelData$Cured <- factor(eelData$Cured, levels = c("Not Cured", "Cured"))
+eelData$Intervention <- factor(eelData$Intervention, levels = c("No Treatment", "Intervention"))
 ```
 
 ### Model 1
+Logistic regression models fall under the generalized linear model (GLM) family, which is why we will use the `glm()` function. In our first model, we will try to predict whether or not a patient was cured or not, based on the type of intervention they received. The GLM family includes several types of model that include logistic, poisson, negative binomial, gamma, and ordered logistic models. For logistic regression, we will need to set family = binomial() to specify the random component of our model.
 ```{r}
-eelModel.1 <- glm(Cured ~ Intervention, data = eelData, family = binomial())
+eel_model.1 <- glm(Cured ~ Intervention, data = eelData, family = binomial())
 
-summary(eelModel.1)
-
-#Just to prove what the null deviance is
-eelModel.0 <- glm(Cured ~ 1, data = eelData, family = binomial())
-summary(eelModel.0)
-
-modelChi <- eelModel.1$null.deviance - eelModel.1$deviance
-chidf <- eelModel.1$df.null - eelModel.1$df.residual
-chisq.prob <- 1 - pchisq(modelChi, chidf)
-modelChi; chidf; chisq.prob
-
-R2.hl<-modelChi/eelModel.1$null.deviance
-R.cs <- 1 - exp ((eelModel.1$deviance - eelModel.1$null.deviance)/113)
-R.n <- R.cs /( 1- ( exp (-(eelModel.1$null.deviance/ 113))))
+summary(eel_model.1)
 ```
+
+```{r, include=FALSE}
+#Just to prove what the null deviance is
+# eel_model.0 <- glm(Cured ~ 1, data = eelData, family = binomial())
+# summary(eel_model.0)
+```
+
+### Chi square model on deviance
+```{r}
+chi_model <- eel_model.1$null.deviance - eel_model.1$deviance
+chidf <- eel_model.1$df.null - eel_model.1$df.residual
+chisq.prob <- 1 - pchisq(chi_model, chidf)
+chi_model; chidf; chisq.prob
+
+R2.hl <- chi_model/eel_model.1$null.deviance
+R.cs <- 1 - exp ((eel_model.1$deviance - eel_model.1$null.deviance)/113)
+R.n <- R.cs /( 1- ( exp (-(eel_model.1$null.deviance/ 113))))
+```
+
