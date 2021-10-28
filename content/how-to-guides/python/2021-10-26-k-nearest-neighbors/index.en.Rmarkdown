@@ -126,7 +126,6 @@ kable(df)
 ```
 
 
-
 ### Choosing a K value
 ```{python, fig.cap = "Error rate as a function of k-value. This plot visualizes the elbow criterion to determine the optimal k-value."}
 error_rate = []
