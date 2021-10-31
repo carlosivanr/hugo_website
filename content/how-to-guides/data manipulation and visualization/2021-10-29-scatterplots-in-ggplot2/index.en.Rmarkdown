@@ -1,0 +1,68 @@
+---
+title: Scatterplots in ggplot2
+author: Carlos Rodriguez
+date: '2021-10-29'
+slug: scatterplots-in-ggplot2
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-29T21:08:27-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 50
+draft: false
+---
+
+
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+```{r, echo=FALSE}
+data <- read.table(file = "/Users/c/hugo_website/content/how-to-guides/correlation-and-regression/2021-10-08-correlation-in-r/Exam Anxiety.dat", header = TRUE)
+```
+
+```{r}
+kable(head(data))
+```
+
+### Basic ggplot scatterplot
+```{r}
+ggplot(data, aes(x = Anxiety, y = Exam)) +
+  geom_point()
+```
+
+### Adding a linear regression line
+```{r, message=FALSE}
+ggplot(data, aes(x = Anxiety, y = Exam)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE)
+```
+
+### Visualize points by gender
+```{r, message=FALSE}
+ggplot(data, aes(x = Anxiety, y = Exam, color = Gender)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+### Changing colors, backgrounds, and axes
+```{r, message = FALSE}
+colors = c( "#440154FF","#1565c0")
+
+ggplot(data, aes(x = Anxiety, y = Exam, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  scale_color_manual(values = colors) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```

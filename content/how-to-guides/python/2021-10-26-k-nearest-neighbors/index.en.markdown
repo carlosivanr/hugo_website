@@ -25,10 +25,13 @@ The following describes a Python-based workflow for using k-nearest neighbors (K
 ### Import packages
 
 ``` python
+# Data Analysis & Visualization Packages
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+
+# KNN Packages
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
@@ -348,8 +351,7 @@ sns.pairplot(df,hue='TARGET CLASS',palette='coolwarm')
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/eda-1.png" width="1298" />
 
 ### Standardize Variables
-Our first step in preparing the data for KNN is to standardize the variables. In sci-kit learn, the 
-`StandardScaler()` function can easily accomplish this task. We first create an instance of `StandardScaler()`. We don't want to standardize the Target Class variable so the `.drop()` method comes in handy here to standardize the features only. The axis=1 call is to specify that we want to drop the data down the column. In python the axis=0 represents rows and axis=1 represents columns. Next we will use the `.transform()` method to standardize and scale the features. Once again, the Target Class variable is excluded from this step. Finally, we convert the scaled features into a data frame using all of the columns except for the last Target Class variable with slice notation.
+Our first step in preparing the data for KNN is to standardize the variables. In sci-kit learn, the `StandardScaler()` function can easily accomplish this task. We first create an instance of `StandardScaler()`. We don't want to standardize the Target Class variable so the `.drop()` method comes in handy here to standardize the features only. The axis=1 call is to specify that we want to drop the data down the column. In python the axis=0 represents rows and axis=1 represents columns. Next we will use the `.transform()` method to standardize and scale the features. Once again, the Target Class variable is excluded from this step. Finally, we convert the scaled features into a data frame using all of the columns except for the last Target Class variable with slice notation.
 
 ``` python
 scaler = StandardScaler()
@@ -952,7 +954,6 @@ One way to choose a K value is to use the elbow method. In this method, we will 
 ``` python
 error_rate = []
 
-# Will take some time
 for i in range(1,40):
     
     knn = KNeighborsClassifier(n_neighbors=i)
@@ -973,7 +974,7 @@ plt.ylabel('Error Rate')
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/packages-1.png" width="960" />
 
 ### Retrain with new K value
-Now that we know that K=30 will reduce the error rate, we can re-run the knn algorithm and compare classification
+Now that we know that K=30 will reduce the error rate, we can re-run the knn algorithm and compare classification performance.
 ``` python
 # n_neighbors set to 30
 knn = KNeighborsClassifier(n_neighbors=30)
