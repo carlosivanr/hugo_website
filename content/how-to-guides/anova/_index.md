@@ -7,7 +7,9 @@ type: book
 weight: 15
 ---
 
-{{< toc hide_on="xl" >}} 
+<!--
+{{< toc hide_on="xl" >}}
+-->
 
 # Overview
 This following guides explore how to conduct various analysis of variance (ANOVA) tests in R with freely available packages. Focus is placed on demonstrating how to implement ANOVA tests in R rather than providing a conceptual background. To strengthen one's background on ANOVA, I recommend picking up what's been described as the ANOVA bible --- Maxwell, Delaney, and Kelley's 3rd edition of ["Designing Experiments and Analyzing Data: A model comparison perspective"](https://designingexperiments.com/). For many of the guides, the accompanying R package for the Maxwell et al. text, will be used for sample data sets. 
