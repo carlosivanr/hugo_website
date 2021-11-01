@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression Pt.1 - Binary Logistic Regression (one dichotomous predictor)
+title: Logistic Regression Pt. 1 - Binary Logistic Regression (one dichotomous predictor)
 author: Carlos Rodriguez
 date: '2021-10-17'
 slug: logistic-regression
