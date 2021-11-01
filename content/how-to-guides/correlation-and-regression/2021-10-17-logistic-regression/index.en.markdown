@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 75
-draft: true
+draft: false
 ---
 
 
@@ -28,7 +28,6 @@ Logistic regression is a statistical technique to understand the relationship be
 library(car)
 library(kableExtra)
 library(tidyverse)
-#library(mlogit)
 ```
 
 ### Load data
