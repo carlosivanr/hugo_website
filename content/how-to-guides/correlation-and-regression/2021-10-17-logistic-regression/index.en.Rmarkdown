@@ -18,6 +18,11 @@ projects: []
 type: book
 weight: 75
 draft: false
+# bibliography: [../../../../packages.bib]
+# nocite: |
+#   @R-car
+#   @DSUR
+#   @R-tidyverse
 ---
 
 
@@ -150,6 +155,31 @@ To obtain confidence intervals for the odds ratio of the model, simply pass the 
 ```{r, message = FALSE}
 kable(exp(confint(eel_model.1)))
 ```
+
+### References 
+
+<div id="refs" class="references">
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. n.d. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+<div id="ref-R-car">
+
+Fox, John, Sanford Weisberg, and Brad Price. 2020. *Car: Companion to Applied Regression*. <https://CRAN.R-project.org/package=car>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2021. *Tidyverse: Easily Install and Load the Tidyverse*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+</div>
+
 
 <!-- Notes
 Log-likelihood (LL): Predicted values are probabilities between 0 and 1. Log-likelihood is used assess fit of the model which is the sum of the predicted and actual outcomes. Analogous to residual sum of squares. Large values indicate a poor fit.

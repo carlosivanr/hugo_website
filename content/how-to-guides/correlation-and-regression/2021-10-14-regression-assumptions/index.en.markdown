@@ -18,6 +18,10 @@ projects: []
 draft: false
 type: book
 weight: 40
+# bibliography: [../../../../packages.bib]
+# nocite: |
+#   @R-car
+#   @DSUR
 ---
 
 We continue the series on regression by exploring the assumptions of our model. We focus on the assumptions of independence of residuals, multicolinearity, and normality of residuals.
@@ -30,37 +34,13 @@ We can test the assumption of independent errors with the Durbin-Watson test. Th
 
 ```r
 library(car)
-```
-
-```
-## Loading required package: carData
-```
-
-```
-## 
-## Attaching package: 'car'
-```
-
-```
-## The following object is masked from 'package:dplyr':
-## 
-##     recode
-```
-
-```
-## The following object is masked from 'package:purrr':
-## 
-##     some
-```
-
-```r
 # Durbin Watson
 dwt(multiple)
 ```
 
 ```
 ##  lag Autocorrelation D-W Statistic p-value
-##    1     -0.03061432      2.057416   0.712
+##    1     -0.03061432      2.057416   0.764
 ##  Alternative hypothesis: rho != 0
 ```
 
@@ -151,3 +131,22 @@ ggplot(data, aes(x = fitted, y = studentized.residuals)) +
 
 ### Interpretation
 Given that our model demonstrates violates numerous assumptions such as normality of errors, multicolinearity, and heteroscedasticity, we have reason to believe that this model is unreliable.
+
+
+
+### References
+<div id="refs" class="references">
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. n.d. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+<div id="ref-R-car">
+
+Fox, John, Sanford Weisberg, and Brad Price. 2020. *Car: Companion to Applied Regression*. <https://CRAN.R-project.org/package=car>.
+
+</div>
+
+</div>

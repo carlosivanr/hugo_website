@@ -18,6 +18,10 @@ projects: []
 draft: false
 type: book
 weight: 20
+# bibliography: [../../../../packages.bib]
+# nocite: |
+#   @R-QuantPsyc
+#   @DSUR
 ---
 
 In the previous guide, we built a simple linear regression model to predict salary from age in a sample of super models. In this second part, we continue to build a more complex model to predict salary from  age, and other variables including years of experience, and a rating of attractiveness.
@@ -65,7 +69,14 @@ Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*
 
 </div>
 
+<div id="ref-R-QuantPsyc">
+
+Fletcher, Thomas D. 2012. *QuantPsyc: Quantitative Psychology Tools*. <https://CRAN.R-project.org/package=QuantPsyc>.
+
 </div>
+
+</div>
+
 <!-- ### Compare regression models -->
 <!-- We can compare the overall fit of the simple and the multiple regression models to understand if the variance accounted for in one model is significantly higher than the other. This can be accomplished by using the `anova()`function [^1]. to determine if including additional variables if the multiple R-squared value  suggests that there is a significant improved fit of the mulitple versus the simple model.  -->
 <!-- ```{r} -->

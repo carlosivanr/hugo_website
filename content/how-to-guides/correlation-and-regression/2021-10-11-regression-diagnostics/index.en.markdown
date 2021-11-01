@@ -282,6 +282,18 @@ kable(
 </tbody>
 </table>
 
+### References
+<div id="refs" class="references">
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+</div>
+
+
 <!-- ### Diagnostics -->
 <!-- ```{r, include = FALSE} -->
 <!-- data$residuals <- resid(multiple) -->

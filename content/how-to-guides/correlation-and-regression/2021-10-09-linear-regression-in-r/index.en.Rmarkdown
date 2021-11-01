@@ -18,6 +18,9 @@ projects: []
 draft: false
 type: book
 weight: 15
+# bibliography: [../../../../packages.bib]
+# nocite: |
+#   @R-broom
 ---
 
 This guide is the first part in a series on regression. I will walk through how to build a simple linear regression model with one outcome variable and one predictor variable. The dataset for this guide comes from Field, Miles, and Field's ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/). The Supermodels dataset contains salary per working day, amount of experience in years, age, and a measure of beauty as determined by a panel of judges. Our job is to help determine what are the factors that best predict salary. We will start out with simple linear regression model before moving on to more complex models in subsequent guides.
@@ -104,8 +107,13 @@ Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*.
 
 </div>
 
+<div id="ref-R-broom">
+
+Robinson, David, Alex Hayes, and Simon Couch. 2021. *Broom: Convert Statistical Objects into Tidy Tibbles*. <https://CRAN.R-project.org/package=broom>.
+
 </div>
 
-### Footnotes
+</div>
+
 [^1]: The terms outcome and predictor variables correspond to the terms response and explanatory variables respectively.
 

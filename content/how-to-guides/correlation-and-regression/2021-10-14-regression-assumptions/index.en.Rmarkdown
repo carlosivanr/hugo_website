@@ -18,6 +18,10 @@ projects: []
 draft: false
 type: book
 weight: 40
+# bibliography: [../../../../packages.bib]
+# nocite: |
+#   @R-car
+#   @DSUR
 ---
 
 We continue the series on regression by exploring the assumptions of our model. We focus on the assumptions of independence of residuals, multicolinearity, and normality of residuals.
@@ -25,7 +29,7 @@ We continue the series on regression by exploring the assumptions of our model. 
 
 ```{r, warning=FALSE, message=FALSE, include=FALSE}
 library(tidyverse)
-#library(kableExtra)
+library(kableExtra)
 #library(car)
 #library(QuantPsyc)
 #library(broom)
@@ -44,7 +48,7 @@ data$fitted <- multiple$fitted.values
 
 ### Assumption of independent errors: Durbin-Watson test
 We can test the assumption of independent errors with the Durbin-Watson test. The car (companion to applied regression) package contains the `dwt()` function to perform this test. The Durbin-Watson function tests for serial correlation in the residuals and produces a value that lies between 0 and 4. A value of 2 indicates that the residuals are uncorrelated. Values greater than 2 indicate a negative correlation while values less than 2 indicate a positive correlation among adjacent residuals. As a conservative rule, values less than 1 or greater than 3 may indicate the assumption of independent errors may be violated. Our D-W statistic, 2.06, falls within the normal range of these values.
-```{r, warning=FALSE}
+```{r, warning = FALSE, message = FALSE}
 library(car)
 # Durbin Watson
 dwt(multiple)
@@ -101,3 +105,22 @@ ggplot(data, aes(x = fitted, y = studentized.residuals)) +
 
 ### Interpretation
 Given that our model demonstrates violates numerous assumptions such as normality of errors, multicolinearity, and heteroscedasticity, we have reason to believe that this model is unreliable.
+
+
+
+### References
+<div id="refs" class="references">
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. n.d. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+<div id="ref-R-car">
+
+Fox, John, Sanford Weisberg, and Brad Price. 2020. *Car: Companion to Applied Regression*. <https://CRAN.R-project.org/package=car>.
+
+</div>
+
+</div>

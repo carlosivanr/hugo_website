@@ -18,6 +18,9 @@ projects: []
 type: book
 weight: 10
 draft: false
+# bibliography: [../../../../packages.bib]
+# nocite: |
+#   @DSUR
 ---
 
 <!-- Add Citations -->
@@ -314,7 +317,34 @@ The main goal of this guide was to showcase the `cor_test()` function from the r
 <!-- ) -->
 <!-- ``` -->
 
+### References
+<div id="refs" class="references">
 
-### Footnotes
+<div id="ref-R-rstatix">
+
+Kassambara, Alboukadel. 2020. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2021. *Tidyverse: Easily Install and Load the Tidyverse*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+<div id="ref-R-kableExtra">
+
+Zhu, Hao. 2021. *KableExtra: Construct Complex Table with Kable and Pipe Syntax*. <https://CRAN.R-project.org/package=kableExtra>.
+
+</div>
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+</div>
+
 [^1]: DSUR is an excellent introductory resource for learning more about the theory, background, and execution of several statistical analyses including correlation, regression, t-tests, and analysis of variance in R. At the time of this writing, the second edition is slated to be released in 2022 which should have some welcome updates to new R syntax, packages, and functions. I am definitely looking forward to getting a copy for myself when it is released.
-[^3]: I use the kableExtra package to print/output better looking tables, and is not necessary for carrying out any of the analyses.
+[^3]: I use the kableExtra package to print/output better looking tables and is not necessary for carrying out any of the analyses.

@@ -18,6 +18,9 @@ projects: []
 draft: false
 type: book
 weight: 15
+# bibliography: [../../../../packages.bib]
+# nocite: |
+#   @R-broom
 ---
 
 This guide is the first part in a series on regression. I will walk through how to build a simple linear regression model with one outcome variable and one predictor variable. The dataset for this guide comes from Field, Miles, and Field's ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/). The Supermodels dataset contains salary per working day, amount of experience in years, age, and a measure of beauty as determined by a panel of judges. Our job is to help determine what are the factors that best predict salary. We will start out with simple linear regression model before moving on to more complex models in subsequent guides.
@@ -133,9 +136,9 @@ summary(model)
 ```
 
 ### Walkthrough of the output
-The output of the `summary()` can be thought of 4 chunks of related information. 
+The output of the `summary()` can be thought of 4 sections of related information. 
   * Beginning with the top, the first section is the "**Call:**," which is simply a reproduction of the `lm()` function used to create the model. 
-  * The next section, "**Residuals:**" contains information about the differences between the model predictions along the model and the actual values. 
+  * The next section, "**Residuals:**" contains information about the differences between the model predictions and the actual values. 
   * In the third, "**Coefficients:**," section we find information regarding the model parameters which can also be referred to as beta coefficients. Each model will have an intercept, which isn't really a predictor variable, but can be interpreted as the predicted outcome when the predictor = 0. In our case, the predicted salary is -36.18 when age = 0. This doesn't make a ton of sense since we are unlikely to encounter Supermodels at age 0. Again, the data are fabricated and are simply analyzed here for demonstrative purposes. The AGE coefficient is interpreted as what the model predicts as an increase in the outcome variable for every unit increase in age. In other words, we would predict salary to increase by 2.63 units every year. In the same section we find a standard error, t-value, and p-value. The t-values are the results of a t-test that the coeffient is not zero and the Pr(>|t|) column displays the p-value of this test statistic. This section is concluded with a key of the significance markers. 
   * Finally, the last section displays information about the **overall fit** of the model. In this example, the Multiple R-squared value is interpreted as 15.8% of the variance in SALARY can be accounted for by AGE. The last line of this section displays the results of an analysis of variance and can be interpreted as the regression model resulting in a significantly better prediction of SALARY than using the mean salary.
 
@@ -205,8 +208,13 @@ Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*.
 
 </div>
 
+<div id="ref-R-broom">
+
+Robinson, David, Alex Hayes, and Simon Couch. 2021. *Broom: Convert Statistical Objects into Tidy Tibbles*. <https://CRAN.R-project.org/package=broom>.
+
 </div>
 
-### Footnotes
+</div>
+
 [^1]: The terms outcome and predictor variables correspond to the terms response and explanatory variables respectively.
 

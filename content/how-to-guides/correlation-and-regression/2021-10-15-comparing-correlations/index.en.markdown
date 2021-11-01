@@ -20,14 +20,14 @@ weight: 11
 draft: false
 ---
 
-In this second part, we continue to examing the Exam Anxiety data set to look at the separate correlations between the variables of interest in males and females. We then proceed to test if there is a difference between males and females.
+In this second part, we continue to examine the Exam Anxiety dataset to look at the separate correlations between the variables of interest in males and females. We then proceed to test if there is a difference between those two correlations.
 
 
 
 
 
 ### Plot by Gender
-We can also visualize the data by grouping by Gender and then calculated separate correlations by Gender.
+We can plot the data by Gender to see if the relationship between pre-test anxiety and exam scores are different between genders. This is accomplished by adding the color = Gender argument to the aes() portion of the ggplot call.
 
 ```r
 colors = c( "#440154FF","#1565c0")
@@ -42,6 +42,7 @@ ggplot(data, aes(x = Anxiety, y = Exam, color = Gender)) +
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
 ### Correlations by Gender
+The `group_by()` function is compatible with the rstatix `cor_test()` to produce two separate correlations, one ofr males and one for females. We simply pipe data to `group_by()` and then pipe that output to `cor_test()`.
 
 ```r
 correlations <- data %>% 
@@ -169,5 +170,34 @@ zdifference(-0.51, -0.38, 52, 51)
 <!-- ``` -->
 
 
-### Footnotes
+### References
+<div id="refs" class="references">
+
+<div id="ref-R-rstatix">
+
+Kassambara, Alboukadel. 2020. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2021. *Tidyverse: Easily Install and Load the Tidyverse*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+<div id="ref-R-kableExtra">
+
+Zhu, Hao. 2021. *KableExtra: Construct Complex Table with Kable and Pipe Syntax*. <https://CRAN.R-project.org/package=kableExtra>.
+
+</div>
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+</div>
+
+
 [^2]: Pearson correlation values can be converted to z-scores with the arc tangent function, `atanh()`. Converting correlations to z-scores before conducting other statistics is necessary because correlations values are bounded by -1 and +1. Conversely, the hyperbolic tangent `tanh()` function can be used to convert z-scores back to correlation values.
