@@ -41,3 +41,6 @@ publication: '*Alcohol*'
 url_pdf: media/rodriguez_2021_pae_svm.pdf
 doi: 10.1016/j.alcohol.2021.03.001
 ---
+
+### Summary
+In this project, colleagues and I were interested in learning whether or not a machine learning technique could be used to discriminate between brain connectivity patterns associated with prenatal alcohol exposure from those of controls. We utilized a rodent model of prenatal alcohol exposure, resting state function magnetic resonance imaging (fMR), and group independent components analysis to measure functional connectivity. The functional connectivity measures were used in a leave one out cross validation procedure incorporating multiple SVM kernels for binary classification. We discovered that a quadratic SVM kernel was approximately 80% accurate in correctly classifying brain connectivity patterns. This research suggests that this approach may yield viable non-invasive diagnostic methods for fetal alcohol spectrum disorder with future refinements of the technique.

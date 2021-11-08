@@ -6,6 +6,7 @@ authors: [C. I. Rodriguez, V. M. Vergara, V. D. Calhoun, D. D. Savage, D. A. Ham
 date: 2021-08-13T10:44:12-06:00
 doi: "10.1111/acer.14673"
 
+
 # Schedule page publish date (NOT publication's date).
 publishDate: 2021-08-13T10:44:12-06:00
 
@@ -17,12 +18,12 @@ publication_types: ["2"]
 
 # Publication name and optional abbreviated publication name.
 publication: "Alcoholism: Clinical and Experimental Research (in press)"
-publication_short: "*Alcohol Clin Exp Res (in press)*"
+publication_short: "*Alcohol Clin Exp Res*"
 
 abstract: ""
 
-# Summary. An optional shortened abstract.
-summary: ""
+#Summary. An optional shortened abstract.
+summary: "Summary"
 
 tags: []
 categories: []
@@ -67,3 +68,7 @@ projects: []
 #   Otherwise, set `slides: ""`.
 slides: ""
 ---
+
+
+### Summary
+In this study, colleagues and I examined resting state functional MRI data from a sample of adolescents and young adults with fetal alcohol spectrum disorder (FASD). We utilized group independent components analysis to extract functional networks. Measures of functional connectivity between all retained networks where then subjected to graph theory network analysis to measure network integration and segregation. We discovered that mild and severe forms of FASD displayed changes in network measures in opposing patterns relative to controls. Our data suggest that while  network characteristics are compromised in a severe form FASD, they are enhanced in a less severe FASD possibly due to a compensatory mechanism. 

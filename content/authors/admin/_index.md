@@ -14,9 +14,9 @@ education:
 email: ""
 highlight_name: false
 interests:
-- Neuroimaging & brain connectivity
+- Neuroscience
 - Statistics
-- Data visualizaion
+- Data analysis & visualizaion
 - Promoting diversity in research
 organizations:
 - name: Mind Research Network
@@ -46,7 +46,7 @@ superuser: true
 title: Carlos I. Rodriguez
 ---
 
-I am a postdoctoral research fellow at the Mind Research Network (MRN) in Albuquerque, NM. At the MRN, I use functional neuroimaging to study the influence of alcohol and drugs on brain connectivity. My professional and educational experiences have provided a solid foundation in experimental design, statistical analyses, and public speaking. In addition, I am experienced in using MATLAB, R, and Python to manage, process, and analyse data. I have disseminated my research via peer reviewed journals and orally through conference presentations and invited talks. My professional experiences outside of research center on teaching, advising, and leading efforts to implement research findings from the science of learning into university student success programs. Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research. Feel free to reach out to me to learn more about my work.
+I am a postdoctoral research fellow at the Mind Research Network in Albuquerque, NM. At the MRN, I rely on functional neuroimaging technology to better understand how alcohol and other drugs of abuse affect how brain regions communicate with one another. My professional and educational experiences have provided a solid foundation in experimental research design, statistical analyses, and public speaking. I am experienced in using MATLAB, R, and Python to manage, process, and analyse small and large data sets. My research has been shared in peer reviewed journals, conference presentations, and invited talks. Outside of research, my professional experiences center on teaching, advising, and leading efforts to implement research findings from the science of learning into university student success programs. Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research through my involvement with the Society for Neuroscience and the University of New Mexico's El Centro de la Raza.
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/carlos_rodriguez_cv.pdf" "newtab" >}}CV{{< /staticref >}}.
 

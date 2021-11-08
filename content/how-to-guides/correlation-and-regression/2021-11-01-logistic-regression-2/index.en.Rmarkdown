@@ -1,0 +1,83 @@
+---
+title: Logistic Regression Pt.2 - (Work in progress)
+author: Carlos Rodriguez
+date: '2021-11-01'
+slug: logistic-regression-2
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-11-01T19:48:10-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 75
+draft: true
+---
+
+```{r, warning=FALSE, message=FALSE}
+library(car)
+library(kableExtra)
+library(tidyverse)
+```
+
+
+### Load data
+```{r}
+#load data
+eelData <- read.delim("../2021-10-17-logistic-regression/eel.dat", header = TRUE)
+eelData$Cured <- factor(eelData$Cured, levels = c("Not Cured", "Cured"))
+eelData$Intervention <- factor(eelData$Intervention, levels = c("No Treatment", "Intervention"))
+```
+
+
+### Model data
+```{r}
+eel_model.2 <- glm(Cured ~ Intervention + Duration, family = binomial(), data = eelData)
+
+summary(eel_model.2)
+```
+```{r, include=FALSE}
+eel_model.1 <- glm(Cured ~ Intervention, family = binomial(), data = eelData)
+
+```
+```{r}
+modelChi <- eel_model.1$deviance - eel_model.2$deviance
+chidf <- eel_model.1$df.residual - eel_model.2$df.residual
+chisq.prob <- 1 - pchisq(modelChi, chidf)
+modelChi; chidf; chisq.prob
+```
+
+
+```{r}
+anova(eel_model.1, eel_model.2)
+```
+
+### Diagnostics
+```{r}
+#dx <- function(dataframe, model){
+#   dataframe$predicted.probabilities <-fitted(model)
+#   dataframe$standardized.residuals <- rstandard(model)
+#   dataframe$studentized.residuals <- rstudent(model)
+#   dataframe$dfbeta <- dfbeta(model)
+#   dataframe$dffit <- dffits(model)
+#   dataframe$leverage <- hatvalues(model)
+# }
+#dx(eelData, eel_model.1)
+
+
+eelData$predicted.probabilities <- fitted(eel_model.1)
+eelData$standardized.residuals <- rstandard(eel_model.1)
+eelData$studentized.residuals <- rstudent(eel_model.1)
+eelData$dfbeta <- dfbeta(eel_model.1)
+eelData$dffit <- dffits(eel_model.1)
+eelData$leverage <- hatvalues(eel_model.1)
+
+head(eelData[, c("Cured", "Intervention", "Duration", "predicted.probabilities")])
+eelData[, c("leverage", "studentized.residuals", "dfbeta")]
+```
