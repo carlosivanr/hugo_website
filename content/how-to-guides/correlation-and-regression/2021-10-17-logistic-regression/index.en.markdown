@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression Pt. 1 - Binary Logistic Regression (one dichotomous predictor)
+title: Logistic Regression - Binary Logistic Regression
 author: Carlos Rodriguez
 date: '2021-10-17'
 slug: logistic-regression
@@ -117,7 +117,7 @@ ggplot(eelData, aes(x = Cured, color = Intervention, fill = Intervention)) +
 
 
 
-### Model the data
+### Model the data with one predictor variable
 For our first logistic regression model, we will attempt to predict Cured from Intervention. Instead of using the `lm()` function as in the linear regression, we will use the `glm()` function. For logistic regression, we will need to set the  `family = binomial()` argument, and then specify the data. Lastly, we will use the `summary()` to display the output.
 
 ```r
@@ -264,6 +264,62 @@ kable(exp(confint(eel_model.1)))
   </tr>
 </tbody>
 </table>
+
+
+### Model data with two predictors
+In our second model, we will include an additional variable, "Duration," which measures the amount of time each observation had spent dealing with the illness before seeking medical treatment. Notice that the residual deviance for the second model is the exact same as the residual deviance for the first model. The residual deviance is one way assess model fit. Including the "Duration" variable does not change the residual deviance and thus did not improve the fit of model to the data.
+
+```r
+eel_model.2 <- glm(Cured ~ Intervention + Duration, family = binomial(), data = eelData)
+
+summary(eel_model.2)
+```
+
+```
+## 
+## Call:
+## glm(formula = Cured ~ Intervention + Duration, family = binomial(), 
+##     data = eelData)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.6025  -1.0572   0.8107   0.8161   1.3095  
+## 
+## Coefficients:
+##                           Estimate Std. Error z value Pr(>|z|)   
+## (Intercept)              -0.234660   1.220563  -0.192  0.84754   
+## InterventionIntervention  1.233532   0.414565   2.975  0.00293 **
+## Duration                 -0.007835   0.175913  -0.045  0.96447   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 154.08  on 112  degrees of freedom
+## Residual deviance: 144.16  on 110  degrees of freedom
+## AIC: 150.16
+## 
+## Number of Fisher Scoring iterations: 4
+```
+
+<!-- ### Compare Models -->
+<!-- We can compare the two models with the `anova()` function. -->
+<!-- ```{r} -->
+<!-- anova(eel_model.1, eel_model.2) -->
+<!-- ``` -->
+
+<!-- ### Diagnostics -->
+<!-- ```{r} -->
+<!-- eelData$predicted.probabilities <- fitted(eel_model.1) -->
+<!-- eelData$standardized.residuals <- rstandard(eel_model.1) -->
+<!-- eelData$studentized.residuals <- rstudent(eel_model.1) -->
+<!-- eelData$dfbeta <- dfbeta(eel_model.1) -->
+<!-- eelData$dffit <- dffits(eel_model.1) -->
+<!-- eelData$leverage <- hatvalues(eel_model.1) -->
+
+<!-- head(eelData[, c("Cured", "Intervention", "Duration", "predicted.probabilities")]) -->
+<!-- eelData[, c("leverage", "studentized.residuals", "dfbeta")] -->
+<!-- ``` -->
 
 ### References 
 
