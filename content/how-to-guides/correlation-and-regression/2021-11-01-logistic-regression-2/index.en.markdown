@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression Pt.2 - (Work in progress)
+title: Logistic Regression Pt.2 - Two Predictor Variables & Casewise Diagnostics
 author: Carlos Rodriguez
 date: '2021-11-01'
 slug: logistic-regression-2
@@ -16,29 +16,22 @@ image:
   preview_only: no
 projects: []
 type: book
-weight: 75
-draft: true
+weight: 80
+draft: false
 ---
 
-
-```r
-library(car)
-library(kableExtra)
-library(tidyverse)
-```
+In this guide we continue with logistic regression by adding a second predictor variable to our model, compare two models, and assess the model diagnostics. 
 
 
-### Load data
-
-```r
-#load data
-eelData <- read.delim("../2021-10-17-logistic-regression/eel.dat", header = TRUE)
-eelData$Cured <- factor(eelData$Cured, levels = c("Not Cured", "Cured"))
-eelData$Intervention <- factor(eelData$Intervention, levels = c("No Treatment", "Intervention"))
-```
 
 
-### Model data
+
+
+### Model data with two predictors
+In our second model, we will include an additional variable, "Duration," which measures the amount of time each participant had spent dealing with the illness before seeking medical treatment. Notice that the residual deviance for the second model is the exact same as the residual deviance for the first model. The residual deviance is one way assess model fit and including the "Duration" variable does not change the residual deviance. 
+
+An additional piece of information to consider is the Akaike Information Criterion (AIC). The AIC is another way of assessing model fit that takes into consideration the number of predictors in the model. The AIC is for the model.2 is larger than the AIC for model.1 which suggests that model.1 is the better model as lower values are better. After considering the deviance statistic and increased AIC, we can then conclude that adding the "Duration" variable does not improve the fit of model.
+
 
 ```r
 eel_model.2 <- glm(Cured ~ Intervention + Duration, family = binomial(), data = eelData)
@@ -73,6 +66,10 @@ summary(eel_model.2)
 ## Number of Fisher Scoring iterations: 4
 ```
 
+### Compare Models
+A more objective way to compare logistic regression models is perform a chi-squared test, since the differences in the deviance statistics follow a chi-square distribution. To accomplish this we simply subtract the model.2 deviance from model.1, subtract the degrees of model.2 from model.1, and then compute the probability of obtaining that value with `pchisq()` function. The results of these calculations indicate that p-value is 0.964 and thus model.2 is not a significant improvement when compared to model.1. 
+
+A second way of comparing models is to use the `anova()` function passing the model in the order of which they were constructed. The results are identical to the method using the chi-square distribution.
 
 ```r
 modelChi <- eel_model.1$deviance - eel_model.2$deviance
@@ -93,7 +90,7 @@ modelChi; chidf; chisq.prob
 ## [1] 0.9644765
 ```
 
-
+A second way of comparing models is to use the `anova()` function passing the model in the order of which they were constructed. The results with respect to the residual deviance, degrees of freedom, and the difference between the deviance statistics are identical. The only difference is that this approach does not provide a p-value.
 
 ```r
 anova(eel_model.1, eel_model.2)
@@ -110,270 +107,174 @@ anova(eel_model.1, eel_model.2)
 ```
 
 ### Diagnostics
+The final step in this guide will be to perform diagnostics. Since model.2 was not an improvement from model.1, we will focus on examining the predicted probabilities, residuals, degrees of freedom for our coefficients, and leverage values.
 
 ```r
-#dx <- function(dataframe, model){
-#   dataframe$predicted.probabilities <-fitted(model)
-#   dataframe$standardized.residuals <- rstandard(model)
-#   dataframe$studentized.residuals <- rstudent(model)
-#   dataframe$dfbeta <- dfbeta(model)
-#   dataframe$dffit <- dffits(model)
-#   dataframe$leverage <- hatvalues(model)
-# }
-#dx(eelData, eel_model.1)
-
-
 eelData$predicted.probabilities <- fitted(eel_model.1)
 eelData$standardized.residuals <- rstandard(eel_model.1)
 eelData$studentized.residuals <- rstudent(eel_model.1)
 eelData$dfbeta <- dfbeta(eel_model.1)
 eelData$dffit <- dffits(eel_model.1)
 eelData$leverage <- hatvalues(eel_model.1)
+```
 
-head(eelData[, c("Cured", "Intervention", "Duration", "predicted.probabilities")])
+### Predicted probabilities
+The output of the table lists the first several cases of predicted probabilites. Recall that intervention was the only significant predictor in this model. Intervention can only take on a value of 0 or 1, either No Treatment or Intervention. The predicted probability of getting cured without treatment is 0.43 which means that about 43% of these patients will be cured. However, the predicted probability for getting the intervention is .72 which means that about 72% of patients receiving the intervention will be cured.
+
+```r
+kable(head(eelData %>%
+  select(Cured, Intervention, Duration, predicted.probabilities)))
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Cured </th>
+   <th style="text-align:left;"> Intervention </th>
+   <th style="text-align:right;"> Duration </th>
+   <th style="text-align:right;"> predicted.probabilities </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.4285714 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.4285714 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.4285714 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.4285714 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:left;"> Intervention </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.7192982 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:left;"> No Treatment </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.4285714 </td>
+  </tr>
+</tbody>
+</table>
+
+### Residuals
+As with linear regression, we want to inspect the residuals to identify cases in which the model fits poorly and identify cases that may have undue influence in our model. We use the same code here to determine that there are no cases in which the residual is excessively large. We expect that only about 5% of cases should lie outside +/-1.96 and about 1% of cases should like outside +/-2.58. We should also expect leverage values to near the expected value which is determined by (k+1)/N where k is the number of predictors and n is the sample size. We can also inspect the dfbetas as these should all be less than 1.
+
+```r
+# Create a boolean vector of large residuals; greater than 2 or less than -2 
+eelData$large.residual <- eelData$standardized.residuals > 2 | eelData$standardized.residuals < -2
+
+# Sum of large standardized residuals
+sum(eelData$large.residual)
 ```
 
 ```
-##       Cured Intervention Duration predicted.probabilities
-## 1 Not Cured No Treatment        7               0.4285714
-## 2 Not Cured No Treatment        7               0.4285714
-## 3 Not Cured No Treatment        6               0.4285714
-## 4     Cured No Treatment        8               0.4285714
-## 5     Cured Intervention        7               0.7192982
-## 6     Cured No Treatment        6               0.4285714
+## [1] 0
 ```
 
 ```r
-eelData[, c("leverage", "studentized.residuals", "dfbeta")]
+# Expected leverage value k+1/n, where k+1 is the number of predictors and n is the sample size
+length(eel_model.1$coefficients)/length(eel_model.1$residuals)
 ```
 
 ```
-##       leverage studentized.residuals dfbeta.(Intercept)
-## 1   0.01785714            -1.0643627      -3.886912e-02
-## 2   0.01785714            -1.0643627      -3.886912e-02
-## 3   0.01785714            -1.0643627      -3.886912e-02
-## 4   0.01785714             1.3110447       4.782751e-02
-## 5   0.01754386             0.8160435       2.283164e-18
-## 6   0.01785714             1.3110447       4.782751e-02
-## 7   0.01754386            -1.6083171      -4.483364e-18
-## 8   0.01754386             0.8160435       2.283164e-18
-## 9   0.01785714             1.3110447       4.782751e-02
-## 10  0.01785714            -1.0643627      -3.886912e-02
-## 11  0.01754386             0.8160435       2.283164e-18
-## 12  0.01785714             1.3110447       4.782751e-02
-## 13  0.01785714             1.3110447       4.782751e-02
-## 14  0.01754386            -1.6083171      -4.483364e-18
-## 15  0.01785714            -1.0643627      -3.886912e-02
-## 16  0.01785714            -1.0643627      -3.886912e-02
-## 17  0.01754386             0.8160435       2.283164e-18
-## 18  0.01754386            -1.6083171      -4.483364e-18
-## 19  0.01754386             0.8160435       2.283164e-18
-## 20  0.01754386             0.8160435       2.283164e-18
-## 21  0.01785714            -1.0643627      -3.886912e-02
-## 22  0.01754386             0.8160435       2.283164e-18
-## 23  0.01754386             0.8160435       2.283164e-18
-## 24  0.01785714            -1.0643627      -3.886912e-02
-## 25  0.01754386             0.8160435       2.283164e-18
-## 26  0.01754386             0.8160435       2.283164e-18
-## 27  0.01785714             1.3110447       4.782751e-02
-## 28  0.01785714             1.3110447       4.782751e-02
-## 29  0.01754386             0.8160435       2.283164e-18
-## 30  0.01754386             0.8160435       2.283164e-18
-## 31  0.01785714            -1.0643627      -3.886912e-02
-## 32  0.01785714             1.3110447       4.782751e-02
-## 33  0.01754386             0.8160435       2.283164e-18
-## 34  0.01754386            -1.6083171      -4.483364e-18
-## 35  0.01754386             0.8160435       2.283164e-18
-## 36  0.01785714             1.3110447       4.782751e-02
-## 37  0.01785714             1.3110447       4.782751e-02
-## 38  0.01754386            -1.6083171      -4.483364e-18
-## 39  0.01785714             1.3110447       4.782751e-02
-## 40  0.01754386             0.8160435       2.283164e-18
-## 41  0.01785714             1.3110447       4.782751e-02
-## 42  0.01754386            -1.6083171      -4.483364e-18
-## 43  0.01754386             0.8160435       2.283164e-18
-## 44  0.01754386            -1.6083171      -4.483364e-18
-## 45  0.01785714            -1.0643627      -3.886912e-02
-## 46  0.01785714            -1.0643627      -3.886912e-02
-## 47  0.01785714            -1.0643627      -3.886912e-02
-## 48  0.01754386            -1.6083171      -4.483364e-18
-## 49  0.01754386            -1.6083171      -4.483364e-18
-## 50  0.01785714             1.3110447       4.782751e-02
-## 51  0.01754386             0.8160435       2.283164e-18
-## 52  0.01754386             0.8160435       2.283164e-18
-## 53  0.01754386             0.8160435       2.283164e-18
-## 54  0.01785714             1.3110447       4.782751e-02
-## 55  0.01785714            -1.0643627      -3.886912e-02
-## 56  0.01754386             0.8160435       2.283164e-18
-## 57  0.01754386             0.8160435       2.283164e-18
-## 58  0.01785714            -1.0643627      -3.886912e-02
-## 59  0.01754386             0.8160435       2.283164e-18
-## 60  0.01754386             0.8160435       2.283164e-18
-## 61  0.01785714             1.3110447       4.782751e-02
-## 62  0.01785714            -1.0643627      -3.886912e-02
-## 63  0.01785714             1.3110447       4.782751e-02
-## 64  0.01754386            -1.6083171      -4.483364e-18
-## 65  0.01754386             0.8160435       2.283164e-18
-## 66  0.01785714            -1.0643627      -3.886912e-02
-## 67  0.01785714            -1.0643627      -3.886912e-02
-## 68  0.01785714             1.3110447       4.782751e-02
-## 69  0.01785714            -1.0643627      -3.886912e-02
-## 70  0.01785714            -1.0643627      -3.886912e-02
-## 71  0.01754386             0.8160435       2.283164e-18
-## 72  0.01785714            -1.0643627      -3.886912e-02
-## 73  0.01754386            -1.6083171      -4.483364e-18
-## 74  0.01754386             0.8160435       2.283164e-18
-## 75  0.01754386             0.8160435       2.283164e-18
-## 76  0.01785714             1.3110447       4.782751e-02
-## 77  0.01754386             0.8160435       2.283164e-18
-## 78  0.01754386            -1.6083171      -4.483364e-18
-## 79  0.01785714             1.3110447       4.782751e-02
-## 80  0.01754386            -1.6083171      -4.483364e-18
-## 81  0.01785714             1.3110447       4.782751e-02
-## 82  0.01785714            -1.0643627      -3.886912e-02
-## 83  0.01754386             0.8160435       2.283164e-18
-## 84  0.01754386             0.8160435       2.283164e-18
-## 85  0.01754386            -1.6083171      -4.483364e-18
-## 86  0.01754386             0.8160435       2.283164e-18
-## 87  0.01785714             1.3110447       4.782751e-02
-## 88  0.01754386            -1.6083171      -4.483364e-18
-## 89  0.01754386             0.8160435       2.283164e-18
-## 90  0.01785714            -1.0643627      -3.886912e-02
-## 91  0.01754386             0.8160435       2.283164e-18
-## 92  0.01785714            -1.0643627      -3.886912e-02
-## 93  0.01754386             0.8160435       2.283164e-18
-## 94  0.01754386             0.8160435       2.283164e-18
-## 95  0.01754386            -1.6083171      -4.483364e-18
-## 96  0.01754386             0.8160435       2.283164e-18
-## 97  0.01785714             1.3110447       4.782751e-02
-## 98  0.01785714            -1.0643627      -3.886912e-02
-## 99  0.01785714            -1.0643627      -3.886912e-02
-## 100 0.01754386             0.8160435       2.283164e-18
-## 101 0.01785714            -1.0643627      -3.886912e-02
-## 102 0.01785714            -1.0643627      -3.886912e-02
-## 103 0.01754386             0.8160435       2.283164e-18
-## 104 0.01785714             1.3110447       4.782751e-02
-## 105 0.01785714            -1.0643627      -3.886912e-02
-## 106 0.01785714             1.3110447       4.782751e-02
-## 107 0.01785714            -1.0643627      -3.886912e-02
-## 108 0.01785714            -1.0643627      -3.886912e-02
-## 109 0.01754386             0.8160435       2.283164e-18
-## 110 0.01754386             0.8160435       2.283164e-18
-## 111 0.01785714            -1.0643627      -3.886912e-02
-## 112 0.01785714            -1.0643627      -3.886912e-02
-## 113 0.01754386             0.8160435       2.283164e-18
-##     dfbeta.InterventionIntervention
-## 1                      3.886912e-02
-## 2                      3.886912e-02
-## 3                      3.886912e-02
-## 4                     -4.782751e-02
-## 5                      3.225994e-02
-## 6                     -4.782751e-02
-## 7                     -6.334765e-02
-## 8                      3.225994e-02
-## 9                     -4.782751e-02
-## 10                     3.886912e-02
-## 11                     3.225994e-02
-## 12                    -4.782751e-02
-## 13                    -4.782751e-02
-## 14                    -6.334765e-02
-## 15                     3.886912e-02
-## 16                     3.886912e-02
-## 17                     3.225994e-02
-## 18                    -6.334765e-02
-## 19                     3.225994e-02
-## 20                     3.225994e-02
-## 21                     3.886912e-02
-## 22                     3.225994e-02
-## 23                     3.225994e-02
-## 24                     3.886912e-02
-## 25                     3.225994e-02
-## 26                     3.225994e-02
-## 27                    -4.782751e-02
-## 28                    -4.782751e-02
-## 29                     3.225994e-02
-## 30                     3.225994e-02
-## 31                     3.886912e-02
-## 32                    -4.782751e-02
-## 33                     3.225994e-02
-## 34                    -6.334765e-02
-## 35                     3.225994e-02
-## 36                    -4.782751e-02
-## 37                    -4.782751e-02
-## 38                    -6.334765e-02
-## 39                    -4.782751e-02
-## 40                     3.225994e-02
-## 41                    -4.782751e-02
-## 42                    -6.334765e-02
-## 43                     3.225994e-02
-## 44                    -6.334765e-02
-## 45                     3.886912e-02
-## 46                     3.886912e-02
-## 47                     3.886912e-02
-## 48                    -6.334765e-02
-## 49                    -6.334765e-02
-## 50                    -4.782751e-02
-## 51                     3.225994e-02
-## 52                     3.225994e-02
-## 53                     3.225994e-02
-## 54                    -4.782751e-02
-## 55                     3.886912e-02
-## 56                     3.225994e-02
-## 57                     3.225994e-02
-## 58                     3.886912e-02
-## 59                     3.225994e-02
-## 60                     3.225994e-02
-## 61                    -4.782751e-02
-## 62                     3.886912e-02
-## 63                    -4.782751e-02
-## 64                    -6.334765e-02
-## 65                     3.225994e-02
-## 66                     3.886912e-02
-## 67                     3.886912e-02
-## 68                    -4.782751e-02
-## 69                     3.886912e-02
-## 70                     3.886912e-02
-## 71                     3.225994e-02
-## 72                     3.886912e-02
-## 73                    -6.334765e-02
-## 74                     3.225994e-02
-## 75                     3.225994e-02
-## 76                    -4.782751e-02
-## 77                     3.225994e-02
-## 78                    -6.334765e-02
-## 79                    -4.782751e-02
-## 80                    -6.334765e-02
-## 81                    -4.782751e-02
-## 82                     3.886912e-02
-## 83                     3.225994e-02
-## 84                     3.225994e-02
-## 85                    -6.334765e-02
-## 86                     3.225994e-02
-## 87                    -4.782751e-02
-## 88                    -6.334765e-02
-## 89                     3.225994e-02
-## 90                     3.886912e-02
-## 91                     3.225994e-02
-## 92                     3.886912e-02
-## 93                     3.225994e-02
-## 94                     3.225994e-02
-## 95                    -6.334765e-02
-## 96                     3.225994e-02
-## 97                    -4.782751e-02
-## 98                     3.886912e-02
-## 99                     3.886912e-02
-## 100                    3.225994e-02
-## 101                    3.886912e-02
-## 102                    3.886912e-02
-## 103                    3.225994e-02
-## 104                   -4.782751e-02
-## 105                    3.886912e-02
-## 106                   -4.782751e-02
-## 107                    3.886912e-02
-## 108                    3.886912e-02
-## 109                    3.225994e-02
-## 110                    3.225994e-02
-## 111                    3.886912e-02
-## 112                    3.886912e-02
-## 113                    3.225994e-02
+## [1] 0.01769912
 ```
+
+```r
+# Display leverage, standardized residuals and dfbeta
+kable(head(eelData %>%
+  select(Cured, leverage, standardized.residuals, dfbeta)))
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Cured </th>
+   <th style="text-align:right;"> leverage </th>
+   <th style="text-align:right;"> standardized.residuals </th>
+   <th style="text-align:right;"> dfbeta </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:right;"> 0.0178571 </td>
+   <td style="text-align:right;"> -1.0675117 </td>
+   <td style="text-align:right;"> -3.886912e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:right;"> 0.0178571 </td>
+   <td style="text-align:right;"> -1.0675117 </td>
+   <td style="text-align:right;"> -3.886912e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Not Cured </td>
+   <td style="text-align:right;"> 0.0178571 </td>
+   <td style="text-align:right;"> -1.0675117 </td>
+   <td style="text-align:right;"> -3.886912e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:right;"> 0.0178571 </td>
+   <td style="text-align:right;"> 1.3135473 </td>
+   <td style="text-align:right;"> 4.782751e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:right;"> 0.0175439 </td>
+   <td style="text-align:right;"> 0.8189783 </td>
+   <td style="text-align:right;"> 2.283164e-18 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cured </td>
+   <td style="text-align:right;"> 0.0178571 </td>
+   <td style="text-align:right;"> 1.3135473 </td>
+   <td style="text-align:right;"> 4.782751e-02 </td>
+  </tr>
+</tbody>
+</table>
+
+
+### References 
+
+<div id="refs" class="references">
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. n.d. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+<div id="ref-R-car">
+
+Fox, John, Sanford Weisberg, and Brad Price. 2020. *Car: Companion to Applied Regression*. <https://CRAN.R-project.org/package=car>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2021. *Tidyverse: Easily Install and Load the Tidyverse*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+</div>

@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression - Binary Logistic Regression
+title: Logistic Regression Pt. 1 - One Predictor Variable
 author: Carlos Rodriguez
 date: '2021-10-17'
 slug: logistic-regression
@@ -151,38 +151,12 @@ kable(exp(eel_model.1$coefficients))
 
 
 ### Confidence intervals of the odds ratio
-To obtain confidence intervals for the odds ratio of the model, simply pass the model to the `confint()` function within the `exp()` function. Our lower and upper bounds of the confidence interval does not contain 1. In fact, both of these values are greater than 1, which indicate that it is likely that the directon of receiving the experimental treatment results in increased odds of getting cured.
+To obtain confidence intervals for the odds ratio of model.1, simply pass the model to the `confint()` function within the `exp()` function. Our lower and upper bounds of the confidence interval does not contain 1. In fact, both of these values are greater than 1, which indicate that it is likely that receiving the experimental treatment results in increased odds of getting cured.
 ```{r, message = FALSE}
 kable(exp(confint(eel_model.1)))
 ```
 
 
-### Model data with two predictors
-In our second model, we will include an additional variable, "Duration," which measures the amount of time each observation had spent dealing with the illness before seeking medical treatment. Notice that the residual deviance for the second model is the exact same as the residual deviance for the first model. The residual deviance is one way assess model fit. Including the "Duration" variable does not change the residual deviance and thus did not improve the fit of model to the data.
-```{r}
-eel_model.2 <- glm(Cured ~ Intervention + Duration, family = binomial(), data = eelData)
-
-summary(eel_model.2)
-```
-
-<!-- ### Compare Models -->
-<!-- We can compare the two models with the `anova()` function. -->
-<!-- ```{r} -->
-<!-- anova(eel_model.1, eel_model.2) -->
-<!-- ``` -->
-
-<!-- ### Diagnostics -->
-<!-- ```{r} -->
-<!-- eelData$predicted.probabilities <- fitted(eel_model.1) -->
-<!-- eelData$standardized.residuals <- rstandard(eel_model.1) -->
-<!-- eelData$studentized.residuals <- rstudent(eel_model.1) -->
-<!-- eelData$dfbeta <- dfbeta(eel_model.1) -->
-<!-- eelData$dffit <- dffits(eel_model.1) -->
-<!-- eelData$leverage <- hatvalues(eel_model.1) -->
-
-<!-- head(eelData[, c("Cured", "Intervention", "Duration", "predicted.probabilities")]) -->
-<!-- eelData[, c("leverage", "studentized.residuals", "dfbeta")] -->
-<!-- ``` -->
 
 ### References 
 
