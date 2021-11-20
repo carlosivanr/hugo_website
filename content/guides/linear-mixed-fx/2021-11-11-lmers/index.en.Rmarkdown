@@ -1,0 +1,355 @@
+---
+title: Linear Mixed Effect Models
+author: Carlos Rodriguez
+date: '2021-11-11'
+slug: lmers
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-11-11T19:18:09-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+type: book
+weight: 10
+---
+
+
+In this guide we will use data from Chapter 15, Table 1 in the AMCP package. These data track the scores from a test of general cognitive abilities over a period of 18 months for 12 children. For each participant, 4 measurements of the cognitive test are gathered at 30, 36, 42, and 48 months. This particular design has a hierarchical organization as the cognitive scores can be thought of as nested within participant. Thus it may be reasonable to suspect that cognitive scoress will be correlated with eachother within participant. Linear mixed effect models were developed to address this type of situation.
+
+
+
+
+### Load Packages
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(AMCP)
+library(kableExtra)
+library(broom.mixed)
+library(car)
+library(flexplot)
+```
+
+
+### Load Data
+```{r}
+data(chapter_15_table_1)
+kable(head(chapter_15_table_1))
+```
+
+### Convert wide to long
+Our first step in working with these data is to convert the data frame from wide to long. A detailed explanation of the steps to achieve this can be found [here](/guides/data-manipulation-and-visualization/wide-to-long).
+```{r, echo = FALSE}
+long.data <- cbind(id = c(1:12), chapter_15_table_1)
+
+long.data <- long.data %>% 
+  gather(key = unit.month,
+         value = scores, -id) %>%
+  separate(col = unit.month, 
+           into = c("unit", "month"), 
+           sep = -2) %>%
+  arrange(id, 
+          unit, 
+          month)
+
+long.data$month <- as.factor(long.data$month)
+long.data$id <- as.factor(long.data$id)
+
+kable(head(long.data))
+```
+
+
+### Plot the data
+One way to plot the data is to layer a scatter plot and a line plot connecting each data point for each participant. These are essentially the raw data and allows us to visualize how each score changes across time for each participant.
+```{r, message=FALSE}
+#Line plot with scatter plot
+ggplot(long.data, aes(x = month, y = scores, group = id, color = id)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~id) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
+
+
+
+Another way to plot these data is to layer a scatter plot and a regression line computed for each participant. This serves to visualize the variability in the regression line slopes. We notice that the slopes are generally positive. This suggests that the predicted cognitive scores tend to increse with age. However, there are some participants for which this relationship does not hold true.
+```{r, message=FALSE}
+# Scatter plot with lm
+ggplot(long.data, aes(x = month, y = scores, group = id, color = id)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, size = .7) +
+  facet_wrap(~ id) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
+
+### Intro to lmer formulas
+ To fit LME models we will use the `lmer()` (read as lemur and stands for linear mixed effects regression) function from the lme4 package. The notation for a lmer formula is similar to that of the `lm()` function (y ~ x) where y corresponds to a response variable and x corresponds to a predictor variable. However, the additional component of the formula encased in parentheses consist of a random intercept (1) and the random effect separated by the pipe (|) symbol in the random_intercept_model. In the random_slope_model, the 1 is replaced with the variable to be modeled as a random slope. The random_group variable can also be thought of as the variable under which the observations are nested under. In our case, our observations will be nested under participant.
+```{r, eval = FALSE}
+# Random intercept
+random_intercept_model <- lmer(x ~ y + (1|random_group), data = datframe)
+
+# Random slope
+random_slope_model <- lmer(x ~ y + (random_slope|random_group), data = datframe)
+```
+
+### General approach to for linear mixed effects models
+1. Fit a baseline model with out any predictors.
+2. Run the ICC to see if there is any clustering in the data.
+3. 
+
+### Step 1
+In step 1, we will fit a baseline linear mixed effects model without any predictor variables.
+```{r}
+# Random intercept without predictor variables
+baseline <- lmer(scores ~ 1 + (1|id), data = long.data)
+#summary(baseline)
+```
+
+### Step 2
+Next we will use the `icc()` function from the flexplot package. The flexplot package contains a number of helpful functions for working with linear mixed effect models. The `icc()` function computes the intraclass correlation coefficient which is one way of assessing the degree of clustering in the data. The output in our example is interpreted as roughly 65% of the variance in scores is due to clustering. This is a substantial amount that provides evidence that a linear mixed effect model is warranted.
+```{r}
+icc(baseline)
+```
+
+### Step 3
+Next, we will build a model that includes the fixed effect of month while maintaining the random intercept for each participant.
+```{r}
+# Random intercept, fixed effect of month as categorical, participant as random effect, random intercept for each id.
+model.1 <- lmer(scores ~ month + (1|id), data = long.data)
+summary(model.1)
+
+# analysis of variance
+anova(model.1)
+
+# estimated coefficients, slope was fixed, intercept is random
+coef(model.1)
+
+# random effects, deviations from the fixed effect of intercept
+ranef(model.1)
+
+# predicted values
+predict(model.1)
+```
+
+
+### Random Intercept Only, No effect of time SAME AS THE BASELINE
+```{r}
+# Random intercept model only, no time/month, essentially models the mean for each participant
+model.2 <- lmer(scores ~ 1 + (1|id), data = long.data)
+summary(model.2)
+anova(model.2, model.1)
+
+
+# Specifies a random intercept
+# lmer( y ~ x + (1 | random_group), data = my_data)
+
+# Specifies a random slope
+# lmer(y ~ x + (random_slope | random_group),	data = my_data
+```
+
+
+```{r}
+# fixed slopes model
+fixed_slopes <- lmer(scores ~ month + (1|id), data = long.data)
+
+# random slopes model
+#random_slopes <- lmer(scores ~ month + (month|id), data = long.data)
+
+# visualize the models
+#visualize(fixed_slopes, plot = "model")
+
+#compare.fits(scores ~ month | id, data = data.long, baseline, fixed_slopes)
+
+```
+
+### Treat Time quantitatively
+```{r}
+
+model.3 <- lmer(scores ~ month + (1 + as.numeric(month)|id), data = long.data)
+summary(model.3)
+
+```
+
+
+### Model the data
+```{r}
+# Explicit form of modeling is y ~ 1 + (1|random effect). Executed code is implicit/shortcut form.
+# id is selected as the random effect
+model <- lmer(scores ~ month + (1|id), data = long.data)
+summary(model)
+anova(model)
+#plot(model)
+```
+### Effects table
+```{r}
+#fixef(model)
+#ranef(model)
+#confint(model)
+kable(tidy(model, conf.int = TRUE))
+```
+
+### Plot the parameter estimates
+```{r, message=FALSE}
+coef_estimates <- tidy(model, conf.int = TRUE) %>%
+  filter(effect == "fixed")
+
+ggplot(coef_estimates, 
+       aes(x = term, y = estimate, 
+           ymin = conf.low, ymax = conf.high)) +
+  geom_hline( yintercept = 0, color = "#1565c0" ) +
+  geom_linerange(color = "#1565c0") + 
+  geom_point(color = "#1565c0") + 
+  coord_flip() + 
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
+
+
+
+
+<!-- --------------------------------------------- -->
+```{r}
+library(car)
+library(nlme)
+##Load the data file into R. This is a tab-delimited file hence use of read.delim
+surgeryData = read.delim("Cosmetic Surgery.dat",  header = TRUE)
+
+#Run an ANOVA
+surgeryANOVA<-aov(Post_QoL~Surgery, data = surgeryData)
+summary(surgeryANOVA)
+
+# run the same model but using the linear models command
+surgeryLinearModel<-lm(Post_QoL~Surgery, data = surgeryData)
+summary(surgeryLinearModel)
+
+#Run an ANCOVA
+surgeryANCOVA<-aov(Post_QoL~Base_QoL + Surgery, data = surgeryData)
+summary(surgeryANCOVA)
+Anova(surgeryANCOVA, type = "III")
+
+
+# run the same model but using the linear models command
+surgeryLinearModel<-lm(Post_QoL~Surgery + Base_QoL, data = surgeryData)
+summary(surgeryLinearModel)
+
+
+##Fit baseline models
+#Fit model with intercept only
+interceptOnly <-gls(Post_QoL~1, data = surgeryData, method = "ML")
+summary(interceptOnly)
+
+
+# Random Intercepts Models with lmer -------
+# The random effects are encased in parentheses and have a pipe. A (1|clinic), designates
+# that the intercept is going to be allowed to vary by clinic. This is equivalent to the mean
+# for the outcome variable will be different within each clinic. In other words, we think the magnitude of the effect is the same, but they start out at different places.
+# Use REML = FALSE to specify Maximum Likelihood as the method
+
+#Fit model allowing intercepts to vary by clinic
+randomInterceptOnly <- lmer(Post_QoL ~ 1 + (1|Clinic), data = surgeryData, REML = FALSE)
+summary(randomInterceptOnly)
+logLik(randomInterceptOnly)*-2
+
+#Add surgery as a predictor
+randomInterceptSurgery <-lmer(Post_QoL ~ Surgery + (1|Clinic), data = surgeryData, REML = FALSE)
+summary(randomInterceptSurgery)
+
+##Fit effect of surgery and baseline QoL- random intercepts across clinics
+randomInterceptSurgeryQoL <-lmer(Post_QoL ~ Surgery + Base_QoL + (1|Clinic), data = surgeryData, REML = FALSE)
+summary(randomInterceptSurgeryQoL)
+
+# Compare the previous three lmers
+anova(randomInterceptOnly, randomInterceptSurgery, randomInterceptSurgeryQoL)
+
+##Fit effect of surgery and baseline QoL- random slopes and intercepts across clinics
+addRandomSlope <- lmer(Post_QoL ~ Surgery + Base_QoL + (Surgery|Clinic), 
+                       data = surgeryData, 
+                       REML = FALSE)
+summary(addRandomSlope)
+anova(randomInterceptSurgeryQoL,addRandomSlope)
+
+##Fit effect of surgery and baseline QoL, Reason and Reason*Surgery Interaction- random slopes and intercepts across clinics
+addReason<-lmer(Post_QoL ~ Surgery + Base_QoL + Reason + (Surgery|Clinic), data = surgeryData, REML = FALSE)
+addReason<-update(addRandomSlope, .~. + Reason)
+summary(addReason)
+
+
+
+finalModel<-lmer(Post_QoL~Surgery + Base_QoL + Reason + Reason:Surgery + (Surgery|Clinic), REML = FALSE, data = surgeryData, )
+summary(finalModel)
+#intervals(finalModel, 0.95) #intervals() doesn't work on lmerMod objects
+
+anova(addRandomSlope, addReason, finalModel)
+```
+
+
+
+
+
+
+
+
+<!-- NOTES:
+intraclass correlations: The ICC is a measure of the proportion of variance that is attributable to a randome factor. It's also used as an effect size measure.
+
+fixed effect: In some situations, we are only interested in specific levels of a factor. 
+
+random effect: In other situations we may be interested in generalizing from the levels of a factor studied to other possible levels. For example, if we want to study the effects of treatment on a disorder we have to consider the therapist as any change in mental health is partly attributable to the therapist. However, we can't study all therapists, we have to select a sample of therapists, but would want to generalize beyond those. Because these therapists represent a random sample of the therapists available, they are termed random effects.
+
+Random factor: factors that have randomly selected factors. 
+
+Mixed model: contains a mixture of fixed and random effects
+
+Random effects - 
+Fixed effects - 
+
+ML - Maximum Likelihood, one of the ways that the parameters of the model can be estimated. Produces more accurate estimates of fixed regression parameters. This needs to be chosen to compare models.
+REML - Restricted Maximum Likelihood, produces more accurate estimates of random variances.
+
+
+
+-->
+
+```{r, echo = FALSE, eval = FALSE}
+lm_out <- lm(scores ~ id + month, long.data)
+
+lmer_out <- lmer(scores ~ month + (1|id), data = long.data)
+
+tidy(lm_out)
+
+tidy(lmer_out)
+
+long.data <- 
+  long.data %>%
+  mutate(lm_predict = predict(lm_out),
+         lmer_predict = predict(lmer_out))
+  
+
+ggplot(long.data,
+       aes(x = month, y = scores, color = id)) +
+    geom_point() +
+    geom_line(aes(x = month, y = lm_predict)) +
+    geom_line(aes(x = month, y = lmer_predict), linetype = 'dashed') +
+    xlab("month") +
+    ylab("cognitive score")
+
+
+```
+
+
+
+
+
+
+
+

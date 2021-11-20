@@ -14,7 +14,7 @@ main:
     weight: 15
 
   - name: Python & R Guides
-    url: how-to-guides/
+    url: guides/
     weight: 20
     
 #  - name: Projects

@@ -18,6 +18,10 @@ projects: []
 draft: false
 type: book
 weight: 30
+#bibliography: [../../../../packages.bib]
+#nocite: |
+#  @R-car
+#  @DSUR
 ---
 
 
@@ -27,15 +31,15 @@ After building our simple and multiple regression model, we turn our attention t
 ### Outliers and standardized residuals
 Residuals help us understand how well the model fits the sample data. Standardized residuals are derived by dividing the non-standardized residuals by an estimate of their standard deviation. Standardized residuals can be obtained by applying the `rstandard()` function on our multiple regression model. Standardized residuals primarily serve two roles. First, they facilitate interpretation across different models because the units are in standard deviations rather than the unit of the outcome variable. Second, they serve as an indicator of outliers that may bias the estimated regression coefficients. A couple of general rules are that no more than 5% of the absolute values of the standardized residuals are greater than 2 and no more than 1% of the absolute values of the standardized residuals are greater than 2.5. In our example dataset, about 5.2% of the standardized residuals values are beyond the +/-2 boundary which is evidence that our model may not represent our outcome data well.
 
+
 ```r
-# Create a column of standardized residuals
-data$standardized.residuals <- rstandard(multiple)
+dx <- augment(multiple) %>% select(SALARY, AGE, YEARS, BEAUTY, .fitted, .std.resid, .cooksd, .hat)
 
 # Create a boolean vector of large residuals; greater than 2 or less than -2 
-data$large.residual <- data$standardized.residuals > 2 | data$standardized.residuals < -2
+dx$large.residual <- dx$.std.resid > 2 | dx$.std.resid < -2
 
 # Sum of large standardized residuals
-sum(data$large.residual)
+sum(dx$large.residual)
 ```
 
 ```
@@ -44,7 +48,7 @@ sum(data$large.residual)
 
 ```r
 # Percentage of standardized residuals greater than 2 or less than -2
-sum(data$large.residual)/length(data$large.residual) * 100
+sum(dx$large.residual)/length(dx$large.residual) * 100
 ```
 
 ```
@@ -52,9 +56,9 @@ sum(data$large.residual)/length(data$large.residual) * 100
 ```
 
 ```r
-# Print table of cases where large.residual equals TRUE
 kable(
-  filter(data, large.residual == TRUE)
+  filter(dx, large.residual == TRUE) %>%
+    select(SALARY, AGE, YEARS, BEAUTY, .std.resid, large.residual)
 )
 ```
 
@@ -65,7 +69,7 @@ kable(
    <th style="text-align:right;"> AGE </th>
    <th style="text-align:right;"> YEARS </th>
    <th style="text-align:right;"> BEAUTY </th>
-   <th style="text-align:right;"> standardized.residuals </th>
+   <th style="text-align:right;"> .std.resid </th>
    <th style="text-align:left;"> large.residual </th>
   </tr>
  </thead>
@@ -169,15 +173,34 @@ kable(
 </tbody>
 </table>
 
+
+
+<!-- # ```{r} -->
+<!-- # # Create a column of standardized residuals -->
+<!-- # data$standardized.residuals <- rstandard(multiple) -->
+<!-- #  -->
+<!-- # # Create a boolean vector of large residuals; greater than 2 or less than -2  -->
+<!-- # data$large.residual <- data$standardized.residuals > 2 | data$standardized.residuals < -2 -->
+<!-- #  -->
+<!-- # # Sum of large standardized residuals -->
+<!-- # sum(data$large.residual) -->
+<!-- #  -->
+<!-- # # Percentage of standardized residuals greater than 2 or less than -2 -->
+<!-- # sum(data$large.residual)/length(data$large.residual) * 100 -->
+<!-- #  -->
+<!-- # # Print table of cases where large.residual equals TRUE -->
+<!-- # kable( -->
+<!-- #   filter(data, large.residual == TRUE) -->
+<!-- # ) -->
+<!-- # ``` -->
+
 ### Influential cases: Cook's distance
-There are a few ways to determine which cases within a regression model have unde influence in the model parameters. One way is to calculate Cook's distance which has a straightforward interpretation - any value greater than 1 may be cause for concern. Cook's distance values can be obtained with the `cooks.distance()` function by passing the model as its input. With this dataset, there are no values greater than 1. This suggest that the model is stable across the sample because none of the cases exert undue influence on the model parameters.
+One way to determine which cases within a regression model have unde influence in the model parameters is to calculate Cook's distance. Cook's distance has a straightforward interpretation - any value greater than 1 may be cause for concern. Cook's distance values can be obtained with the `cooks.distance()` function by passing the model as its input. However, we will use the dx data frame that was created with the `augment()` function in the broom package. With this dataset, there are no values greater than 1. This suggest that the model is stable across the sample because none of the cases exert undue influence on the model parameters.
+
 
 ```r
-# Create a column of Cook's distance values
-data$cooks.distance <- cooks.distance(multiple)
-
 # Create a boolean vector of large residuals; greater than 2 or less than -2 
-data$large.cooks.d <- data$cooks.distance > 1
+dx$large.cooksd <- dx$.cooksd > 1
 
 # Sum of large Cook's distance
 sum(data$large.cooks.d)
@@ -186,14 +209,24 @@ sum(data$large.cooks.d)
 ```
 ## [1] 0
 ```
+<!-- # ```{r} -->
+<!-- # # Create a column of Cook's distance values -->
+<!-- # data$cooks.distance <- cooks.distance(multiple) -->
+<!-- #  -->
+<!-- # # Create a boolean vector of large residuals; greater than 2 or less than -2  -->
+<!-- # data$large.cooks.d <- data$cooks.distance > 1 -->
+<!-- #  -->
+<!-- # # Sum of large Cook's distance -->
+<!-- # sum(data$large.cooks.d) -->
+<!-- # ``` -->
 
 ### Influential cases: Leverage/hat values
-Leverage/hat values are an additional measure of influential cases. Leverage values can obtained by passing the regression model object to the `hatvalues()` function. Cases with values that are 2 or 3 times as large as (k + 1/n), where k = the number of predictors and n = the sample size, may have undue influence. With these data, values higher than 0.035 and 0.052, depending on how conservative you want to be. There are 25 cases with hat values 2 times greater than the average leverage value, and 3 cases with hat values greater than 3 times the average leverage value.
+Leverage/hat values are an additional measure of influential cases. Leverage values can obtained by passing the regression model object to the `hatvalues()` function, but are already in our dx data frame. Cases with values that are 2 or 3 times as large as (k + 1/n), where k = the number of predictors and n = the sample size, may have undue influence. With these data, values higher than 0.035 and 0.052, depending on how conservative you want to be. There are 25 cases with hat values 2 times greater than the average leverage value, and 3 cases with hat values greater than 3 times the average leverage value.
+
+
 
 ```r
-# Create a column of leverage/hat values
-data$leverage <- hatvalues(multiple)
-
+# Create a boolean vector of large residuals; greater than 2 or less than -2 
 # Average Leverage, # of predictors + 1 divided by n
 ((3 + 1)/231) * 2
 ```
@@ -212,10 +245,10 @@ data$leverage <- hatvalues(multiple)
 
 ```r
 # Create a boolean vector of large hat values
-data$large.leverage <- data$leverage > ((3 + 1)/231) * 2
+dx$large.hat <- dx$.hat > ((3 + 1)/231) * 2
 
 # Sum of large leverage 2, conservative
-sum(data$large.leverage)
+sum(dx$large.hat)
 ```
 
 ```
@@ -224,10 +257,10 @@ sum(data$large.leverage)
 
 ```r
 # Create a boolean vector of large hat values
-data$large.leverage <- data$leverage > ((3 + 1)/231) * 3
+dx$large.hat <- dx$.hat > ((3 + 1)/231) * 3
 
 # Sum of large leverage 3, less conservative
-sum(data$large.leverage)
+sum(dx$large.hat)
 ```
 
 ```
@@ -237,8 +270,8 @@ sum(data$large.leverage)
 ```r
 # Print table
 kable(
-  filter(data, large.leverage == TRUE) %>%
-    select(SALARY, AGE, YEARS, BEAUTY, leverage, large.leverage)
+  filter(dx, large.hat == TRUE) %>%
+    select(SALARY, AGE, YEARS, BEAUTY, .hat, large.hat)
   
 )
 ```
@@ -250,8 +283,8 @@ kable(
    <th style="text-align:right;"> AGE </th>
    <th style="text-align:right;"> YEARS </th>
    <th style="text-align:right;"> BEAUTY </th>
-   <th style="text-align:right;"> leverage </th>
-   <th style="text-align:left;"> large.leverage </th>
+   <th style="text-align:right;"> .hat </th>
+   <th style="text-align:left;"> large.hat </th>
   </tr>
  </thead>
 <tbody>
@@ -281,6 +314,34 @@ kable(
   </tr>
 </tbody>
 </table>
+
+<!-- # ```{r} -->
+<!-- # # Create a column of leverage/hat values -->
+<!-- # data$leverage <- hatvalues(multiple) -->
+<!-- #  -->
+<!-- # # Average Leverage, # of predictors + 1 divided by n -->
+<!-- # ((3 + 1)/231) * 2 -->
+<!-- # ((3 + 1)/231) * 3 -->
+<!-- #  -->
+<!-- # # Create a boolean vector of large hat values -->
+<!-- # data$large.leverage <- data$leverage > ((3 + 1)/231) * 2 -->
+<!-- #  -->
+<!-- # # Sum of large leverage 2, conservative -->
+<!-- # sum(data$large.leverage) -->
+<!-- #  -->
+<!-- # # Create a boolean vector of large hat values -->
+<!-- # data$large.leverage <- data$leverage > ((3 + 1)/231) * 3 -->
+<!-- #  -->
+<!-- # # Sum of large leverage 3, less conservative -->
+<!-- # sum(data$large.leverage) -->
+<!-- #  -->
+<!-- # # Print table -->
+<!-- # kable( -->
+<!-- #   filter(data, large.leverage == TRUE) %>% -->
+<!-- #     select(SALARY, AGE, YEARS, BEAUTY, leverage, large.leverage) -->
+<!-- #    -->
+<!-- # ) -->
+<!-- # ``` -->
 
 ### References
 <div id="refs" class="references">
