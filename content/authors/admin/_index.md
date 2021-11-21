@@ -13,11 +13,11 @@ education:
     year: 2007
 email: ""
 highlight_name: false
-interests:
-- Neuroscience
-- Statistics
-- Data analysis & visualizaion
-- Promoting diversity in research
+# interests:
+# - Neuroscience
+# - Statistics
+# - Data analysis & visualizaion
+# - Promoting diversity in research
 organizations:
 - name: Mind Research Network
   url: 
