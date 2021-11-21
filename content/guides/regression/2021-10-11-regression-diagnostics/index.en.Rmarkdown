@@ -37,9 +37,10 @@ multiple <- lm(SALARY ~ AGE + BEAUTY + YEARS, data = data)
 After building our simple and multiple regression model, we turn our attention to casewise diagnostics to learn about which outliers are present in the sample and which data points have undue influence on our model which could affect the models stability. We will focus on the standardized residuals, Cook's distance, and leverage/hat values, but there are several other measures to assess model diagnostics. 
 
 ### Outliers and standardized residuals
-Residuals help us understand how well the model fits the sample data. Standardized residuals are derived by dividing the non-standardized residuals by an estimate of their standard deviation. Standardized residuals can be obtained by applying the `rstandard()` function on our multiple regression model. Standardized residuals primarily serve two roles. First, they facilitate interpretation across different models because the units are in standard deviations rather than the unit of the outcome variable. Second, they serve as an indicator of outliers that may bias the estimated regression coefficients. A couple of general rules are that no more than 5% of the absolute values of the standardized residuals are greater than 2 and no more than 1% of the absolute values of the standardized residuals are greater than 2.5. In our example dataset, about 5.2% of the standardized residuals values are beyond the +/-2 boundary which is evidence that our model may not represent our outcome data well.
+Residuals help us understand how well the model fits the sample data. Standardized residuals are derived by dividing the non-standardized residuals by an estimate of their standard deviation. Standardized residuals can be obtained by applying the `rstandard()` function on a regression model object. Alternatively, we can use the `augment()` from the broom package to compute the standardized residuals, Cook's Distance, and Leverage (hat) values in one command. Standardized residuals primarily serve two roles. First, they facilitate interpretation across different models because the units are in standard deviations rather than the unit of the outcome variable. Second, they serve as an indicator of outliers that may bias the estimated regression coefficients. A couple of general rules are that no more than 5% of the absolute values of the standardized residuals are greater than 2 and no more than 1% of the absolute values of the standardized residuals are greater than 2.5. In our example dataset, about 5.2% of the standardized residuals values are beyond the +/-2 boundary which is evidence that our model may not represent our outcome data well.
 
 ```{r}
+# augment() from the broom package
 dx <- augment(multiple) %>% select(SALARY, AGE, YEARS, BEAUTY, .fitted, .std.resid, .cooksd, .hat)
 
 # Create a boolean vector of large residuals; greater than 2 or less than -2 
@@ -51,11 +52,8 @@ sum(dx$large.residual)
 # Percentage of standardized residuals greater than 2 or less than -2
 sum(dx$large.residual)/length(dx$large.residual) * 100
 
-kable(
-  filter(dx, large.residual == TRUE) %>%
-    select(SALARY, AGE, YEARS, BEAUTY, .std.resid, large.residual)
-)
-
+kable(filter(dx, large.residual == TRUE) %>%
+    select(SALARY, AGE, YEARS, BEAUTY, .std.resid, large.residual))
 ```
 
 
@@ -80,7 +78,7 @@ kable(
 <!-- # ``` -->
 
 ### Influential cases: Cook's distance
-One way to determine which cases within a regression model have unde influence in the model parameters is to calculate Cook's distance. Cook's distance has a straightforward interpretation - any value greater than 1 may be cause for concern. Cook's distance values can be obtained with the `cooks.distance()` function by passing the model as its input. However, we will use the dx data frame that was created with the `augment()` function in the broom package. With this dataset, there are no values greater than 1. This suggest that the model is stable across the sample because none of the cases exert undue influence on the model parameters.
+One way to determine which cases within a regression model have unde influence in the model parameters is to calculate Cook's distance. Cook's distance has a straightforward interpretation - any value greater than 1 may be cause for concern. Cook's distance values can be obtained with the `cooks.distance()` function by passing a regressiong model object as its input. However, we will use the dx data frame that was created with the `augment()` function in the broom package. With this dataset, there are no values greater than 1. This suggest that the model is stable across the sample because none of the cases exert undue influence on the model parameters.
 
 ```{r}
 # Create a boolean vector of large residuals; greater than 2 or less than -2 
@@ -88,7 +86,6 @@ dx$large.cooksd <- dx$.cooksd > 1
 
 # Sum of large Cook's distance
 sum(data$large.cooks.d)
-
 ```
 <!-- # ```{r} -->
 <!-- # # Create a column of Cook's distance values -->
@@ -103,7 +100,6 @@ sum(data$large.cooks.d)
 
 ### Influential cases: Leverage/hat values
 Leverage/hat values are an additional measure of influential cases. Leverage values can obtained by passing the regression model object to the `hatvalues()` function, but are already in our dx data frame. Cases with values that are 2 or 3 times as large as (k + 1/n), where k = the number of predictors and n = the sample size, may have undue influence. With these data, values higher than 0.035 and 0.052, depending on how conservative you want to be. There are 25 cases with hat values 2 times greater than the average leverage value, and 3 cases with hat values greater than 3 times the average leverage value.
-
 
 ```{r}
 # Create a boolean vector of large residuals; greater than 2 or less than -2 
@@ -126,12 +122,8 @@ dx$large.hat <- dx$.hat > ((3 + 1)/231) * 3
 sum(dx$large.hat)
 
 # Print table
-kable(
-  filter(dx, large.hat == TRUE) %>%
-    select(SALARY, AGE, YEARS, BEAUTY, .hat, large.hat)
-  
-)
-
+kable(filter(dx, large.hat == TRUE) %>%
+    select(SALARY, AGE, YEARS, BEAUTY, .hat, large.hat))
 ```
 
 <!-- # ```{r} -->
