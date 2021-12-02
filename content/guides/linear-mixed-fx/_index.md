@@ -5,7 +5,7 @@ summary: Linear Mixed Effect Models in R.
 date: '2021-11-12'
 type: book
 weight: 50
-draft: false
+draft: true
 ---
 <!--
 {{< figure src="featured.jpg" >}}
