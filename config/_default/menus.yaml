@@ -8,14 +8,17 @@ main:
     url: '#about'
     weight: 10
     
+  - name: Research
+    url: research/
+    weight: 15
     
   - name: Publications
     url: '#publications'
-    weight: 15
+    weight: 20
 
   - name: Python & R Guides
     url: guides/
-    weight: 20
+    weight: 25
     
 #  - name: Projects
 #    url: '#projects'
