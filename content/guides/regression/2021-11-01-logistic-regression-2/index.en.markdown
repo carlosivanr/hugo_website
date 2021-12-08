@@ -67,9 +67,7 @@ summary(eel_model.2)
 ```
 
 ### Compare Models
-A more objective way to compare logistic regression models is perform a chi-squared test, since the differences in the deviance statistics follow a chi-square distribution. To accomplish this we simply subtract the model.2 deviance from model.1, subtract the degrees of model.2 from model.1, and then compute the probability of obtaining that value with `pchisq()` function. The results of these calculations indicate that p-value is 0.964 and thus model.2 is not a significant improvement when compared to model.1. 
-
-A second way of comparing models is to use the `anova()` function passing the model in the order of which they were constructed. The results are identical to the method using the chi-square distribution.
+A more objective way to compare logistic regression models is perform a chi-squared test, since the differences in the deviance statistics follow a chi-square distribution. To accomplish this, we simply subtract the model.2 deviance from model.1, subtract the degrees of model.2 from model.1, and then compute the probability of obtaining that value with `pchisq()` function. The results of these calculations indicate that the p-value is 0.964 and thus model.2 is not a significant improvement when compared to model.1. 
 
 ```r
 modelChi <- eel_model.1$deviance - eel_model.2$deviance
@@ -90,7 +88,7 @@ modelChi; chidf; chisq.prob
 ## [1] 0.9644765
 ```
 
-A second way of comparing models is to use the `anova()` function passing the model in the order of which they were constructed. The results with respect to the residual deviance, degrees of freedom, and the difference between the deviance statistics are identical. The only difference is that this approach does not provide a p-value.
+A second way of comparing models is to use the `anova()` function passing the models in to the function in the order of which they were constructed. The results with respect to the residual deviance, degrees of freedom, and the difference between the deviance statistics are identical. The only difference is that this approach does not provide a p-value.
 
 ```r
 anova(eel_model.1, eel_model.2)
@@ -176,7 +174,7 @@ kable(head(eelData %>%
 </table>
 
 ### Residuals
-As with linear regression, we want to inspect the residuals to identify cases in which the model fits poorly and identify cases that may have undue influence in our model. We use the same code here to determine that there are no cases in which the residual is excessively large. We expect that only about 5% of cases should lie outside +/-1.96 and about 1% of cases should like outside +/-2.58. We should also expect leverage values to near the expected value which is determined by (k+1)/N where k is the number of predictors and n is the sample size. We can also inspect the dfbetas as these should all be less than 1.
+As with linear regression, we want to inspect the residuals to identify cases in which the model fits poorly and identify cases that may have undue influence in our model. We use the same code used in linear regression to determine that there are no cases in which the residual is excessively large. We expect that only about 5% of cases should lie outside +/-1.96 and about 1% of cases should like outside +/-2.58. We should also expect leverage values to near the expected value which is determined by (k+1)/N where k is the number of predictors and n is the sample size. We can also inspect the dfbetas as these should all be less than 1.
 
 ```r
 # Create a boolean vector of large residuals; greater than 2 or less than -2 
