@@ -26,7 +26,7 @@ draft: false
 ---
 
 
-Logistic regression is a statistical technique to understand the relationship between categorical outcome variables and categorical or continuous predictor variables. Binary logistic regression is used in circumstances to understand binary outcomes such as whether or not someone survived a hostpital stay or whether or not a medical intervention was successful or not. For this guide, we will work with example data in which eels are used an an experimental treatment to cure a medical condition. Our outcome will fall into one of two possibilities, Cured or Not Cured, and our predictor is whether someone received the Intervention or not. Thus we have a situation in which a binary outcome will be predicted by a dichotomous predictor variable.
+Logistic regression is a statistical technique to understand the relationship between categorical outcome variables and categorical or continuous predictor variables. Binary logistic regression is used in circumstances to understand binary outcomes such as whether or not someone survived a hostpital stay or whether or not a medical intervention was successful or not. For this guide, we will work with example data in which eels are used in an experimental treatment to cure a medical condition. Our outcome will fall into one of two possibilities, Cured or Not Cured, and our predictor is whether someone received the Intervention or not. Thus we have a situation in which a binary outcome will be predicted by a dichotomous categorical predictor variable.
 
 
 ```r
@@ -209,7 +209,7 @@ kable(data.frame(Intervention.Model, Value))
 The estimate or b-value for the model is 1.23. In linear regression, the coefficients reprsent as the change in the outcome variable that can be expected for a unit increase in a predictor variable. In logistic regression, the coefficients represent the change in the logit of the outcome variable that can be expected for a unit change in the predictor variable. The logit of the coutome variable corresponds to the natural logarithm  of the odds of the outcome variable occurring. The z-values are normally distributed and can be tested for significance. In our example, Intervention is statistically significant which means that the predictor is making a significant contribution to the prediction of the outcome variable.
 
 ### Odds ratio
-In the case of where the predictor variables are dichotomous, the odds ratio, defined as the exponential (`exp()` function) of the coefficients, has a straightforward interpretation. A value greater than one indicates that as the predictor increases, the odds, which is not to be confused with probability, of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. The odds ratio with our example is 3.417 and is greater than 1. This means that receiving an intervention increases the odds of cured outcome.
+In the case of where the predictor variables are dichotomous, the odds ratio, defined as the exponential (`exp()` function) of the coefficients, has a straightforward interpretation. A value greater than one indicates that as the predictor increases, the odds (not to be confused with probability) of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. The odds ratio with our example is 3.417 and is greater than 1. This means that receiving an intervention increases the odds of cured outcome.
 
 ```r
 # Odds ratio
