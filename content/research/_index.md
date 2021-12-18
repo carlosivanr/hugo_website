@@ -13,7 +13,7 @@ draft: true
 
 The brain is composed of billions of cells that communicate with one another. This communication allows us to take in information from our environment, generate movement, produce thoughts, and many other functions. 
 
-Many approaches to studying the brain focus on a single brain region. However, the the brain does not function as isolated brain regions
+Many approaches to studying the brain focus on a single brain region. However, complex behaviors and cognitive processes result from the coordination of multiple brain regions. Resting state functional network connectivity is one way to investigate the coordinated actions of multiple brain regions.
 
 
 ### Tools & Methods
