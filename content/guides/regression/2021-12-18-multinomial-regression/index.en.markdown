@@ -17,7 +17,7 @@ image:
 projects: []
 type: book
 weight: 90
-draft: true
+draft: false
 ---
 
 Multinomial regression is an extension of logistic regression. In logistic regression, the dependent or outcome variable can take on one of two categorical values such as whether or not someone survived a stay at a hospital. In cases where the dependent variable falls into more than two categorical variables, then multinomial regression is one possible analysis to test the relationship between your dependent variable and predictor variables. For this guide, we will use multinomial regression using the `nnet` package. We will also use a sample data set in which the researchers determined the effect of pickup lines on whether or not that person got a phone number, went home with the person, or walked away.
@@ -230,6 +230,9 @@ kable(cor(chatData[, c("Funny", "Good_Mate", "Sex")]))
 
 
 
+
+
+### Interpretation
 
 
 ### References 
