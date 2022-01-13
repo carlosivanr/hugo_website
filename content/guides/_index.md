@@ -7,8 +7,7 @@ date: '2021-11-11'
 weight: 10
 ---
 
-This following are a set of guides for using R or Python to organize data, create data visualizations, conduct statistical analyses, and create machine learning models. These guides are primarily meant to serve a personal knowledge repository, but feel free to explore. You may find something useful.
+This following are a set of guides for using R or Python to organize data, create data visualizations, conduct statistical analyses, and create machine learning models.
 
-These pages will be best viewed on macOS or Windows machines with Chrome or Firefox browsers.
 
 # Contents:
