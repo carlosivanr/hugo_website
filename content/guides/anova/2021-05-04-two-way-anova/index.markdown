@@ -169,7 +169,9 @@ ANOVA(formula = Score ~ Feedback * Drug,
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
-When using rstatix, it's useful to load the tidyverse package as well. This will make it so that we can use the pipe operator (`%>%`) and the `group_by()` function. Once we load our data, we will first want to convert Feedback and Drug to factor so the values get treated as categorical variable. Next, we will build an ANOVA model with the base R `aov()` function that predicts Score by Feedback and Drug. Finally, we will use the rstatix `anova_test()` function on our aov model to produce the output for the omnibus test.
+When using rstatix, it's useful to load the tidyverse package as well. This will make it so that we can use the pipe operator (`%>%`) and the `group_by()` function. Once we load our data, we will first want to convert Feedback and Drug to factor so the values get treated as categorical variable. Next, we will build an ANOVA model with the base R `aov()` function that predicts Score by Feedback and Drug. Next, we will use the rstatix `anova_test()` function on our aov model to produce the output for the omnibus test. The reason for using the `anova_test()` function is because it allows us to specify the type of sums of squares. 
+
+There are several ways of calculating the sums of squares including Type I, Type II, and Type III. In Type I SS, the order in which you enter predictors matters and tend not to get used very often. The `aov()` function defaults to Type I, but there is no way built in option to specify the SS. Type II SS can also be used for ANOVA and may be a good option in cases where an interaction is not of interest. Type III SS tend to be recommended and are the default setting in commercial statistical packages such as SPSS and SAS. Type III SS have the advantage of better of evaluating an interaction which can offten be of interest and are recommended for unequal samples.
 
 ```r
 library(tidyverse)
