@@ -50,8 +50,6 @@ I am a postdoctoral research fellow at the Mind Research Network in Albuquerque,
 
 My professional and educational experiences have provided a solid foundation in experimental research design, statistical analyses, and public speaking. I am experienced in using MATLAB, R, and Python to manage, process, and analyse small and large neuroimaging and behavioral data sets. My research has been shared in peer reviewed journals, conference presentations, and invited talks. 
 
-My professional experiences outside of research center on teaching, advising, and leading efforts to implement research findings from the science of learning into university student success programs. 
-
 Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research through my involvement with the Society for Neuroscience and the University of New Mexico's El Centro de la Raza.
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/carlos_rodriguez_cv.pdf" "newtab" >}}CV{{< /staticref >}}.
