@@ -46,11 +46,13 @@ superuser: true
 title: Carlos I. Rodriguez
 ---
 
-I am a postdoctoral research fellow at the Mind Research Network in Albuquerque, NM. At the MRN, I rely on functional neuroimaging technology to better understand how alcohol and drugs of abuse affect patterns of brain communication. These patterns of communication can be thought of as "brain prints" that may help researchers develop better treatments for alcohol use disorder or identify who may respond to a given treatment. In a similar vein, the same concept can be applied to identify abnormal patterns of communication associated with prenatal alcohol exposure, the most common preventable cause of neurodevelopmental disability in the US. Our aim is to use this approach to develop novel and non-invasive ways of diagnosing fetal alcohol spectrum disorders.
+I am a postdoctoral research fellow at the Mind Research Network in Albuquerque, NM. At the MRN, I rely on functional neuroimaging technology to study functional network connectivity. Functional network connectivity is an approach to understand how different brain regions communicate with one another. These patterns of communication can also be thought of as having a specific signature or "brain print". 
+
+My work currently focuses on using fMRI to better understand how prenatal alcohol exposure alters brain connectivity. This research may lead to new ways of non-invasively diagnosing fetal alcohol spectrum disorders from a brain scan. In a similar vein, I am interested in understanding the relationship between alcohol use disorder and functional connectivity. This work may help us identify new therapeutic targets for alcoholism or inform who may be more likely to respond to a given treatment.
 
 My professional and educational experiences have provided a solid foundation in experimental research design, statistical analyses, and public speaking. I am experienced in using MATLAB, R, and Python to manage, process, and analyse small and large neuroimaging and behavioral data sets. My research has been shared in peer reviewed journals, conference presentations, and invited talks. 
 
-Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research through my involvement with the Society for Neuroscience and the University of New Mexico's El Centro de la Raza.
+Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science.
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/carlos_rodriguez_cv.pdf" "newtab" >}}CV{{< /staticref >}}.
 
