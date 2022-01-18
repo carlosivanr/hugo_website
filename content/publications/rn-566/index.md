@@ -22,8 +22,8 @@ draft: false
 # To use, add an image named `featured.jpg/png` to your page's folder.
 # Focal points: Smart, Center, TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight.
 image:
-  caption: ''
-  focal_point: ''
+  caption: 'Figure 1 Boxplots and results of between-group comparisons of graph theory metrics within threshold. Solid horizontal lines within each box represent the median, while dotted lines represent the mean. Panel A) modularity; B) clustering coefficient, C) characteristic path length, D) global efficiency. CNTRL, controls; ARND, alcohol neurodevelopmental disorder, FAS, fetal alcohol syndrome. ****, p<0.0001; ***, p<0.001; **, p<0.01; *, p<0.05. All p values are corrected by FDR method. For analyses of characteristic path length, one data point from a CNTRL participant at the 0.2 threshold was excluded as an outlier resulting in a sample size of 35. All other remaining sample sizes were CNTRL=36, ARND=9, and FAS=13.'
+  focal_point: 'Top'
   preview_only: false
 
 # Projects (optional).
