@@ -1,5 +1,5 @@
 ---
-title: Linear Mixed Effect Models
+title: Linear Mixed Effect Models (work in progress)
 author: Carlos Rodriguez
 date: '2021-11-11'
 slug: lmers
@@ -15,7 +15,7 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
-draft: true
+draft: false
 type: book
 weight: 10
 ---
@@ -180,11 +180,11 @@ ggplot(long.data, aes(x = month, y = scores, group = id, color = id)) +
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 
 ### Intro to lmer formulas
- To fit LME models we will use the `lmer()` (read as lemur and stands for linear mixed effects regression) function from the lme4 package. The notation for a lmer formula is similar to that of the `lm()` function (y ~ x) where y corresponds to a response variable and x corresponds to a predictor variable. However, the additional component of the formula encased in parentheses consist of a random intercept (1) and the random effect separated by the pipe (|) symbol in the random_intercept_model. In the random_slope_model, the 1 is replaced with the variable to be modeled as a random slope.
+ To fit LME models we will use the `lmer()` (read as lemur and stands for linear mixed effects regression) function from the lme4 package. The notation for a lmer formula is similar to that of the `lm()` function (y ~ x) where y corresponds to a response variable and x corresponds to a predictor variable. However, the additional component of the formula encased in parentheses consist of a random intercept (1) and the random effect separated by the pipe (|) symbol in the random_intercept_model. In the random_slope_model, the 1 is replaced with the variable to be modeled as a random slope. The random_group variable can also be thought of as the variable under which the observations are nested under. In our case, our observations will be nested under participant.
 
 ```r
 # Random intercept
-randome_intercept_model <- lmer(x ~ y + (1|random_group), data = datframe)
+random_intercept_model <- lmer(x ~ y + (1|random_group), data = datframe)
 
 # Random slope
 random_slope_model <- lmer(x ~ y + (random_slope|random_group), data = datframe)
@@ -196,11 +196,10 @@ random_slope_model <- lmer(x ~ y + (random_slope|random_group), data = datframe)
 3. 
 
 ### Step 1
-In step 1 we will fit a baseline linear mixed effects model without any predictor variables.
-
+In step 1, we will fit a baseline linear mixed effects model without any predictor variables.
 
 ```r
-# Random Intercept/ Intercept only model
+# Random intercept without predictor variables
 baseline <- lmer(scores ~ 1 + (1|id), data = long.data)
 #summary(baseline)
 ```
@@ -219,10 +218,12 @@ icc(baseline)
 ## $design.effect
 ## [1] 2.95423
 ```
-### Random Intercept, Fixed Effect of Time
+
+### Step 3
+Next, we will build a model that includes the fixed effect of month while maintaining the random intercept for each participant.
 
 ```r
-# Random intercept, fixed effect of month as categorical, participant as random effect, (1|id) intercept is nested within id, random intercept for each id.
+# Random intercept, fixed effect of month as categorical, participant as random effect, random intercept for each id.
 model.1 <- lmer(scores ~ month + (1|id), data = long.data)
 summary(model.1)
 ```
@@ -344,7 +345,7 @@ predict(model.1)
 ```
 
 
-### Random Intercept Only, No effect of time
+### Random Intercept Only, No effect of time SAME AS THE BASELINE
 
 ```r
 # Random intercept model only, no time/month, essentially models the mean for each participant

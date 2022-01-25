@@ -1,5 +1,5 @@
 ---
-title: Linear Mixed Effect Models
+title: Linear Mixed Effect Models (work in progress)
 author: Carlos Rodriguez
 date: '2021-11-11'
 slug: lmers
@@ -15,7 +15,7 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
-draft: true
+draft: false
 type: book
 weight: 10
 ---
