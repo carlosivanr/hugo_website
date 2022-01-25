@@ -21,7 +21,7 @@ highlight_name: false
 organizations:
 - name: Mind Research Network
   url: 
-role: Postdoctoral Research Fellow
+role: Neuroimaging Researcher
 social:
 # - icon: envelope
 #   icon_pack: fas
@@ -46,7 +46,7 @@ superuser: true
 title: Carlos I. Rodriguez
 ---
 
-I am a postdoctoral research fellow at the Mind Research Network in Albuquerque, NM. At the MRN, I rely on neuroimaging technology to study functional network connectivity which is an approach to understand how different brain regions communicate with one another. These patterns of communication can be thought "brain prints" or "signatures" that can be relevant to a number of disease states.
+I am a neuroimaging researcher at the Mind Research Network in Albuquerque, NM. At the MRN, I rely on neuroimaging technology to study functional network connectivity which is an approach to understand how different brain regions communicate with one another. These patterns of communication can be thought "brain prints" or "signatures" that can be relevant to a number of disease states.
 
 My work currently focuses on three areas. The first is to better understand how prenatal alcohol exposure alters brain connectivity with the aim of developing new ways of non-invasively diagnose fetal alcohol spectrum disorders from a brain scan. In a similar vein, I am interested in understanding the relationship between alcohol use disorder and functional connectivity that may inform new ways of identifying individuals who may be more likely recover. Finally, I am exploring the relationship between the development of functional connectivity and the initiation of substance use in adolescents.
 
