@@ -1,7 +1,7 @@
 ---
-title: Regression in R
+title: Linear Regression in R
 linkTitle: Regression in R
-summary: How to perform regression analyses in R.
+summary: How to perform linear regression analyses in R.
 date: '2021-09-17'
 type: book
 weight: 20

@@ -4,7 +4,7 @@ linkTitle: Logistic Regression in R
 summary: How to perform logistic regression analyses in R.
 date: '2022-02-15'
 type: book
-weight: 20
+weight: 25
 draft: false
 ---
 <!--
