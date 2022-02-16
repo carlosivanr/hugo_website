@@ -158,6 +158,23 @@ rm_data <-  rm_data %>%
 kable(head(rm_data %>% select(-id)))
 ```
 
+### Using the `pivot_wider()` function
+The `pivot_wider()` function from the dplyr package can also be used accomplish the same task of converting wide to long data. In this case we use the chapter 12 data as the input data frame, select columns  Absent0 through Present8 to pivot wider, specify the column names of the selected columns will be placed into a new column called condition.angle, and then the values in to a new column called reaction time. Finally, we will sepatrate the condition and angle variables to be placed in separate columns, condition and angle. The length of the code is roughly the same, but it may be more intuitive to understand the mechanics. 
+```{r}
+long_data <- 
+  pivot_longer(chapter_12_table_1,
+             cols = Absent0:Present8,
+             names_to = "condition.angle",
+             values_to = "reaction_time") %>%
+  separate(col = condition.angle,
+           into = c("condition", "angle"),
+           sep = -1)
+```
+```{r, echo=FALSE}
+# Display the example long data
+kable(head(long_data))
+```
+
 ## Wrap Up
 Converting wide data to long and vice versa are indespensible skills when working in R. It can be tricky at first, but thankfully the tidyverse package as several functions that can simplify this process. Going from wide to long will smooth preparing your data so that you can perform the statistical analyses that you're probably interested in doing.
 
