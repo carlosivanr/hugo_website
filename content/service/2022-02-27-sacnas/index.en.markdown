@@ -20,4 +20,4 @@ type: book
 draft: false
 ---
 
-In the spring of 2021, I decided to join the Society for Advancing Chicanos/Hispanics and Native Americans in Science. As Ph.D. holding member, I have been involved in reviewing student abstracts in the areas of psychology and neuroscience for their annual conference. This opportunity allows me to provide up and coming researchers from under represented backgrounds the postivie feedback that will hopefully encourage them to continue to pursue advanced degrees.
+In the spring of 2021, I decided to join the Society for Advancing Chicanos/Hispanics and Native Americans in Science. As a Ph.D. holding member, I have been involved in reviewing student abstracts in the areas of psychology and neuroscience for their annual conference. This opportunity allows me to provide up and coming researchers from under represented backgrounds the postivie feedback that will hopefully encourage them to continue to pursue advanced degrees.
