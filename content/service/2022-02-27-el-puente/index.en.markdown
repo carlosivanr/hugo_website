@@ -1,0 +1,22 @@
+---
+title: El Puente
+author: Carlos Rodriguez
+date: '2022-02-27'
+slug: el-puente
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-02-27T11:29:54-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+type: book
+---
+
+Beginning in December of 2015, I was involved with the El Puente undergraduate research rellowship rrogram. This program was housed in the University of New Mexico's El Centro de la Raza. My role as a Graduate Research Fellow was to assist in the development and implementation of curricula designed increase the numbers of under represented minorities in academic research. This year long program was very much like an Intro to Research 101 course. The entire cohort would meet weekly to discuss topics that provided an overview of academic research, the differences between quantitative and qualitative research, developing research questions, and conducting literature reviews. In addition, the entire cohort was broken up in to small groups that met with a graduate research fellow weekly. In these smaller groups, I advised and mentored undergraduate students on appraoching faculty for research opportunities, reading scientific articles, and providing tools to overcome the challenges that URMs often face in academic research. I mentored students from a diverse array of disciplines that included business administration, pre-pharmacy, pre-medicine, engineering, math, and psychology.

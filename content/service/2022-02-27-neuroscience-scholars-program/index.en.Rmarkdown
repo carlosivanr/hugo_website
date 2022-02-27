@@ -1,0 +1,24 @@
+---
+title: NSP
+author: Carlos Rodriguez
+date: '2022-02-27'
+slug: neuroscience-scholars-program
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-02-27T12:04:59-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+weight: 20
+type: book
+draft: false
+---
+
+
+In the summer of 2020 I volunteered to mentor through the Society for Neuroscience, Neuroscience Scholars Program (NSP). The NSP is a two year professional development program that gives graduate and post-doctoral level trainees enhanced opportunities to learn more about careers, research practices, and networking opportunities among others. As a former NSP fellow, I volunteered to mentor a neuroscience Ph.D. candidate admitted to the NSP associate program. My mentor and I met bi-weekly to work on oral presentation skills, maintaining momentum in dissertation writing, and interpreting data.
