@@ -16,7 +16,6 @@ image:
   preview_only: no
 projects: []
 type: book
-draft: false
 weight: 10
 ---
 
