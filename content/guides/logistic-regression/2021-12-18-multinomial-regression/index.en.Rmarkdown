@@ -96,7 +96,7 @@ kable(exp(coef(chatModel2)))
 ```
 
 ### Z-scores
-To obtain z-scores and p-values, we will create a new data frame, z, which will take each coefficient and divide it by the standard error. Next we create a new data frame, p, which will calculate the p-value ofr each z score.
+To obtain z-scores and p-values, we will create a new data frame, z, which will take each coefficient and divide it by the standard error. Next we create a new data frame, p, which will calculate the p-value of each z score.
 
 ```{r}
 z <- summary(chatModel2)$coefficients/summary(chatModel2)$standard.error
@@ -116,7 +116,7 @@ kable(exp(confint(chatModel2)))
 ```
 
 ### Test for multicolinearity
-In a similar vein to linear regression, one of the assumptions of multinomial logistic regression is that the predictor variables are uncorrelated. One way to test this is to build a generalized linear model with the `glm()` function, and then using the `vif()` function from the car package. The `vif()` function determines the variance inflation factor for all of the predictor variables. VIF values of 10 or more are problematic and indicate that we have correlated predictor variables.
+In a similar vein to linear regression, one of the assumptions of multinomial logistic regression is that the predictor variables are uncorrelated. One way to test this is to build a generalized linear model with the `glm()` function, and then using the `vif()` function from the car package. The `vif()` function determines the variance inflation factor for all of the predictor variables. VIF values of 10 or more are problematic and indicate that we have correlated predictor variables. The output of the VIF values all indicate that our variables are not highly correlated. In addition, we can inspect the tolerance statistics by calculating 1 divided by the vif. Anything less than 0.2 is a potential problem and anything less than 0.1 is a serious problem. Based off of our output, we have no reason to believe that we have encountered multicolinearity.
 
 
 ```{r}
@@ -126,7 +126,7 @@ vif(chatModel)
 ```
 
 **Correlations**
-An additional way of testing for multicolinearity is to calculate the Pearson pairwise correlations for the predictor variables.
+An additional way of testing for multicolinearity is to calculate the Pearson pairwise correlations for the predictor variables. Again, we notice small correlation values between 0.03 and 0.16 which are not of concern here.
 ```{r}
 kable(cor(chatData[, c("Funny", "Good_Mate", "Sex")]))
 ```
