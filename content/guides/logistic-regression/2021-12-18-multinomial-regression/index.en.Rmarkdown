@@ -20,7 +20,7 @@ weight: 90
 draft: false
 ---
 
-Multinomial regression is an extension of logistic regression. In logistic regression, the dependent or outcome variable can take on one of two categorical values such as whether or not someone survived a stay at a hospital. In cases where the dependent variable falls into more than two categorical variables, then multinomial regression is one possible analysis to test the relationship between your dependent variable and predictor variables. For this guide, we will use multinomial regression using the `nnet` package. We will also use a sample data set in which researchers determined the effect of pickup lines on whether or not that person got a phone number, went home with the person, or walked away.
+Multinomial regression can be thought of as an extension of logistic regression. In logistic regression, the dependent or outcome variable can take on one of two categorical values such as whether or not someone survived a stay at a hospital. However, we may encounter situations where the dependent variable falls into more than two categorical variables. For these situations, multinomial regression may be one possible analysis to test the relationship between your dependent variable and predictor variables. For this guide, we will use multinomial regression using the `nnet` package and sample data in which researchers determined the effect of pickup lines. The outcome or dependent variables are 1) whether or not that person got a phone number, 2) went home with the person, or 3) walked away.
 
 ```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -45,7 +45,7 @@ is.factor(chatData$Gender)
 ```
 
 ### Prepare Data
-Since both of our predictor variables are not factored, use the `as.factor()` function to convert them and save into the chatData data frame. Next, we will want to relevel our predictor varibales. The `relevel()` function takes two inputs, the column of the factor that needs to be releveled and the reference variable. For this example we want to set "No response/Walk Off" as the reference for Success, and "Male" as the reference for Gender. One way to think about multinomial regression is view it as a series of binary logistic regression models where one variable is compared to all others. It is the reference level that is compared with all other levels of that variable in multinomial regression.  
+Since both of our predictor variables are not factored, we use the `as.factor()` function to convert them and save into the chatData data frame. Next, we will want to relevel our predictor variables to arrange them and set a reference level. The reference level is what is used as the main comparison variable. The `relevel()` function takes two inputs, the column of the factor that needs to be releveled and the reference level. For this example we want to set "No response/Walk Off" as the reference for Success, and "Male" as the reference for Gender. One way to think about multinomial regression is view it as a series of binary logistic regression models where one level (the reference) is compared to all others. In multinomial regression, it is the reference level that is compared with all other levels of the variable.  
 ```{r}
 chatData$Gender <- as.factor(chatData$Gender)
 chatData$Success <- as.factor(chatData$Success)
@@ -55,7 +55,7 @@ chatData$Gender <- relevel(chatData$Gender, "Male") # Set Male to reference
 ```
 
 ### Model the data
-Once out data is prepared, we can move onto building a multinomial regression model. For this example, we want to know if the variables Good_Mate, Funny, Gender, Sex, the interaction between Gender and Sex, and the interaction between Funny and Gender predict the outcome, Success.
+Once our data is prepared, we can move onto building a multinomial regression model. For this example, we want to know if the variables Good_Mate, Funny, Gender, Sex, the interaction between Gender and Sex, and the interaction between Funny and Gender predict the outcome, Success.
 ```{r}
 chatModel2 <- multinom(Success ~ Good_Mate + Funny + Gender + Sex + Gender:Sex + Funny:Gender, data = chatData)
 
@@ -63,19 +63,19 @@ summary(chatModel2)
 ```
 
 ### Walkthrough of `multinom()` and `summary()` output
-  * The first chunk of output from the `multinom()` function displays a series of values from iterations of the model. The piece of information to focus on here is to ensure that the model converged. If your model fails to converge, consider variables that have been entered into the model.Perhaps ther are a small number of certain combinations of categorical predictor variables. Some predictors may need to be omitted for the model to converge. 
+  * The first chunk of output from the `multinom()` function displays a series of values from iterations of the model. The piece of information to focus on here is to ensure that the model converged. If your model fails to converge, consider the variables that have been entered into the model. Perhaps ther are a small number of certain combinations of categorical predictor variables. Some predictors may need to be omitted for the model to converge. 
 
-  * The interpretation of the output from the `summay()` of the multinom model is similar to that of that logistic regression. We see the "**Call:**" which is reproduction of the `multinom()` function used to create the model. 
+  * The interpretation of the output from the `summay()` of the multinom model is similar to that of that logistic regression. We see the "**Call:**" which is a reproduction of the `multinom()` function used to create the model. 
   
-  * Next, we see the "**Coefficients:**" wich quantify the relationship between the predictor variables and the outcome variables. Notice that there are only two outcome variables displayed, "Get Phone Number" and "Go Home with Person." This is because we had set "No Response/Walk Off" as the reference level. Thus as an example, the coefficient for Good_Mate and Get Phone Number is 0.1318 which indicates that for each unit increase in Good_Mate, we can expect as 0.1318 increase in the logit of the outcome variable when the outcomes are "Get Phone Number" and "No response/Walk Off." Similarly, the coefficient for Good_Mate and Go Home with Person is 0.13, which indicates that for each unit increase in Good_Mat, we can expect a 0.13 increase in the logit of the outcome variable.
+  * Next, we see the "**Coefficients:**" which quantify the relationship between the predictor variables and the outcome variables. Notice that there are only two outcome variables displayed, "Get Phone Number" and "Go Home with Person." This is because we had set "No Response/Walk Off" as the reference level. Thus as an example, the coefficient for Good_Mate and Get Phone Number is 0.1318 which indicates that for each unit increase in Good_Mate, we can expect as 0.1318 increase in the logit of the outcome variable when the outcomes are "Get Phone Number" and "No response/Walk Off." Similarly, the coefficient for Good_Mate and Go Home with Person is 0.13, which indicates that for each unit increase in Good_Mate, we can expect a 0.13 increase in the logit (i.e. the log of the odds of an event occurring) of the outcome variable.
 
   * The "**Std. Errors:**" section displays the standard errors of the coefficients. These are useful in calculating z scores and p-values since we can divide the coefficients by the standard errors to obtain z scores.
 
-  * Finally, the output displays the "**Residual Deviance:**" and the "AIC:." The residual deviance provides information regarding fit in the model that does not contain predictors (estimating the intercept only). The AIC, or the Akaike Information Criterion, is a way to assess model fit that penalized the model according to the number of predictor variables used. These two values are helpful for comparing different multinomial regression models.
+  * Finally, the output displays the "**Residual Deviance:**" and the "AIC:." The residual deviance provides information regarding fit in the model that does not contain predictors (estimating the intercept only). The AIC, or the Akaike Information Criterion, is a way to assess model fit that penalizes the model according to the number of predictor variables used. These two values are helpful for comparing different multinomial regression models.
 
 
 ### A better way to present the output
-I would defintely recommend reviewing the model summary to ensure that the formula, terms, and model fit make sense. However, the model summary is lacking in several pieces of information that could help us interpret the output. The missing information can be filled with the `tidy()` in the broom package. Using the tidy() function on our model results in a tibble that now contains a z statistic and a p value. We can build off of this tibble to include additional information to help us interpret the model. 
+I would recommend reviewing the model summary to ensure that the formula, terms, and model fit make sense. The model summary is lacking in several pieces of information that could help us interpret the output. The missing information can be filled with the `tidy()` function in the broom package. Using the tidy() function on our model results in a tibble that now contains a z statistic and a p value. We can build off of this tibble to include additional information to help us interpret the model. 
 ```{r}
 tidymodel <- tidy(chatModel2)
 
@@ -89,7 +89,7 @@ test <- data.frame(exp(confint(chatModel2)))
 
 ### Exponentiated coefficients
 
-For each coefficient other than the intercept, the value represents the log odds of the outcome variables increasing for each unit increase in the predictor variable. Because it is not intuitive to interpret these values as log odds, they can be exponentiated. The exponentiated coefficients have a much more straightforward interpretation. The exponentiated coefficients represent the odds ratio which can be interpreted as either greater than or less than one. Values greater than one indicate that as the predictor increases, the odds of the outcome occuring increases. A values less than one indicates that as the predictor increases, the odds of the outcome occuring decreases. To drive this point home, the exponentiated coefficient for Get Phone Number and Good_Mate is 1.14. This values is greater than one which indicates that as the Good_Mate scores increase, the odds of getting a phone number increase relative to "No response/Walk Off."
+For each coefficient other than the intercept, the values represents the log odds of the outcome variables increasing for each unit increase in the predictor variable. Because it is not intuitive to interpret the log odds, they can be exponentiated. The exponentiated coefficients have a much more straightforward interpretation. The exponentiated coefficients represent the odds ratio which can be interpreted as either greater than or less than one. Values greater than one indicate that as the predictor increases, the odds of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. To drive this point home, the exponentiated coefficient for Get Phone Number and Good_Mate is 1.14. This values is greater than one which indicates that as the Good_Mate scores increase, the odds of getting a phone number increases relative to "No response/Walk Off." To be more specific, the odds of getting a phone number increases by 14% for each unit increase in the Good_Mate score.
 
 ```{r}
 kable(exp(coef(chatModel2)))
@@ -116,6 +116,9 @@ kable(exp(confint(chatModel2)))
 ```
 
 ### Test for multicolinearity
+In a similar vein to linear regression, one of the assumptions of multinomial logistic regression is that the predictor variables are uncorrelated. One way to test this is to build a generalized linear model with the `glm()` function, and then using the `vif()` function from the car package. The `vif()` function determines the variance inflation factor for all of the predictor variables. VIF values of 10 or more are problematic and indicate that we have correlated predictor variables.
+
+
 ```{r}
 chatModel <- glm(Success ~ Funny + Good_Mate + Sex + Gender, data = chatData, family = binomial())
 vif(chatModel)
@@ -123,6 +126,7 @@ vif(chatModel)
 ```
 
 **Correlations**
+An additional way of testing for multicolinearity is to calculate the Pearson pairwise correlations for the predictor variables.
 ```{r}
 kable(cor(chatData[, c("Funny", "Good_Mate", "Sex")]))
 ```
