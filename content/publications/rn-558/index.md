@@ -41,6 +41,7 @@ publication: '*Alcohol*'
 url_pdf: media/rodriguez_2021_pae_svm.pdf
 doi: 10.1016/j.alcohol.2021.03.001
 ---
-
+<!--
 ### Summary:
 In this project, we were interested in learning whether or not a machine learning technique could be used to discriminate between brain connectivity patterns associated with prenatal alcohol exposure from those of controls as potential way to non-invasively detect prenatal alcohol exposure. We found that a quadratic support vector machine learning kernel was the most accurate (80%) in correctly classifying brain connectivity patterns associated with prenatal alcohol expsosure. This research suggests that this approach may yield viable non-invasive diagnostic methods for fetal alcohol spectrum disorder with future refinements of the technique.
+-->

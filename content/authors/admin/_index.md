@@ -43,14 +43,14 @@ social:
   link: https://github.com/carlosivanr
 
 superuser: true
-title: Carlos I. Rodriguez
+title: Carlos I. Rodriguez, Ph.D.
 ---
 
-I am a neuroimaging researcher at the Mind Research Network in Albuquerque, NM. At the MRN, I rely on neuroimaging technology to study functional network connectivity which is an approach to understand the patterns of communication among multiple brain regions. These patterns of communication can be thought of as "brain prints" or "signatures" that can be relevant to a number of disease states.
+I am researcher at the Mind Research Network in Albuquerque, NM. At the MRN, I rely on neuroimaging technology to study functional network connectivity (FNC). FNC is an approach to understand the patterns of communication among multiple brain regions. These patterns of communication can be thought of as "brain prints" that can be relevant to a number of disease states and neurodevelopmental disorders.
 
-My work currently focuses on three areas. The first is to better understand how prenatal alcohol exposure alters brain connectivity with the aim of developing new ways of non-invasively diagnosing fetal alcohol spectrum disorders. In a similar vein, I am investigating the relationship between alcohol use disorder and brain electrophysiology that may reveal new ways of identifying individuals who may be more likely to experience natural recovery. Finally, I am exploring functional connectivity in a large sample of adolescents. My professional and educational experiences have provided a solid foundation in experimental research design, statistical analyses, and public speaking.
+My work currently focuses on a couple of areas. The first is to better understand how prenatal alcohol exposure alters FNC with the aim of developing ways of non-invasively diagnosing fetal alcohol spectrum disorders (FASD). In addition to my work on FASD, I am also investigating the relationship between alcohol use disorder (AUD) and brain electrophysiology. The aim of this research is to reveal how aspects of brain functioning changes during natural recovery from AUD. My professional and educational experiences have provided a solid foundation in experimental research design, statistical analyses, and public speaking.
 
-Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research. Through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science I have mentored graduate and undergraduate students in achieving their research career goals. I look forward to connecting.
+Lastly, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research. Through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science, I have mentored graduate and undergraduate students in achieving their research career goals.
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/carlos_rodriguez_cv.pdf" "newtab" >}}CV{{< /staticref >}}.
 

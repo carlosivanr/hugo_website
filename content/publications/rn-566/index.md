@@ -60,5 +60,7 @@ summary:
 slides: ''
 ---
 
+<!--
 ### Summary:
 In this study, colleagues and I examined resting state functional MRI data from a sample of adolescents and young adults with fetal alcohol spectrum disorder (FASD). We discovered that mild and severe forms of FASD displayed changes in network measures in opposing patterns relative to controls. Our data suggest that while some network characteristics are compromised in a severe form FASD, they are enhanced in a less severe FASD possibly due to a compensatory mechanism.
+-->
