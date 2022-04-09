@@ -22,7 +22,7 @@ weight: 15
 
 
 
-<p>In the previous guide we took a wide data set and converted it to long. While this conversion allowed us to apply some statistical and plotting functions on the data, there may be cases where doing the reverse, going from long to wide, may be useful.</p>
+<p>In the previous guide, we took a wide data set and converted it to long. While this conversion allowed us to apply some statistical and plotting functions on the data, there may be cases where doing the reverse, going from long to wide, may be useful.</p>
 <!-- Create the long data frame -->
 <table>
 <caption>
@@ -135,7 +135,7 @@ Present
 <h2>Converting Long to Wide</h2>
 <div id="unite-the-condition-and-angle-columns" class="section level3">
 <h3>1. Unite the Condition and Angle columns</h3>
-<p>To convert our long format data to the original wide format data frame we began with, we will need to chain a series of commands in the reverse order. Recall that our original wide data frame started out with columns that had the Condition and Angle together and that we had to separate those two variables. We will do the reverse here with the <code>unite()</code> function. We will merge the Condition and Angle column data into one column called Condition.Angle.</p>
+<p>To convert our long format data to the original wide format data frame, we will need to chain a series of commands in the reverse order. Recall that our original wide data frame started out with columns that had the Condition and Angle together and that we had to separate those two variables. We will do the reverse here with the <code>unite()</code> function. We will merge the Condition and Angle column data into one column called Condition.Angle.</p>
 <pre class="r"><code>wide.data &lt;- 
   long.data %&gt;%
   unite(Condition.Angle, Condition, Angle, sep = &quot;&quot;)</code></pre>

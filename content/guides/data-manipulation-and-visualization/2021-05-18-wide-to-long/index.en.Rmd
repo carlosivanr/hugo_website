@@ -20,7 +20,7 @@ type: book
 weight: 10
 ---
 
-Structured datasets tend to come in one of two formats, wide or long. In the wide format, each row contains data related to a particular subject or event where each column contains a different variable taken from that subject. On the other hand, long data format is when all variables are placed in a column. Some R functions work best with wide or long data so it is important to know how to reshape data.  This guide explains how to convert a wide format dataset to long format using tidyverse. The data are from the AMCP package and were created to run a two-way repeated measures ANOVA.
+Structured datasets tend to come in one of two formats, wide or long. In the wide format, each row contains data related to a particular subject or event. Each values in each column usually represent a variable taken from that participant. On the other hand, long data format is when related values of an outcome variable are placed in a column, while a different column contains values regarding the condition under which the outcome variables were gathered. Some R functions work best with wide data, while others work best with long data. As a result, it is important to know how to reshape data and go between the two types.  This guide explains how to convert a wide format dataset to long format using tidyverse. The data are from the AMCP package and were created to perform a two-way repeated measures ANOVA.
 ```{r warning=FALSE, message=FALSE}
 library(tidyverse)
 library(AMCP)
@@ -86,7 +86,7 @@ kable(head(long.data %>% gather(key = condition.angle,
 ```
 
 ### 3. Separate the condition.angle column
-So far we're on a good track, but the column condition.angle needs to be two. One to specify condition, and the other to specify angle. The `separate()` function can help us out here by splitting the condition.angle column into two columns, `condition` and `angle`. The `sep = -1` argument tells the `separate()` function to split the values 1 character from the end. This separates the last character which contains a single digit angle number into a separate column. Try substituting different numbers such as -2 or 1, to get a feel for what the function is doing here.
+So far we're on a good track, but the column condition.angle needs to be separated into two columns. One to specify condition, the other to specify angle. The `separate()` function can help us out here by splitting the condition.angle column into two columns, `condition` and `angle`. The `sep = -1` argument tells the `separate()` function to split the values 1 character from the end. This separates the last character which contains a single digit angle number into a separate column. Try substituting different numbers such as -2 or 1, to get a feel for what the function is doing here.
 ```{r, eval = FALSE}
 long.data %>% 
   gather(key = condition.angle,
@@ -107,7 +107,7 @@ kable(head(long.data %>% gather(key = condition.angle,
 ), booktabs = TRUE, caption = "Results after separating condition.angle with the `separate()` function.")
 ```
 ### 4. Sort the data
-At this point, we've done most of what is needed to convert the wide data to long data. The next step in the series of tidyverse functions is to sort the data. To get the output displayed above, we will want to sort the data by subject id, then by condition, then by angle. To accomplish this we will use the `arrange()` function an will display the reaction_time values as a column of the transposed rows from the wide data set. We will re-save this manipulation as long.data. Notice how the number of data frames is now 60 whereas we started with 10.
+At this point, we've done most of what is needed to convert the wide data to long data. The next step in the series of tidyverse functions is to sort the data. To get the output displayed above, we will want to sort the data by subject id, then by condition, then by angle. To accomplish this we will use the `arrange()` function and will display the reaction_time values as a column of the transposed rows from the wide data set. We will re-save this manipulation as long.data. Notice how the number of rows is now 60 whereas we started with 10.
 ```{r}
 long.data <- long.data %>% 
   gather(key = condition.angle,
@@ -125,7 +125,7 @@ kable(head(long.data), booktabs = TRUE, caption = "First 6 rows of long.data aft
 ```
 
 ### 5. Convert to factor
-Now before conducting any statistical tests, we will want to conver our id, condition, and angle columns to factor. We can do this with the base R function `as.factor()`. 
+Now before conducting any statistical tests, we will want to convert our id, condition, and angle columns to factor. We can do this with the base R function `as.factor()`. 
 ```{r}
 long.data$id <- as.factor(long.data$id)
 long.data$condition <- as.factor(long.data$condition)
@@ -133,7 +133,7 @@ long.data$angle <- as.factor(long.data$angle)
 ```
 
 ### Bonus with other helper functions
-We could also convert variable to factor with the `convert_as_factor()` function from the rstatix package. We can pipe each of the steps above and add the `convert_as_factor()` function at the end setting the columns we would like to conver.
+We could also convert variable to factor with the `convert_as_factor()` function from the rstatix package. We can pipe each of the steps above and add the `convert_as_factor()` function at the end setting the columns we would like to convert.
 ```{r, include=TRUE, warning=FALSE, message=FALSE}
 library(rstatix)
 # Create a new data frame with a subject id
@@ -159,7 +159,7 @@ kable(head(rm_data %>% select(-id)))
 ```
 
 ### Using the `pivot_wider()` function
-The `pivot_wider()` function from the dplyr package can also be used accomplish the same task of converting wide to long data. In this case we use the chapter 12 data as the input data frame, select columns  Absent0 through Present8 to pivot wider, specify the column names of the selected columns will be placed into a new column called condition.angle, and then the values in to a new column called reaction time. Finally, we will sepatrate the condition and angle variables to be placed in separate columns, condition and angle. The length of the code is roughly the same, but it may be more intuitive to understand the mechanics. 
+The `pivot_wider()` function from the dplyr package can also be used accomplish the same task of converting wide to long data. In this case we use the chapter 12 data as the input data frame, select columns  Absent0 through Present8 to pivot wider, specify the column names of the selected columns will be placed into a new column called condition.angle, and then the values in to a new column called reaction time. Finally, we will sepatrate the condition and angle variables to be placed in separate columns, condition and angle. The length of the code is roughly the same, but it may be more intuitive to understand the mechanics.
 ```{r}
 long_data <- 
   pivot_longer(chapter_12_table_1,
@@ -176,7 +176,7 @@ kable(head(long_data))
 ```
 
 ## Wrap Up
-Converting wide data to long and vice versa are indespensible skills when working in R. It can be tricky at first, but thankfully the tidyverse package as several functions that can simplify this process. Going from wide to long will smooth preparing your data so that you can perform the statistical analyses that you're probably interested in doing.
+Converting wide data to long and vice versa are indespensible skills when working in R. It can be tricky at first, but thankfully the tidyverse package as several functions that can simplify this process. Going from wide to long will set you up to perform many of the statistical analyses you may be interested in doing.
 
 ### References
 <div id="refs" class="references">

@@ -22,7 +22,7 @@ weight: 10
 
 
 
-<p>Structured datasets tend to come in one of two formats, wide or long. In the wide format, each row contains data related to a particular subject or event where each column contains a different variable taken from that subject. On the other hand, long data format is when all variables are placed in a column. Some R functions work best with wide or long data so it is important to know how to reshape data. This guide explains how to convert a wide format dataset to long format using tidyverse. The data are from the AMCP package and were created to run a two-way repeated measures ANOVA.</p>
+<p>Structured datasets tend to come in one of two formats, wide or long. In the wide format, each row contains data related to a particular subject or event. Each values in each column usually represent a variable taken from that participant. On the other hand, long data format is when related values of an outcome variable are placed in a column, while a different column contains values regarding the condition under which the outcome variables were gathered. Some R functions work best with wide data, while others work best with long data. As a result, it is important to know how to reshape data and go between the two types. This guide explains how to convert a wide format dataset to long format using tidyverse. The data are from the AMCP package and were created to perform a two-way repeated measures ANOVA.</p>
 <pre class="r"><code>library(tidyverse)
 library(AMCP)
 library(kableExtra)
@@ -454,7 +454,7 @@ Absent0
 </div>
 <div id="separate-the-condition.angle-column" class="section level3">
 <h3>3. Separate the condition.angle column</h3>
-<p>So far we’re on a good track, but the column condition.angle needs to be two. One to specify condition, and the other to specify angle. The <code>separate()</code> function can help us out here by splitting the condition.angle column into two columns, <code>condition</code> and <code>angle</code>. The <code>sep = -1</code> argument tells the <code>separate()</code> function to split the values 1 character from the end. This separates the last character which contains a single digit angle number into a separate column. Try substituting different numbers such as -2 or 1, to get a feel for what the function is doing here.</p>
+<p>So far we’re on a good track, but the column condition.angle needs to be separated into two columns. One to specify condition, the other to specify angle. The <code>separate()</code> function can help us out here by splitting the condition.angle column into two columns, <code>condition</code> and <code>angle</code>. The <code>sep = -1</code> argument tells the <code>separate()</code> function to split the values 1 character from the end. This separates the last character which contains a single digit angle number into a separate column. Try substituting different numbers such as -2 or 1, to get a feel for what the function is doing here.</p>
 <pre class="r"><code>long.data %&gt;% 
   gather(key = condition.angle,
                      value = reaction_time, 
@@ -572,7 +572,7 @@ Absent
 </div>
 <div id="sort-the-data" class="section level3">
 <h3>4. Sort the data</h3>
-<p>At this point, we’ve done most of what is needed to convert the wide data to long data. The next step in the series of tidyverse functions is to sort the data. To get the output displayed above, we will want to sort the data by subject id, then by condition, then by angle. To accomplish this we will use the <code>arrange()</code> function an will display the reaction_time values as a column of the transposed rows from the wide data set. We will re-save this manipulation as long.data. Notice how the number of data frames is now 60 whereas we started with 10.</p>
+<p>At this point, we’ve done most of what is needed to convert the wide data to long data. The next step in the series of tidyverse functions is to sort the data. To get the output displayed above, we will want to sort the data by subject id, then by condition, then by angle. To accomplish this we will use the <code>arrange()</code> function and will display the reaction_time values as a column of the transposed rows from the wide data set. We will re-save this manipulation as long.data. Notice how the number of rows is now 60 whereas we started with 10.</p>
 <pre class="r"><code>long.data &lt;- long.data %&gt;% 
   gather(key = condition.angle,
          value = reaction_time, 
@@ -693,14 +693,14 @@ Present
 </div>
 <div id="convert-to-factor" class="section level3">
 <h3>5. Convert to factor</h3>
-<p>Now before conducting any statistical tests, we will want to conver our id, condition, and angle columns to factor. We can do this with the base R function <code>as.factor()</code>.</p>
+<p>Now before conducting any statistical tests, we will want to convert our id, condition, and angle columns to factor. We can do this with the base R function <code>as.factor()</code>.</p>
 <pre class="r"><code>long.data$id &lt;- as.factor(long.data$id)
 long.data$condition &lt;- as.factor(long.data$condition)
 long.data$angle &lt;- as.factor(long.data$angle)</code></pre>
 </div>
 <div id="bonus-with-other-helper-functions" class="section level3">
 <h3>Bonus with other helper functions</h3>
-<p>We could also convert variable to factor with the <code>convert_as_factor()</code> function from the rstatix package. We can pipe each of the steps above and add the <code>convert_as_factor()</code> function at the end setting the columns we would like to conver.</p>
+<p>We could also convert variable to factor with the <code>convert_as_factor()</code> function from the rstatix package. We can pipe each of the steps above and add the <code>convert_as_factor()</code> function at the end setting the columns we would like to convert.</p>
 <pre class="r"><code>library(rstatix)
 # Create a new data frame with a subject id
 rm_data &lt;- cbind(id = c(1:10), chapter_12_table_1)
@@ -899,7 +899,7 @@ Present
 </div>
 <div id="wrap-up" class="section level2">
 <h2>Wrap Up</h2>
-<p>Converting wide data to long and vice versa are indespensible skills when working in R. It can be tricky at first, but thankfully the tidyverse package as several functions that can simplify this process. Going from wide to long will smooth preparing your data so that you can perform the statistical analyses that you’re probably interested in doing.</p>
+<p>Converting wide data to long and vice versa are indespensible skills when working in R. It can be tricky at first, but thankfully the tidyverse package as several functions that can simplify this process. Going from wide to long will set you up to perform many of the statistical analyses you may be interested in doing.</p>
 <div id="references" class="section level3">
 <h3>References</h3>
 <div id="refs" class="references">
