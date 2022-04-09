@@ -46,7 +46,7 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-I am an experimental psychologist with training in resting-state functional neuroimaging. My research has focused on better understanding how prenatal alcohol exposure alters functional network connectivity (FNC). FNC is a framework that views patterns of communication among multiple brain regions as a basic characteristic of brain function that can be disrupted in abnormal conditions. In addition to my work with prenatal alcohol exposure, I have also investigated the relationship between alcohol use disorder (AUD) and brain electrophysiology. My professional and educational experiences have provided a solid foundation in experimental research design, statistical analyses, and public speaking.
+I am an experimental psychologist with training in resting-state functional neuroimaging. My research has focused on better understanding how prenatal alcohol exposure alters functional network connectivity (FNC). FNC is a framework that views patterns of communication among multiple brain regions as a basic characteristic of brain function that can be disrupted in abnormal conditions. My professional and educational experiences have provided a solid foundation in experimental research design, statistical analyses, and public speaking.
 
 In addition to my research, I have a longstanding commitment to mentoring students from under-represented backgrounds in academic research. Through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science, I have mentored graduate and undergraduate students in achieving their research career goals.
 
