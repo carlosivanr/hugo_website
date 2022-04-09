@@ -20,7 +20,9 @@ weight: 50
 draft: false
 ---
 
+Scatterplots are a great tool to visualize data. They can be used to understand the relationship between variables that may not otherwise be observed by just looking at the values in a spreadsheet. The following guide covers my appraoch to making scatter plots with the ggplot2 package.
 
+In this guide, I'll use data from the correlation walkthrough [here](/guides/correlation/correlation-in-r). The data describes a hypothetical anxiety measure, exam test scores, and the number or hours spent studying to better understand factors that led to better grades.
 
 
 ```r

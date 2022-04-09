@@ -19,7 +19,11 @@ type: book
 weight: 5
 ---
 
-R is highly flexible in its ability to work with a number of different file types. I've used R to import .tsv, .csv, Excel, SPSS, and .txt files. Below are a handful of ways of importing data into R.
+R can import a number of different file types for data wrangling or analyses. The following is a go-to guide for importing .csv, Excel, SPSS, .txt, and .dat files. Occassionally, additional packages may be require to import a specific type of file.
+
+ 
+  
+  
 
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="5" tabName1="CSV" tabName2="Excel" tabName3="SPSS" tabName4="TXT" tabName5="DAT">}}

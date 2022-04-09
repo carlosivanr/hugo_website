@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(kableExtra)
 ```
 
-In a recent paper published in [ACER](/publication/rn-566), I used R and the ggplot2 package to create all of the figures. In this post, I will walk you through how I used ggplot2 and a couple of extra packages to create the box plots in this publication.
+In a recent paper published in [ACER](/publication/rn-566), I used R and the ggplot2 package to create the main figures. In this post, I will walk through how I used ggplot2 and a couple of extra packages to create the box plots for this publication.
 
 
 ```{r, warning=FALSE, message=FALSE}

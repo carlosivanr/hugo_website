@@ -23,7 +23,7 @@ draft: False
 
 
 
-In a recent paper published in [ACER](/publication/rn-566), I used R and the ggplot2 package to create all of the figures. In this post, I will walk you through how I used ggplot2 and a couple of extra packages to create the box plots in this publication.
+In a recent paper published in [ACER](/publication/rn-566), I used R and the ggplot2 package to create the main figures. In this post, I will walk through how I used ggplot2 and a couple of extra packages to create the box plots for this publication.
 
 
 
@@ -401,3 +401,6 @@ I hope this helps provide a frame work for creating publication quality plots in
 <!-- # Replace significance markers with other characters -->
 <!-- pwc$p.adj.signif <- c("ns", "^^", "^^^") -->
 <!-- ``` -->
+
+<!-- ------------------LINKS---------------------------- -->
+<!-- Howell source on multiple comparisons in RM ANOVA: https://www.uvm.edu/~statdhtx/StatPages/More_Stuff/RepMeasMultComp/RepMeasMultComp.pdf -->
