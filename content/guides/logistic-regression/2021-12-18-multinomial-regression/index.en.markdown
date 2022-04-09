@@ -20,7 +20,7 @@ weight: 90
 draft: false
 ---
 
-Multinomial regression is an extension of logistic regression. In logistic regression, the dependent or outcome variable can take on one of two categorical values such as whether or not someone survived a stay at a hospital. In cases where the dependent variable falls into more than two categorical variables, then multinomial regression is one possible analysis to test the relationship between your dependent variable and predictor variables. For this guide, we will use multinomial regression using the `nnet` package. We will also use a sample data set in which researchers determined the effect of pickup lines on whether or not that person got a phone number, went home with the person, or walked away.
+Multinomial regression can be thought of as an extension of logistic regression. In logistic regression, the dependent or outcome variable can take on one of two categorical values such as whether or not someone survived a stay at a hospital. In cases where the dependent variable falls into more than two categorical variables, multinomial regression is one possible analysis option. For this guide, we will use multinomial regression using the `nnet` package. We will also use a sample data set in which researchers determined the effect of pickup lines on whether or not that person 1) got a phone number, 2) went home with the person, or 3) walked away.
 
 
 ```r
@@ -118,7 +118,7 @@ is.factor(chatData$Gender)
 ```
 
 ### Prepare Data
-Since both of our predictor variables are not factored, use the `as.factor()` function to convert them and save into the chatData data frame. Next, we will want to relevel our predictor varibales. The `relevel()` function takes two inputs, the column of the factor that needs to be releveled and the reference variable. For this example we want to set "No response/Walk Off" as the reference for Success, and "Male" as the reference for Gender. One way to think about multinomial regression is view it as a series of binary logistic regression models where one variable is compared to all others. It is the reference level that is compared with all other levels of that variable in multinomial regression.  
+Since both of our predictor variables are not factored, we use the `as.factor()` function to convert them and save into the chatData data frame. Next, we will want to relevel our predictor variables to arrange them and set a reference level. The reference level is what is used as the main comparison variable. The `relevel()` function takes two inputs, the column of the factor that needs to be releveled and the reference level. For this example we want to set "No response/Walk Off" as the reference for Success, and "Male" as the reference for Gender. One way to think about multinomial regression is view it as a series of binary logistic regression models where one level (the reference) is compared to all others. In multinomial regression, it is the reference level that is compared with all other levels of the variable.  
 
 ```r
 chatData$Gender <- as.factor(chatData$Gender)
@@ -129,7 +129,8 @@ chatData$Gender <- relevel(chatData$Gender, "Male") # Set Male to reference
 ```
 
 ### Model the data
-Once out data is prepared, we can move onto building a multinomial regression model. For this example, we want to know if the variables Good_Mate, Funny, Gender, Sex, the interaction between Gender and Sex, and the interaction between Funny and Gender predict the outcome, Success.
+Once our data is prepared, we can move onto building a multinomial regression model. For this example, we want to know if the variables Good_Mate, Funny, Gender, Sex, the interaction between Gender and Sex, and the interaction between Funny and Gender predict the outcome, Success.
+
 
 ```r
 chatModel2 <- multinom(Success ~ Good_Mate + Funny + Gender + Sex + Gender:Sex + Funny:Gender, data = chatData)
@@ -143,6 +144,12 @@ chatModel2 <- multinom(Success ~ Good_Mate + Funny + Gender + Sex + Gender:Sex +
 ## final  value 868.736497 
 ## converged
 ```
+
+The first chunk of output from the `multinom()` function displays a series of values from iterations of the model. The piece of information to focus on here is to ensure that the model converged. If your model fails to converge, consider the variables that have been entered into the model. Perhaps ther are a small number of certain combinations of categorical predictor variables. Some predictors may need to be omitted for the model to converge. 
+
+
+### Model summary
+Passing our newly created model to the `summary()` function produces the output to examine the model coefficients, their standard errors, and the overall fit of the model.
 
 ```r
 summary(chatModel2)
@@ -173,22 +180,31 @@ summary(chatModel2)
 ## AIC: 1765.473
 ```
 
-### Walkthrough of `multinom()` and `summary()` output
-  * The first chunk of output from the `multinom()` function displays a series of values from iterations of the model. The piece of information to focus on here is to ensure that the model converged. If your model fails to converge, consider variables that have been entered into the model.Perhaps ther are a small number of certain combinations of categorical predictor variables. Some predictors may need to be omitted for the model to converge. 
+<!-- ### Walkthrough of `multinom()` and `summary()` output -->
 
-  * The interpretation of the output from the `summay()` of the multinom model is similar to that of that logistic regression. We see the "**Call:**" which is reproduction of the `multinom()` function used to create the model. 
+  * The interpretation of the output from the `summay()` of the multinom model is similar to that of that logistic regression. We see the "**Call:**" which is a reproduction of the `multinom()` function used to create the model. 
   
-  * Next, we see the "**Coefficients:**" wich quantify the relationship between the predictor variables and the outcome variables. Notice that there are only two outcome variables displayed, "Get Phone Number" and "Go Home with Person." This is because we had set "No Response/Walk Off" as the reference level. Thus as an example, the coefficient for Good_Mate and Get Phone Number is 0.1318 which indicates that for each unit increase in Good_Mate, we can expect as 0.1318 increase in the logit of the outcome variable when the outcomes are "Get Phone Number" and "No response/Walk Off." Similarly, the coefficient for Good_Mate and Go Home with Person is 0.13, which indicates that for each unit increase in Good_Mat, we can expect a 0.13 increase in the logit of the outcome variable.
+  * Next, we see the "**Coefficients:**" which quantify the relationship between the predictor variables and the outcome variables. Notice that there are only two outcome variables displayed, "Get Phone Number" and "Go Home with Person." This is because we had set "No Response/Walk Off" as the reference level. Thus as an example, the coefficient for Good_Mate and Get Phone Number is 0.1318 which indicates that for each unit increase in Good_Mate, we can expect as 0.1318 increase in the logit of the outcome variable when the outcomes are "Get Phone Number" and "No response/Walk Off." Similarly, the coefficient for Good_Mate and Go Home with Person is 0.13, which indicates that for each unit increase in Good_Mate, we can expect a 0.13 increase in the logit (i.e. the log of the odds of an event occurring) of the outcome variable.
 
   * The "**Std. Errors:**" section displays the standard errors of the coefficients. These are useful in calculating z scores and p-values since we can divide the coefficients by the standard errors to obtain z scores.
 
-  * Finally, the output displays the "**Residual Deviance:**" and the "AIC:." The residual deviance provides information regarding fit in the model that does not contain predictors (estimating the intercept only). The AIC, or the Akaike Information Criterion, is a way to assess model fit that penalized the model according to the number of predictor variables used. These two values are helpful for comparing different multinomial regression models.
+  * Finally, the output displays the "**Residual Deviance:**" and the "AIC:." The residual deviance provides information regarding fit in the model that does not contain predictors (estimating the intercept only). The AIC, or the Akaike Information Criterion, is a way to assess model fit that penalizes the model according to the number of predictor variables used. These two values are helpful for comparing different multinomial regression models.
 
 
 ### A better way to present the output
+The model summary output may look clunky on your screen and it lacks information, specifically z statistics and p values, that could help us interpret the model. The missing information can be filled in with the `tidy()` function in the broom package. Using the tidy() function on our model results in a tibble that now contains a z statistic and a p value. 
+
+
+<!-- We can build off of this tibble to include additional information to help us interpret the model. -->
 
 ```r
-kable(tidy(chatModel2))
+tidymodel <- tidy(chatModel2)
+
+tidymodel$expB <- exp(tidymodel$estimate)
+
+#tidymodel$`2.5%` <- 
+#test <- data.frame(exp(confint(chatModel2)))
+kable(tidymodel)
 ```
 
 <table>
@@ -200,6 +216,7 @@ kable(tidy(chatModel2))
    <th style="text-align:right;"> std.error </th>
    <th style="text-align:right;"> statistic </th>
    <th style="text-align:right;"> p.value </th>
+   <th style="text-align:right;"> expB </th>
   </tr>
  </thead>
 <tbody>
@@ -210,6 +227,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.6697696 </td>
    <td style="text-align:right;"> -2.662214 </td>
    <td style="text-align:right;"> 0.0077628 </td>
+   <td style="text-align:right;"> 0.1681212 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Get Phone Number </td>
@@ -218,6 +236,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.0537261 </td>
    <td style="text-align:right;"> 2.453875 </td>
    <td style="text-align:right;"> 0.0141326 </td>
+   <td style="text-align:right;"> 1.1409224 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Get Phone Number </td>
@@ -226,6 +245,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.1101253 </td>
    <td style="text-align:right;"> 1.265691 </td>
    <td style="text-align:right;"> 0.2056239 </td>
+   <td style="text-align:right;"> 1.1495661 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Get Phone Number </td>
@@ -234,6 +254,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.7962448 </td>
    <td style="text-align:right;"> -2.067452 </td>
    <td style="text-align:right;"> 0.0386916 </td>
+   <td style="text-align:right;"> 0.1927815 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Get Phone Number </td>
@@ -242,6 +263,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.0891970 </td>
    <td style="text-align:right;"> 3.096600 </td>
    <td style="text-align:right;"> 0.0019575 </td>
+   <td style="text-align:right;"> 1.3181212 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Get Phone Number </td>
@@ -250,6 +272,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.1058751 </td>
    <td style="text-align:right;"> -3.290013 </td>
    <td style="text-align:right;"> 0.0010018 </td>
+   <td style="text-align:right;"> 0.7058655 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Get Phone Number </td>
@@ -258,6 +281,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.1399918 </td>
    <td style="text-align:right;"> 3.517694 </td>
    <td style="text-align:right;"> 0.0004353 </td>
+   <td style="text-align:right;"> 1.6363176 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Go Home with Person </td>
@@ -266,6 +290,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.9413983 </td>
    <td style="text-align:right;"> -4.553144 </td>
    <td style="text-align:right;"> 0.0000053 </td>
+   <td style="text-align:right;"> 0.0137554 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Go Home with Person </td>
@@ -274,6 +299,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.0835206 </td>
    <td style="text-align:right;"> 1.556507 </td>
    <td style="text-align:right;"> 0.1195877 </td>
+   <td style="text-align:right;"> 1.1388288 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Go Home with Person </td>
@@ -282,6 +308,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.1253016 </td>
    <td style="text-align:right;"> 2.541525 </td>
    <td style="text-align:right;"> 0.0110370 </td>
+   <td style="text-align:right;"> 1.3750046 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Go Home with Person </td>
@@ -290,6 +317,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 1.3285828 </td>
    <td style="text-align:right;"> -4.234782 </td>
    <td style="text-align:right;"> 0.0000229 </td>
+   <td style="text-align:right;"> 0.0036020 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Go Home with Person </td>
@@ -298,6 +326,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.1220832 </td>
    <td style="text-align:right;"> 3.418069 </td>
    <td style="text-align:right;"> 0.0006307 </td>
+   <td style="text-align:right;"> 1.5178408 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Go Home with Person </td>
@@ -306,6 +335,7 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.1634337 </td>
    <td style="text-align:right;"> -2.916519 </td>
    <td style="text-align:right;"> 0.0035396 </td>
+   <td style="text-align:right;"> 0.6208551 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Go Home with Person </td>
@@ -314,144 +344,35 @@ kable(tidy(chatModel2))
    <td style="text-align:right;"> 0.1992393 </td>
    <td style="text-align:right;"> 5.884435 </td>
    <td style="text-align:right;"> 0.0000000 </td>
-  </tr>
-</tbody>
-</table>
-### Exponentiated coefficients
-For each coefficient other than the intercept, the value represents the log odds of the outcome variables increasing for each unit increase in the predictor variable. Because it is not intuitive to interpret these values as log odds, they can be exponentiated. The exponentiated coefficients have a much more straightforward interpretation. The exponentiated coefficients represent the odds ratio which can be interpreted as either greater than or less than one. Values greater than one indicate that as the predictor increases, the odds of the outcome occuring increases. A values less than one indicates that as the predictor increases, the odds of the outcome occuring decreases. To drive this point home, the exponentiated coefficient for Get Phone Number and Good_Mate is 1.14. This values is greater than one which indicates that as the Good_Mate scores increase, the odds of getting a phone number increase relative to "No response/Walk Off."
-
-
-```r
-kable(exp(coef(chatModel2)))
-```
-
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> (Intercept) </th>
-   <th style="text-align:right;"> Good_Mate </th>
-   <th style="text-align:right;"> Funny </th>
-   <th style="text-align:right;"> GenderFemale </th>
-   <th style="text-align:right;"> Sex </th>
-   <th style="text-align:right;"> GenderFemale:Sex </th>
-   <th style="text-align:right;"> Funny:GenderFemale </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Get Phone Number </td>
-   <td style="text-align:right;"> 0.1681212 </td>
-   <td style="text-align:right;"> 1.140922 </td>
-   <td style="text-align:right;"> 1.149566 </td>
-   <td style="text-align:right;"> 0.1927815 </td>
-   <td style="text-align:right;"> 1.318121 </td>
-   <td style="text-align:right;"> 0.7058655 </td>
-   <td style="text-align:right;"> 1.636318 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Go Home with Person </td>
-   <td style="text-align:right;"> 0.0137554 </td>
-   <td style="text-align:right;"> 1.138829 </td>
-   <td style="text-align:right;"> 1.375005 </td>
-   <td style="text-align:right;"> 0.0036020 </td>
-   <td style="text-align:right;"> 1.517841 </td>
-   <td style="text-align:right;"> 0.6208551 </td>
-   <td style="text-align:right;"> 3.229770 </td>
+   <td style="text-align:right;"> 3.2297704 </td>
   </tr>
 </tbody>
 </table>
 
-### Z-scores
-To obtain z-scores and p-values, we will create a new data frame, z, which will take each coefficient and divide it by the standard error. Next we create a new data frame, p, which will calculate the p-value ofr each z score.
+  
+  * For each coefficient other than the intercept, the values represents the log odds of the outcome variables increasing for each unit increase in the predictor variable. Because it is not intuitive to interpret the log odds, they can be exponentiated. The exponentiated coefficients have a much more straightforward interpretation. The exponentiated coefficients represent the odds ratio which can be interpreted as either greater than or less than one. Values greater than one indicate that as the predictor increases, the odds of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. To drive this point home, the exponentiated coefficient for Get Phone Number and Good_Mate is 1.14. This values is greater than one which indicates that as the Good_Mate scores increase, the odds of getting a phone number increases relative to "No response/Walk Off." To be more specific, the odds of getting a phone number increases by 14% for each unit increase in the Good_Mate score.
 
 
-```r
-z <- summary(chatModel2)$coefficients/summary(chatModel2)$standard.error
-kable(z)
-```
+<!-- Notes: These chunks here were removed. The idea was to use Andy Fields data set but explore how to do multinomial regression with a different package other than what was in his text. I also wanted to incorporate newer functions such as those from the broom package. The following chunks were from a previous version in which you had to get Z-scores and pvalues manually, whereas the new broom package automatically does that for multinomial regression. -->
 
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> (Intercept) </th>
-   <th style="text-align:right;"> Good_Mate </th>
-   <th style="text-align:right;"> Funny </th>
-   <th style="text-align:right;"> GenderFemale </th>
-   <th style="text-align:right;"> Sex </th>
-   <th style="text-align:right;"> GenderFemale:Sex </th>
-   <th style="text-align:right;"> Funny:GenderFemale </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Get Phone Number </td>
-   <td style="text-align:right;"> -2.662214 </td>
-   <td style="text-align:right;"> 2.453875 </td>
-   <td style="text-align:right;"> 1.265691 </td>
-   <td style="text-align:right;"> -2.067452 </td>
-   <td style="text-align:right;"> 3.096600 </td>
-   <td style="text-align:right;"> -3.290013 </td>
-   <td style="text-align:right;"> 3.517694 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Go Home with Person </td>
-   <td style="text-align:right;"> -4.553144 </td>
-   <td style="text-align:right;"> 1.556507 </td>
-   <td style="text-align:right;"> 2.541525 </td>
-   <td style="text-align:right;"> -4.234782 </td>
-   <td style="text-align:right;"> 3.418069 </td>
-   <td style="text-align:right;"> -2.916519 </td>
-   <td style="text-align:right;"> 5.884435 </td>
-  </tr>
-</tbody>
-</table>
+<!-- ```{r} -->
+<!-- kable(exp(coef(chatModel2))) -->
+<!-- ``` -->
 
-### P-values
+<!-- ### Z-scores -->
+<!-- To obtain z-scores and p-values, we will create a new data frame, z, which will take each coefficient and divide it by the standard error. Next we create a new data frame, p, which will calculate the p-value of each z score. -->
 
-```r
-# two-tailed z test
-p <- (1 - pnorm(abs(z), 0, 1)) *2
-kable(p)
-```
+<!-- ```{r} -->
+<!-- z <- summary(chatModel2)$coefficients/summary(chatModel2)$standard.error -->
+<!-- kable(z) -->
+<!-- ``` -->
 
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> (Intercept) </th>
-   <th style="text-align:right;"> Good_Mate </th>
-   <th style="text-align:right;"> Funny </th>
-   <th style="text-align:right;"> GenderFemale </th>
-   <th style="text-align:right;"> Sex </th>
-   <th style="text-align:right;"> GenderFemale:Sex </th>
-   <th style="text-align:right;"> Funny:GenderFemale </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Get Phone Number </td>
-   <td style="text-align:right;"> 0.0077628 </td>
-   <td style="text-align:right;"> 0.0141326 </td>
-   <td style="text-align:right;"> 0.2056239 </td>
-   <td style="text-align:right;"> 0.0386916 </td>
-   <td style="text-align:right;"> 0.0019575 </td>
-   <td style="text-align:right;"> 0.0010018 </td>
-   <td style="text-align:right;"> 0.0004353 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Go Home with Person </td>
-   <td style="text-align:right;"> 0.0000053 </td>
-   <td style="text-align:right;"> 0.1195877 </td>
-   <td style="text-align:right;"> 0.0110370 </td>
-   <td style="text-align:right;"> 0.0000229 </td>
-   <td style="text-align:right;"> 0.0006307 </td>
-   <td style="text-align:right;"> 0.0035396 </td>
-   <td style="text-align:right;"> 0.0000000 </td>
-  </tr>
-</tbody>
-</table>
+<!-- ### P-values -->
+<!-- ```{r} -->
+<!-- # two-tailed z test -->
+<!-- p <- (1 - pnorm(abs(z), 0, 1)) *2 -->
+<!-- kable(p) -->
+<!-- ``` -->
 
 ### Confidence intervals
 
@@ -523,6 +444,9 @@ kable(exp(confint(chatModel2)))
 </table>
 
 ### Test for multicolinearity
+In a similar vein to linear regression, one of the assumptions of multinomial logistic regression is that the predictor variables are uncorrelated. One way to test this is to build a generalized linear model with the `glm()` function, and then using the `vif()` function from the car package. The `vif()` function determines the variance inflation factor for all of the predictor variables. VIF values of 10 or more are problematic and indicate that we have correlated predictor variables. The output of the VIF values all indicate that our variables are not highly correlated. In addition, we can inspect the tolerance statistics by calculating 1 divided by the vif. Anything less than 0.2 is a potential problem and anything less than 0.1 is a serious problem. Based off of our output, we have no reason to believe that we have encountered multicolinearity.
+
+
 
 ```r
 chatModel <- glm(Success ~ Funny + Good_Mate + Sex + Gender, data = chatData, family = binomial())
@@ -544,6 +468,7 @@ vif(chatModel)
 ```
 
 **Correlations**
+An additional way of testing for multicolinearity is to calculate the Pearson pairwise correlations for the predictor variables. Again, we notice small correlation values between 0.03 and 0.16 which are not of concern here.
 
 ```r
 kable(cor(chatData[, c("Funny", "Good_Mate", "Sex")]))

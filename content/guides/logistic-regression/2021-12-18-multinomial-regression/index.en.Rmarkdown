@@ -20,7 +20,7 @@ weight: 90
 draft: false
 ---
 
-Multinomial regression can be thought of as an extension of logistic regression. In logistic regression, the dependent or outcome variable can take on one of two categorical values such as whether or not someone survived a stay at a hospital. However, we may encounter situations where the dependent variable falls into more than two categorical variables. For these situations, multinomial regression may be one possible analysis to test the relationship between your dependent variable and predictor variables. For this guide, we will use multinomial regression using the `nnet` package and sample data in which researchers determined the effect of pickup lines. The outcome or dependent variables are 1) whether or not that person got a phone number, 2) went home with the person, or 3) walked away.
+Multinomial regression can be thought of as an extension of logistic regression. In logistic regression, the dependent or outcome variable can take on one of two categorical values such as whether or not someone survived a stay at a hospital. In cases where the dependent variable falls into more than two categorical variables, multinomial regression is one possible analysis option. For this guide, we will use multinomial regression using the `nnet` package. We will also use a sample data set in which researchers determined the effect of pickup lines on whether or not that person 1) got a phone number, 2) went home with the person, or 3) walked away.
 
 ```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -56,14 +56,21 @@ chatData$Gender <- relevel(chatData$Gender, "Male") # Set Male to reference
 
 ### Model the data
 Once our data is prepared, we can move onto building a multinomial regression model. For this example, we want to know if the variables Good_Mate, Funny, Gender, Sex, the interaction between Gender and Sex, and the interaction between Funny and Gender predict the outcome, Success.
+
 ```{r}
 chatModel2 <- multinom(Success ~ Good_Mate + Funny + Gender + Sex + Gender:Sex + Funny:Gender, data = chatData)
+```
 
+The first chunk of output from the `multinom()` function displays a series of values from iterations of the model. The piece of information to focus on here is to ensure that the model converged. If your model fails to converge, consider the variables that have been entered into the model. Perhaps ther are a small number of certain combinations of categorical predictor variables. Some predictors may need to be omitted for the model to converge. 
+
+
+### Model summary
+Passing our newly created model to the `summary()` function produces the output to examine the model coefficients, their standard errors, and the overall fit of the model.
+```{r}
 summary(chatModel2)
 ```
 
-### Walkthrough of `multinom()` and `summary()` output
-  * The first chunk of output from the `multinom()` function displays a series of values from iterations of the model. The piece of information to focus on here is to ensure that the model converged. If your model fails to converge, consider the variables that have been entered into the model. Perhaps ther are a small number of certain combinations of categorical predictor variables. Some predictors may need to be omitted for the model to converge. 
+<!-- ### Walkthrough of `multinom()` and `summary()` output -->
 
   * The interpretation of the output from the `summay()` of the multinom model is similar to that of that logistic regression. We see the "**Call:**" which is a reproduction of the `multinom()` function used to create the model. 
   
@@ -75,40 +82,45 @@ summary(chatModel2)
 
 
 ### A better way to present the output
-I would recommend reviewing the model summary to ensure that the formula, terms, and model fit make sense. The model summary is lacking in several pieces of information that could help us interpret the output. The missing information can be filled with the `tidy()` function in the broom package. Using the tidy() function on our model results in a tibble that now contains a z statistic and a p value. We can build off of this tibble to include additional information to help us interpret the model. 
+The model summary output may look clunky on your screen and it lacks information, specifically z statistics and p values, that could help us interpret the model. The missing information can be filled in with the `tidy()` function in the broom package. Using the tidy() function on our model results in a tibble that now contains a z statistic and a p value. 
+
+
+<!-- We can build off of this tibble to include additional information to help us interpret the model. -->
 ```{r}
 tidymodel <- tidy(chatModel2)
 
 tidymodel$expB <- exp(tidymodel$estimate)
 
-tidymodel$`2.5%` <- 
-test <- data.frame(exp(confint(chatModel2)))
-
+#tidymodel$`2.5%` <- 
+#test <- data.frame(exp(confint(chatModel2)))
+kable(tidymodel)
 
 ```
 
-### Exponentiated coefficients
+  
+  * For each coefficient other than the intercept, the values represents the log odds of the outcome variables increasing for each unit increase in the predictor variable. Because it is not intuitive to interpret the log odds, they can be exponentiated. The exponentiated coefficients have a much more straightforward interpretation. The exponentiated coefficients represent the odds ratio which can be interpreted as either greater than or less than one. Values greater than one indicate that as the predictor increases, the odds of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. To drive this point home, the exponentiated coefficient for Get Phone Number and Good_Mate is 1.14. This values is greater than one which indicates that as the Good_Mate scores increase, the odds of getting a phone number increases relative to "No response/Walk Off." To be more specific, the odds of getting a phone number increases by 14% for each unit increase in the Good_Mate score.
 
-For each coefficient other than the intercept, the values represents the log odds of the outcome variables increasing for each unit increase in the predictor variable. Because it is not intuitive to interpret the log odds, they can be exponentiated. The exponentiated coefficients have a much more straightforward interpretation. The exponentiated coefficients represent the odds ratio which can be interpreted as either greater than or less than one. Values greater than one indicate that as the predictor increases, the odds of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. To drive this point home, the exponentiated coefficient for Get Phone Number and Good_Mate is 1.14. This values is greater than one which indicates that as the Good_Mate scores increase, the odds of getting a phone number increases relative to "No response/Walk Off." To be more specific, the odds of getting a phone number increases by 14% for each unit increase in the Good_Mate score.
 
-```{r}
-kable(exp(coef(chatModel2)))
-```
+<!-- Notes: These chunks here were removed. The idea was to use Andy Fields data set but explore how to do multinomial regression with a different package other than what was in his text. I also wanted to incorporate newer functions such as those from the broom package. The following chunks were from a previous version in which you had to get Z-scores and pvalues manually, whereas the new broom package automatically does that for multinomial regression. -->
 
-### Z-scores
-To obtain z-scores and p-values, we will create a new data frame, z, which will take each coefficient and divide it by the standard error. Next we create a new data frame, p, which will calculate the p-value of each z score.
+<!-- ```{r} -->
+<!-- kable(exp(coef(chatModel2))) -->
+<!-- ``` -->
 
-```{r}
-z <- summary(chatModel2)$coefficients/summary(chatModel2)$standard.error
-kable(z)
-```
+<!-- ### Z-scores -->
+<!-- To obtain z-scores and p-values, we will create a new data frame, z, which will take each coefficient and divide it by the standard error. Next we create a new data frame, p, which will calculate the p-value of each z score. -->
 
-### P-values
-```{r}
-# two-tailed z test
-p <- (1 - pnorm(abs(z), 0, 1)) *2
-kable(p)
-```
+<!-- ```{r} -->
+<!-- z <- summary(chatModel2)$coefficients/summary(chatModel2)$standard.error -->
+<!-- kable(z) -->
+<!-- ``` -->
+
+<!-- ### P-values -->
+<!-- ```{r} -->
+<!-- # two-tailed z test -->
+<!-- p <- (1 - pnorm(abs(z), 0, 1)) *2 -->
+<!-- kable(p) -->
+<!-- ``` -->
 
 ### Confidence intervals
 ```{r}
