@@ -1,0 +1,314 @@
+<p>One of my favorite features in RStudio is the code snippet. This feature allows users to save templates of code that can be used to save you time. Maybe there’s a function or chain of piped commands that one uses frequently. Instead of building these from scratch every time, the code snippet can be used to serve as a guide post and modified for each situation. Some snippets are already baked into RStudio, but one can also create your own for your own needs.</p>
+<div id="how-to-create-your-own-snippets" class="section level2" number="0.1">
+<h2><span class="header-section-number">0.1</span> How to create your own snippets</h2>
+<ol style="list-style-type: decimal">
+<li>Go to Tools in the RStudio menu bar</li>
+<li>Select Global Options</li>
+<li>Select Code in the left hand pane</li>
+<li>Select on the Edit Snippets button at the bottom of the window</li>
+<li>The next windows should display the R code snippets.</li>
+</ol>
+</div>
+<div id="examples-of-snippets" class="section level2" number="0.2">
+<h2><span class="header-section-number">0.2</span> Examples of snippets</h2>
+<div id="not-in-function" class="section level3" number="0.2.1">
+<h3><span class="header-section-number">0.2.1</span> Not in function</h3>
+<p>I frequently use the dplyr <code>%in%</code> operator to filter rows from one data frame by a vector in another data frame. However, sometimes it’s nice to be able to do the opposite and filter a dataframe by values that are not in a vector. An example may be when I need to find a set of participant IDs that are not in another list. One solution that has been proposed for this task is to negate the %in% operator with a function.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">%!in% = Negate(</span><span class="st">`</span><span class="sc">%in%</span><span class="st">`</span><span class="at">)</span></span></code></pre></div>
+<p>While this certainly gets the job done, I never liked having to declare this function before its use in every script. Rather than creating a negate function, one could negate <code>%in%</code> in a call to the filter verb. Below is the general approach where the exclamation point is placed before the column name used to negate the <code>%in%</code> operator for values in col_name2.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>worlds_of_interest <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Tatooine&quot;</span>, <span class="st">&quot;Naboo&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter rows that match worlds_of_interest</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(starwars, homeworld <span class="sc">%in%</span> worlds_of_interest)</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:right;">
+height
+</th>
+<th style="text-align:right;">
+mass
+</th>
+<th style="text-align:left;">
+hair_color
+</th>
+<th style="text-align:left;">
+skin_color
+</th>
+<th style="text-align:left;">
+eye_color
+</th>
+<th style="text-align:right;">
+birth_year
+</th>
+<th style="text-align:left;">
+sex
+</th>
+<th style="text-align:left;">
+gender
+</th>
+<th style="text-align:left;">
+homeworld
+</th>
+<th style="text-align:left;">
+species
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Luke Skywalker
+</td>
+<td style="text-align:right;">
+172
+</td>
+<td style="text-align:right;">
+77
+</td>
+<td style="text-align:left;">
+blond
+</td>
+<td style="text-align:left;">
+fair
+</td>
+<td style="text-align:left;">
+blue
+</td>
+<td style="text-align:right;">
+19.0
+</td>
+<td style="text-align:left;">
+male
+</td>
+<td style="text-align:left;">
+masculine
+</td>
+<td style="text-align:left;">
+Tatooine
+</td>
+<td style="text-align:left;">
+Human
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+C-3PO
+</td>
+<td style="text-align:right;">
+167
+</td>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+gold
+</td>
+<td style="text-align:left;">
+yellow
+</td>
+<td style="text-align:right;">
+112.0
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+masculine
+</td>
+<td style="text-align:left;">
+Tatooine
+</td>
+<td style="text-align:left;">
+Droid
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2-D2
+</td>
+<td style="text-align:right;">
+96
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+white, blue
+</td>
+<td style="text-align:left;">
+red
+</td>
+<td style="text-align:right;">
+33.0
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+masculine
+</td>
+<td style="text-align:left;">
+Naboo
+</td>
+<td style="text-align:left;">
+Droid
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Darth Vader
+</td>
+<td style="text-align:right;">
+202
+</td>
+<td style="text-align:right;">
+136
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+white
+</td>
+<td style="text-align:left;">
+yellow
+</td>
+<td style="text-align:right;">
+41.9
+</td>
+<td style="text-align:left;">
+male
+</td>
+<td style="text-align:left;">
+masculine
+</td>
+<td style="text-align:left;">
+Tatooine
+</td>
+<td style="text-align:left;">
+Human
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Owen Lars
+</td>
+<td style="text-align:right;">
+178
+</td>
+<td style="text-align:right;">
+120
+</td>
+<td style="text-align:left;">
+brown, grey
+</td>
+<td style="text-align:left;">
+light
+</td>
+<td style="text-align:left;">
+blue
+</td>
+<td style="text-align:right;">
+52.0
+</td>
+<td style="text-align:left;">
+male
+</td>
+<td style="text-align:left;">
+masculine
+</td>
+<td style="text-align:left;">
+Tatooine
+</td>
+<td style="text-align:left;">
+Human
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Beru Whitesun lars
+</td>
+<td style="text-align:right;">
+165
+</td>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:left;">
+brown
+</td>
+<td style="text-align:left;">
+light
+</td>
+<td style="text-align:left;">
+blue
+</td>
+<td style="text-align:right;">
+47.0
+</td>
+<td style="text-align:left;">
+female
+</td>
+<td style="text-align:left;">
+feminine
+</td>
+<td style="text-align:left;">
+Tatooine
+</td>
+<td style="text-align:left;">
+Human
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter rows that do not match worlds_of_interest</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(starwars, <span class="sc">!</span>homeworld <span class="sc">%in%</span> worlds_of_interest)</span></code></pre></div>
+<pre><code>## # A tibble: 66 × 11
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Leia Or…    150    49 brown      light      brown             19 fema… femin…
+##  2 Obi-Wan…    182    77 auburn, w… fair       blue-gray         57 male  mascu…
+##  3 Wilhuff…    180    NA auburn, g… fair       blue              64 male  mascu…
+##  4 Chewbac…    228   112 brown      unknown    blue             200 male  mascu…
+##  5 Han Solo    180    80 brown      fair       brown             29 male  mascu…
+##  6 Greedo      173    74 &lt;NA&gt;       green      black             44 male  mascu…
+##  7 Jabba D…    175  1358 &lt;NA&gt;       green-tan… orange           600 herm… mascu…
+##  8 Wedge A…    170    77 brown      fair       hazel             21 male  mascu…
+##  9 Jek Ton…    180   110 brown      fair       blue              NA male  mascu…
+## 10 Yoda         66    17 white      green      brown            896 male  mascu…
+## # … with 56 more rows, and 2 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter rows that do not match via piping</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>homeworld <span class="sc">%in%</span> worlds_of_interest)</span></code></pre></div>
+<pre><code>## # A tibble: 66 × 11
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Leia Or…    150    49 brown      light      brown             19 fema… femin…
+##  2 Obi-Wan…    182    77 auburn, w… fair       blue-gray         57 male  mascu…
+##  3 Wilhuff…    180    NA auburn, g… fair       blue              64 male  mascu…
+##  4 Chewbac…    228   112 brown      unknown    blue             200 male  mascu…
+##  5 Han Solo    180    80 brown      fair       brown             29 male  mascu…
+##  6 Greedo      173    74 &lt;NA&gt;       green      black             44 male  mascu…
+##  7 Jabba D…    175  1358 &lt;NA&gt;       green-tan… orange           600 herm… mascu…
+##  8 Wedge A…    170    77 brown      fair       hazel             21 male  mascu…
+##  9 Jek Ton…    180   110 brown      fair       blue              NA male  mascu…
+## 10 Yoda         66    17 white      green      brown            896 male  mascu…
+## # … with 56 more rows, and 2 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;</code></pre>
+<p>In my code snippet, beginning to type “notin” in RStudio will present auto complete options. If I tab on the notin marked as a snipped, it will complete the function where the function has been typed out and all that is needed is to change “df”, “col_name”, and “col_name2”. Each variable that will need to be filled in is encased in curly braces preceding with a dollar sign, and each variable is also preceeded with a number and a colon. The numbers are the order of variables. I saved this snipped towards the top of my snippets file within a section called “my snippets.”</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># my snippets ---------------------------------------</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>snippet notin</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="er">$</span>{<span class="dv">1</span><span class="sc">:</span>col_name} <span class="sc">%in%</span> <span class="er">$</span>{<span class="dv">2</span><span class="sc">:</span>col_name2})</span></code></pre></div>
+</div>
+</div>
