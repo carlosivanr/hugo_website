@@ -1,0 +1,122 @@
+---
+title: 'Displaying Race & Ethnicity Data'
+author: Carlos Rodriguez
+date: '2022-07-04'
+slug: displaying-demographic-data-race-ethnicity
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-07-04T10:51:01-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+```{r load libraries, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(gtsummary)
+library(bstfun)
+library(kableExtra)
+```
+
+
+```{r load data, echo=FALSE}
+load("C:/Users/rodrica2/OneDrive/Web Site/hugo_website/content/guides/surveys/2022-07-04-survey-data/sample_data.Rdata")
+```
+
+
+It is not uncommon for surveys to collect race and ethnicity data from participants. In some cases, these questions can allow participants to select multiple responses if they would like to endorse more than one race or ethnicity. In this post, I will cover how to create a table and bar chart to display race and ethnicity data.
+
+
+### Packages
+```{r}
+library(tidyverse)
+library(gtsummary)
+library(bstfun)
+```
+
+### Create a data frame
+The first step in accomplishing this task is to prepare the data frame. One way to arrange this data is to have each row represent a participant and each column represent a distinct race or ethnic category as a binary value (i.e. 0 or 1, where 1 indicates that the participant belongs to that category).
+
+
+```{r, echo = FALSE}
+kable(head(data %>% select(starts_with("demographic") & 
+                              !ends_with(".factor") & 
+                              contains("race") &
+                              !contains("other")) %>%
+  rename("American Indian or Alaskan Native" = demographic_4_race___1,
+         "Asian" = demographic_4_race___2,
+         "Black or African American" = demographic_4_race___3,
+         "White" = demographic_4_race___4,
+         "Hispanic or Latino" = demographic_4_race___5,
+         "Another race" = demographic_4_race___6,
+         "Prefer not to answer" = demographic_4_race___8) %>%
+  arrange(desc(`Hispanic or Latino`))))
+```
+
+
+
+### Tables
+For displaying race and ethnicity data in a table, I use a combination of the [gt_summary](https://www.danieldsjoberg.com/gtsummary/) and [btsfun](https://www.danieldsjoberg.com/bstfun/index.html) packages. First create a character vector of the columns names that contain the race and ethnicity responses. In my sample data, these columns start with "demographic" and contain "race." However, I want to exclude some of the columns that end with a ".factor" and contain the string "other." I then wrap this selection with the `names()` function to assign the column names to a character vector. This vector will be used as an argument in a function called `add_variable_grouping()` and it comes in handy when using the select() verb to subset the data.
+```{r}
+race_vars <- names(data %>% select(starts_with("demographic") & 
+                              !ends_with(".factor") & 
+                              contains("race") &
+                              !contains("other")))
+race_vars
+```
+
+Next, I begin by piping my data set to the select the columns in the character vector I created previously. Next, I pipe that data through the `tbl_summary()` function. Finally, I pipe that table to the `add_variable_grouping()` function to indent all of the columns under a grouping variable, "Race/Ethnicity." The data displayed here are labelled, so even though the columns are named something like "demographic_4_race___*", the `tbl_summary()` function will display the labels.
+```{r, table of race/ethnicity}
+data %>% 
+  select(all_of(race_vars)) %>%
+  tbl_summary() %>%
+  add_variable_grouping("Race/Ethnicity" = race_vars)
+```
+
+<br>
+
+### Bar Charts
+The process for making bar charts can be a bit more complicated depending on the packages and functions you use. The approach demonstrated here is based on tidyverse functions only. The first step in making bar charts is to create a character vector of the names or labels I want my chart to have. The order of the character vector should be in the same order as the columns will appear.
+
+After creating a character vector of the labels I want to assign to my columns, I will pipe the data frame to the `select()` verb and use the vars I set up to create the table. In my data, the columns have to be converted to numeric because to facilitate using the `pivot_longer()` verb. I then rename all of my columns. Next I convert my data to long format where all of the separate race/ethnicity columns are collapsed into one column called "Category" and a second column called "Endorsed" indicates whether or not that person endorsed one of the race/ethnicity options. From there, one could do a couple of things. The first option is to convert the Category into a factor, and use the levels argument to display the responses in a specific order other than the default alphabetical order. The other option is to use reorder() within the ggplot call to order the responses by proportion. Both options are shown here, but the reorder() function take precedence. After setting the levels, I group by category and summarise the endorsements by adding them up. Next I create a new column called proportion that is Freq over the number of participants given by the number of rows in the data frame, not responses.
+
+Next the remaining data frame is ready to be piped into ggplot(). In this following example I am reordering my bar charts by proportion of participants endorsing a response, flip the coordinates, and change the x label to "Category" with the xlab() layer. The color and fill arguments inside geom_col(), them_minimal, and axis.line arguments are for pure aesthetic reasons and not necessary. 
+
+```{r , get the labels}
+# Use the vector of race_vars to get the column labels
+race_names <- ""
+for (i in 1:length(race_vars)){
+  race_names[i] <- attr(data[, race_vars[i]], "label")
+}
+```
+
+```{r , plot of race/ethnicity}
+# Race and ethnicity have label attributes that don't play well with some 
+# tidyverse functions. Therefore, these columns are converted to numeric, then 
+# renamed with their corresponding labels.
+
+data %>% 
+  select(all_of(race_vars)) %>%
+  mutate_at(all_of(race_vars), ~ as.numeric(.)) %>% 
+  rename_at(all_of(race_vars), ~ race_names) %>%
+  pivot_longer(`American Indian or Alaskan Native`:`Prefer not to answer`,
+               names_to = "Category",
+               values_to = "Endorsed") %>%
+  mutate(Category = factor(Category, levels = race_names)) %>%
+  group_by(Category) %>%
+  summarise(Freq = sum(Endorsed, na.rm = TRUE)) %>%
+  mutate(Proportion = Freq/nrow(data)) %>%
+  ggplot(aes(x = reorder(Category, Proportion), y = Proportion)) +
+  geom_col(color = "#1565c0", fill = "#1565c0") +
+  coord_flip() +
+  theme_minimal() +
+  xlab("Category") +
+  theme(axis.line = element_line(color = "grey70"))
+```

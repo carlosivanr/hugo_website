@@ -18,7 +18,7 @@ highlight_name: false
 # - Statistics
 # - Data analysis & visualizaion
 # - Promoting diversity in research
-role: Statistical Data Analyst
+# role: Statistical Data Analyst
 organizations:
 - name: University of Colorado Anschutz Medical Campus
   url: 
