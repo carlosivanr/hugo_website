@@ -215,7 +215,7 @@ race_vars
     ## [4] "demographic_4_race___4" "demographic_4_race___5" "demographic_4_race___6"
     ## [7] "demographic_4_race___8"
 
-Next, I begin by piping my data set to the select the columns in the character vector I created previously. Next, I pipe that data through the `tbl_summary()` function. Finally, I pipe that table to the `add_variable_grouping()` function to indent all of the columns under a grouping variable, “Race/Ethnicity.” The data displayed here are labelled, so even though the columns are named something like “demographic_4\_race\_\_\_\*“, the `tbl_summary()` function will display the labels.
+Next, I begin by piping my data set to the select the columns in the character vector I created previously. Next, I pipe that data through the `tbl_summary()` function. Finally, I pipe that table to the `add_variable_grouping()` function to indent all of the columns under a grouping variable, “Race/Ethnicity.” The data displayed here are labelled, so even though the columns are named something like “demographic_4\_race\_\_\_\*“, the `tbl_summary()` function will display the corresponding labels.
 
 ``` r
 data %>% 
@@ -224,12 +224,12 @@ data %>%
   add_variable_grouping("Race/Ethnicity" = race_vars)
 ```
 
-<div id="ajblbzvcfe" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="sdjetorhhm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#ajblbzvcfe .gt_table {
+#sdjetorhhm .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -254,7 +254,7 @@ data %>%
   border-left-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_heading {
+#sdjetorhhm .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -266,7 +266,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_title {
+#sdjetorhhm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -278,7 +278,7 @@ data %>%
   border-bottom-width: 0;
 }
 
-#ajblbzvcfe .gt_subtitle {
+#sdjetorhhm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -290,13 +290,13 @@ data %>%
   border-top-width: 0;
 }
 
-#ajblbzvcfe .gt_bottom_border {
+#sdjetorhhm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_col_headings {
+#sdjetorhhm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -311,7 +311,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_col_heading {
+#sdjetorhhm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -331,7 +331,7 @@ data %>%
   overflow-x: hidden;
 }
 
-#ajblbzvcfe .gt_column_spanner_outer {
+#sdjetorhhm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -343,15 +343,15 @@ data %>%
   padding-right: 4px;
 }
 
-#ajblbzvcfe .gt_column_spanner_outer:first-child {
+#sdjetorhhm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ajblbzvcfe .gt_column_spanner_outer:last-child {
+#sdjetorhhm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ajblbzvcfe .gt_column_spanner {
+#sdjetorhhm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -363,7 +363,7 @@ data %>%
   width: 100%;
 }
 
-#ajblbzvcfe .gt_group_heading {
+#sdjetorhhm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -388,7 +388,7 @@ data %>%
   vertical-align: middle;
 }
 
-#ajblbzvcfe .gt_empty_group_heading {
+#sdjetorhhm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -403,15 +403,15 @@ data %>%
   vertical-align: middle;
 }
 
-#ajblbzvcfe .gt_from_md > :first-child {
+#sdjetorhhm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ajblbzvcfe .gt_from_md > :last-child {
+#sdjetorhhm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ajblbzvcfe .gt_row {
+#sdjetorhhm .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -430,7 +430,7 @@ data %>%
   overflow-x: hidden;
 }
 
-#ajblbzvcfe .gt_stub {
+#sdjetorhhm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -443,7 +443,7 @@ data %>%
   padding-right: 5px;
 }
 
-#ajblbzvcfe .gt_stub_row_group {
+#sdjetorhhm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -457,11 +457,11 @@ data %>%
   vertical-align: top;
 }
 
-#ajblbzvcfe .gt_row_group_first td {
+#sdjetorhhm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ajblbzvcfe .gt_summary_row {
+#sdjetorhhm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -471,16 +471,16 @@ data %>%
   padding-right: 5px;
 }
 
-#ajblbzvcfe .gt_first_summary_row {
+#sdjetorhhm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_first_summary_row.thick {
+#sdjetorhhm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ajblbzvcfe .gt_last_summary_row {
+#sdjetorhhm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -490,7 +490,7 @@ data %>%
   border-bottom-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_grand_summary_row {
+#sdjetorhhm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -500,7 +500,7 @@ data %>%
   padding-right: 5px;
 }
 
-#ajblbzvcfe .gt_first_grand_summary_row {
+#sdjetorhhm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -510,11 +510,11 @@ data %>%
   border-top-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_striped {
+#sdjetorhhm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ajblbzvcfe .gt_table_body {
+#sdjetorhhm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -523,7 +523,7 @@ data %>%
   border-bottom-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_footnotes {
+#sdjetorhhm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -537,7 +537,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_footnote {
+#sdjetorhhm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -546,7 +546,7 @@ data %>%
   padding-right: 5px;
 }
 
-#ajblbzvcfe .gt_sourcenotes {
+#sdjetorhhm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -560,7 +560,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#ajblbzvcfe .gt_sourcenote {
+#sdjetorhhm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -568,36 +568,36 @@ data %>%
   padding-right: 5px;
 }
 
-#ajblbzvcfe .gt_left {
+#sdjetorhhm .gt_left {
   text-align: left;
 }
 
-#ajblbzvcfe .gt_center {
+#sdjetorhhm .gt_center {
   text-align: center;
 }
 
-#ajblbzvcfe .gt_right {
+#sdjetorhhm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ajblbzvcfe .gt_font_normal {
+#sdjetorhhm .gt_font_normal {
   font-weight: normal;
 }
 
-#ajblbzvcfe .gt_font_bold {
+#sdjetorhhm .gt_font_bold {
   font-weight: bold;
 }
 
-#ajblbzvcfe .gt_font_italic {
+#sdjetorhhm .gt_font_italic {
   font-style: italic;
 }
 
-#ajblbzvcfe .gt_super {
+#sdjetorhhm .gt_super {
   font-size: 65%;
 }
 
-#ajblbzvcfe .gt_two_val_uncert {
+#sdjetorhhm .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -606,31 +606,31 @@ data %>%
   margin-left: 0.1em;
 }
 
-#ajblbzvcfe .gt_footnote_marks {
+#sdjetorhhm .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#ajblbzvcfe .gt_asterisk {
+#sdjetorhhm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ajblbzvcfe .gt_slash_mark {
+#sdjetorhhm .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#ajblbzvcfe .gt_fraction_numerator {
+#sdjetorhhm .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#ajblbzvcfe .gt_fraction_denominator {
+#sdjetorhhm .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -675,11 +675,7 @@ data %>%
 
 ### Bar Charts
 
-The process for making bar charts can be a bit more complicated depending on the packages and functions you use. The approach demonstrated here is based on tidyverse functions only. The first step in making bar charts is to create a character vector of the names or labels I want my chart to have. The order of the character vector should be in the same order as the columns will appear.
-
-After creating a character vector of the labels I want to assign to my columns, I will pipe the data frame to the `select()` verb and use the vars I set up to create the table. In my data, the columns have to be converted to numeric because to facilitate using the `pivot_longer()` verb. I then rename all of my columns. Next I convert my data to long format where all of the separate race/ethnicity columns are collapsed into one column called “Category” and a second column called “Endorsed” indicates whether or not that person endorsed one of the race/ethnicity options. From there, one could do a couple of things. The first option is to convert the Category into a factor, and use the levels argument to display the responses in a specific order other than the default alphabetical order. The other option is to use reorder() within the ggplot call to order the responses by proportion. Both options are shown here, but the reorder() function take precedence. After setting the levels, I group by category and summarise the endorsements by adding them up. Next I create a new column called proportion that is Freq over the number of participants given by the number of rows in the data frame, not responses.
-
-Next the remaining data frame is ready to be piped into ggplot(). In this following example I am reordering my bar charts by proportion of participants endorsing a response, flip the coordinates, and change the x label to “Category” with the xlab() layer. The color and fill arguments inside geom_col(), them_minimal, and axis.line arguments are for pure aesthetic reasons and not necessary.
+The process for making bar charts can be a bit more complicated depending on the packages and functions you use. The approach demonstrated here is based on tidyverse functions only. The first step in making bar charts is to create a character vector of the labels assigned to my data. I use a simple for-loop to go through each column in my race_vars vector and assign its corresponding label to a new vector called race_names.
 
 ``` r
 # Use the vector of race_vars to get the column labels
@@ -687,13 +683,19 @@ race_names <- ""
 for (i in 1:length(race_vars)){
   race_names[i] <- attr(data[, race_vars[i]], "label")
 }
+race_names
 ```
 
-``` r
-# Race and ethnicity have label attributes that don't play well with some 
-# tidyverse functions. Therefore, these columns are converted to numeric, then 
-# renamed with their corresponding labels.
+    ## [1] "American Indian or Alaskan Native" "Asian"                            
+    ## [3] "Black or African American"         "White"                            
+    ## [5] "Hispanic or Latino"                "Another race"                     
+    ## [7] "Prefer not to answer"
 
+The data that I am working with in this example contains label attributes that sometimes don’t play well with some tidyverse functions. So after selecting the race_vars columns, I convert them to numeric with the `mutate_at()`. Next, I rename the selected columns with the race_names vector. From there, I convert my wide data frame to long using the `pivot_longer()` verb. Since the columns have been renamed in the previous step, the new names have to be used to select the columns to pivot longer to. In the long data frame, the separate race/ethnicity columns are collapsed into one column called “Category” and a second column called “Endorsed” that indicates whether or not that person endorsed one of the race/ethnicity options. From there, one could do a couple of things. The first option is to convert the Category into a factor, and use the levels argument to display the responses in a specific order rather than the default alphabetical order. The other option is to use reorder() within the ggplot call to order the responses by proportion. Both options are shown here, but the reorder() function take precedence. After setting the levels, I group by category and `summarise()` the endorsement values by adding them up. Next, I create a new column called proportion that is Freq over the number of participants given by the number of rows in the data frame, not responses.
+
+Finally, the remaining data frame is ready to be piped into `ggplot()` where I will subsequently flip the coordinates to display horizontal bars and change the x label to “Category” with the `xlab()` layer. The color and fill arguments inside `geom_col()`, `theme_minimal()`, and axis.line argument of the `theme()`layer make up the finishing touches to this plot.
+
+``` r
 data %>% 
   select(all_of(race_vars)) %>%
   mutate_at(all_of(race_vars), ~ as.numeric(.)) %>% 
