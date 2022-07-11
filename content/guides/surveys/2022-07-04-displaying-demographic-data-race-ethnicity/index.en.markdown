@@ -1,14 +1,14 @@
 ---
 title: 'Displaying Race & Ethnicity Data'
 author: Carlos Rodriguez
-date: '2022-07-04'
+date: '2022-07-10'
 slug: displaying-demographic-data-race-ethnicity
 categories: []
 tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2022-07-04T10:51:01-06:00'
+lastmod: '2022-07-10 23:05:13'
 featured: no
 image:
   caption: ''
@@ -29,7 +29,7 @@ library(bstfun)
 
 ### Create a data frame
 
-The first step in accomplishing this task is to prepare the data frame. One way to arrange this data is to have each row represent a participant and each column represent a distinct race or ethnic category as a binary value (i.e. 0 or 1, where 1 indicates that the participant belongs to that category).
+The first step in accomplishing this task is to prepare the data frame in a way that looks like the example. In this preparation, each row represent a participant and each column represent a distinct race or ethnic category coded as a binary value (i.e. 0 or 1, where 1 indicates that the participant belongs to that category).
 
 <table>
 <thead>
@@ -69,29 +69,6 @@ Prefer not to answer
 0
 </td>
 <td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
 0
 </td>
 <td style="text-align:right;">
@@ -158,7 +135,7 @@ Prefer not to answer
 0
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
 0
@@ -178,19 +155,42 @@ Prefer not to answer
 0
 </td>
 <td style="text-align:right;">
-1
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
 </td>
 <td style="text-align:right;">
 1
 </td>
 <td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
 1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
 </td>
 <td style="text-align:right;">
 1
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
 0
@@ -224,12 +224,12 @@ data %>%
   add_variable_grouping("Race/Ethnicity" = race_vars)
 ```
 
-<div id="sdjetorhhm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="lreraharci" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#sdjetorhhm .gt_table {
+#lreraharci .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -254,7 +254,7 @@ data %>%
   border-left-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_heading {
+#lreraharci .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -266,7 +266,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_title {
+#lreraharci .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -278,7 +278,7 @@ data %>%
   border-bottom-width: 0;
 }
 
-#sdjetorhhm .gt_subtitle {
+#lreraharci .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -290,13 +290,13 @@ data %>%
   border-top-width: 0;
 }
 
-#sdjetorhhm .gt_bottom_border {
+#lreraharci .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_col_headings {
+#lreraharci .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -311,7 +311,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_col_heading {
+#lreraharci .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -331,7 +331,7 @@ data %>%
   overflow-x: hidden;
 }
 
-#sdjetorhhm .gt_column_spanner_outer {
+#lreraharci .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -343,15 +343,15 @@ data %>%
   padding-right: 4px;
 }
 
-#sdjetorhhm .gt_column_spanner_outer:first-child {
+#lreraharci .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#sdjetorhhm .gt_column_spanner_outer:last-child {
+#lreraharci .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#sdjetorhhm .gt_column_spanner {
+#lreraharci .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -363,7 +363,7 @@ data %>%
   width: 100%;
 }
 
-#sdjetorhhm .gt_group_heading {
+#lreraharci .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -388,7 +388,7 @@ data %>%
   vertical-align: middle;
 }
 
-#sdjetorhhm .gt_empty_group_heading {
+#lreraharci .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -403,15 +403,15 @@ data %>%
   vertical-align: middle;
 }
 
-#sdjetorhhm .gt_from_md > :first-child {
+#lreraharci .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#sdjetorhhm .gt_from_md > :last-child {
+#lreraharci .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#sdjetorhhm .gt_row {
+#lreraharci .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -430,7 +430,7 @@ data %>%
   overflow-x: hidden;
 }
 
-#sdjetorhhm .gt_stub {
+#lreraharci .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -443,7 +443,7 @@ data %>%
   padding-right: 5px;
 }
 
-#sdjetorhhm .gt_stub_row_group {
+#lreraharci .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -457,11 +457,11 @@ data %>%
   vertical-align: top;
 }
 
-#sdjetorhhm .gt_row_group_first td {
+#lreraharci .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#sdjetorhhm .gt_summary_row {
+#lreraharci .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -471,16 +471,16 @@ data %>%
   padding-right: 5px;
 }
 
-#sdjetorhhm .gt_first_summary_row {
+#lreraharci .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_first_summary_row.thick {
+#lreraharci .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#sdjetorhhm .gt_last_summary_row {
+#lreraharci .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -490,7 +490,7 @@ data %>%
   border-bottom-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_grand_summary_row {
+#lreraharci .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -500,7 +500,7 @@ data %>%
   padding-right: 5px;
 }
 
-#sdjetorhhm .gt_first_grand_summary_row {
+#lreraharci .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -510,11 +510,11 @@ data %>%
   border-top-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_striped {
+#lreraharci .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#sdjetorhhm .gt_table_body {
+#lreraharci .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -523,7 +523,7 @@ data %>%
   border-bottom-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_footnotes {
+#lreraharci .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -537,7 +537,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_footnote {
+#lreraharci .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -546,7 +546,7 @@ data %>%
   padding-right: 5px;
 }
 
-#sdjetorhhm .gt_sourcenotes {
+#lreraharci .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -560,7 +560,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#sdjetorhhm .gt_sourcenote {
+#lreraharci .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -568,36 +568,36 @@ data %>%
   padding-right: 5px;
 }
 
-#sdjetorhhm .gt_left {
+#lreraharci .gt_left {
   text-align: left;
 }
 
-#sdjetorhhm .gt_center {
+#lreraharci .gt_center {
   text-align: center;
 }
 
-#sdjetorhhm .gt_right {
+#lreraharci .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#sdjetorhhm .gt_font_normal {
+#lreraharci .gt_font_normal {
   font-weight: normal;
 }
 
-#sdjetorhhm .gt_font_bold {
+#lreraharci .gt_font_bold {
   font-weight: bold;
 }
 
-#sdjetorhhm .gt_font_italic {
+#lreraharci .gt_font_italic {
   font-style: italic;
 }
 
-#sdjetorhhm .gt_super {
+#lreraharci .gt_super {
   font-size: 65%;
 }
 
-#sdjetorhhm .gt_two_val_uncert {
+#lreraharci .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -606,31 +606,31 @@ data %>%
   margin-left: 0.1em;
 }
 
-#sdjetorhhm .gt_footnote_marks {
+#lreraharci .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#sdjetorhhm .gt_asterisk {
+#lreraharci .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#sdjetorhhm .gt_slash_mark {
+#lreraharci .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#sdjetorhhm .gt_fraction_numerator {
+#lreraharci .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#sdjetorhhm .gt_fraction_denominator {
+#lreraharci .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -641,26 +641,26 @@ data %>%
   <thead class="gt_col_headings">
     <tr>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N = 202</strong><sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>N = 150</strong><sup class="gt_footnote_marks">1</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
     <tr><td class="gt_row gt_left">Race/Ethnicity</td>
 <td class="gt_row gt_center"></td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">American Indian or Alaskan Native</td>
-<td class="gt_row gt_center">6 (3.0%)</td></tr>
+<td class="gt_row gt_center">4 (2.7%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Asian</td>
-<td class="gt_row gt_center">9 (4.5%)</td></tr>
+<td class="gt_row gt_center">6 (4.0%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Black or African American</td>
-<td class="gt_row gt_center">11 (5.4%)</td></tr>
+<td class="gt_row gt_center">8 (5.3%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">White</td>
-<td class="gt_row gt_center">122 (60%)</td></tr>
+<td class="gt_row gt_center">91 (61%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Hispanic or Latino</td>
-<td class="gt_row gt_center">45 (22%)</td></tr>
+<td class="gt_row gt_center">34 (23%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Another race</td>
-<td class="gt_row gt_center">4 (2.0%)</td></tr>
+<td class="gt_row gt_center">3 (2.0%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Prefer not to answer</td>
-<td class="gt_row gt_center">14 (6.9%)</td></tr>
+<td class="gt_row gt_center">12 (8.0%)</td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">

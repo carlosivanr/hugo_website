@@ -1,14 +1,14 @@
 ---
 title: 'Displaying Race & Ethnicity Data'
 author: Carlos Rodriguez
-date: '2022-07-04'
+date: '`r Sys.Date()`'
 slug: displaying-demographic-data-race-ethnicity
 categories: []
 tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2022-07-04T10:51:01-06:00'
+lastmod: '`r Sys.time()`'
 featured: no
 image:
   caption: ''
@@ -28,6 +28,7 @@ library(kableExtra)
 
 ```{r load data, echo=FALSE}
 load("C:/Users/rodrica2/OneDrive/Web Site/hugo_website/content/guides/surveys/2022-07-04-survey-data/sample_data.Rdata")
+data <- sample_n(data, 150)
 ```
 
 
@@ -42,7 +43,7 @@ library(bstfun)
 ```
 
 ### Create a data frame
-The first step in accomplishing this task is to prepare the data frame. One way to arrange this data is to have each row represent a participant and each column represent a distinct race or ethnic category as a binary value (i.e. 0 or 1, where 1 indicates that the participant belongs to that category).
+The first step in accomplishing this task is to prepare the data frame in a way that looks like the example. In this preparation, each row represent a participant and each column represent a distinct race or ethnic category coded as a binary value (i.e. 0 or 1, where 1 indicates that the participant belongs to that category).
 
 
 ```{r, echo = FALSE}
