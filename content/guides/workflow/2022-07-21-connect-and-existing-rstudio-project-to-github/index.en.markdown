@@ -46,3 +46,9 @@ Another nice feature in RStudio is that it can integrate version control via Git
 - In the new window that pops up, select Git Bash from the drop down menu and select Apply and OK
 - You can then open a new terminal window and paste in the three commands from the GitHub page
 
+That's all there is to setting up an existing Rproject with a GitHub repository. Now when you are ready to commit changes, select the Git tab of in the Environment pane. From there:
+- Select Commit
+- Type in a Commit message
+- Select Commit
+- Select the Push button
+
