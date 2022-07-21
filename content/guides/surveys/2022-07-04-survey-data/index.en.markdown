@@ -1,5 +1,5 @@
 ---
-title: Preparing Survey Data
+title: Essential Packages for Survey Data Analysis
 author: Carlos Rodriguez
 date: '2022-07-04'
 slug: survey-data
@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2022-07-04T07:46:16-06:00'
+lastmod: "July 19, 2022"
 featured: no
 image:
   caption: ''
@@ -19,19 +19,23 @@ draft: true
 ---
 
 
+```r
+library(tidyverse)
+library(gtsummary)
+library(bstfun)
+library(flextable)
+library(Hmisc)
+library(haven)
+```
 
-1. Download REDCap data
-  a. will download the actual data in a .csv
-  b. an R script that will perform some preprocessing
-  
-2. Modify the R script
-  a. comment out the rm(list = ls()) line
-  b. add library(tidyverse)
-  c. trim white space in any of the responses as they will influence how they are displayed when making tables.
-  
-  
+## tidyverse
 
+The tidyverse package is one way to load multiple packages associated with the tidyverse. Loading tidyverse will load dplyr, tidyr, ggplot2, forcats, stringr, and purrr, among others. The dplyr and tidyr set of functions are useful for data manipulation tasks such as subsetting data frames, selecting columns, filtering rows, creating new variables, dropping NAs, and reshaping data from wide to long. The forcats functions are primarily intended to work with categorical variables. I rely heavily on the ggplot set of functions to create publication quality figures. The purr package is used for functional programming.
 
+## gtsummary, bstfun, and flextable
 
+Gtsummary is the primary package I utilize for creating tables. The sister package to gtsummary, bstfun, is primarily used for `tbl_likert()` function which will display likert type responses. My only qualm with the `tbl_likert()` is that it does not have a "by = " argument to separate responses by a second variable. So if there is a need to separate responses by a group, it may be best to use `tbl_summary()` and if there is no need, then `tbl_likert()` is the way to go. The bstfun package also has the `add_variable_grouping()` function to be used with `tbl_summary()`. The `add_variable_grouping()` function is great for grouping race and ethnicity data in cases where multiple columns contain binary responses to whether or not a participant endorses a given ethnic or racial category. Finally, I use the flextable package in a function that will facilitate rendering an Rmarkdown document to Word. The user defined function I use relies on the `autofit()` function.
 
+## Hmisc and Haven
 
+The Hmisc and Haven package are also nice because they help work with labelled data. In addition, Haven is great for importing SPSS files that can be downloaded from Qualtrics surveys.
