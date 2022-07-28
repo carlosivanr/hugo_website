@@ -1,5 +1,5 @@
 ---
-title: Two-way Repeated Measures ANOVA
+title: Two-way Repeated Measures ANOVA - Two within-subjects factors
 author: Carlos Rodriguez
 date: '2021-05-18'
 slug: two-way-rm-anova
@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with two within-subjects factors.'
 authors: []
-lastmod: '2021-05-18T16:45:46-06:00'
+lastmod: "July 26 2022"
 featured: no
 image:
   caption: ''
@@ -30,7 +30,7 @@ draft: false
 <!-- } -->
 <!-- </style> -->
 
-In this guide we will cover how to conduct two-way repeated measures ANOVA with the jmv and rstatix packages. Two-way repeated measures ANOVA can be thought of as an extension of the one-way repeated measures designed. Instead of one repeated measure there are two.
+In this guide, I cover how to conduct two-way repeated measures ANOVA with two within-subjects factors.
 
 ### The data set
 For this guide, we will use the data from Chapter 12, Table 1 in the AMCP package. In this hypothetical study, 10 subjects are participating in an experiment that tests how visual information can interfere with recognizing letters. Each subject performs a letter recognition task in two conditions, noise absent or present. Noise refers to visual information that is presented along with either a letter T or I that the subject needs to identify. Whithin each condition, visual information was either presented at 0&deg; (directly in front of the participant), at 4&deg; (slightly offset to one side), or at 8&deg; (even more offset to the side). Thus, noise and degree represent our repeated measures. Finally, the dependent variable in this study is the latency in milliseconds needed to identify the letter.
@@ -43,122 +43,130 @@ library(AMCP)
 data(chapter_12_table_1)
 
 # Display part of the data
-head(chapter_12_table_1)
+kableExtra::kable(head(chapter_12_table_1))
 ```
 
-```
-##   Absent0 Absent4 Absent8 Present0 Present4 Present8
-## 1     420     420     480      480      600      780
-## 2     420     480     480      360      480      600
-## 3     480     480     540      660      780      780
-## 4     420     540     540      480      780      900
-## 5     540     660     540      480      660      720
-## 6     360     420     360      360      480      540
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Absent0 </th>
+   <th style="text-align:right;"> Absent4 </th>
+   <th style="text-align:right;"> Absent8 </th>
+   <th style="text-align:right;"> Present0 </th>
+   <th style="text-align:right;"> Present4 </th>
+   <th style="text-align:right;"> Present8 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 600 </td>
+   <td style="text-align:right;"> 780 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 600 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 780 </td>
+   <td style="text-align:right;"> 780 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 780 </td>
+   <td style="text-align:right;"> 900 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 720 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 540 </td>
+  </tr>
+</tbody>
+</table>
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
-{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" >}}
+{{< tabs tabTotal="2" tabID="1" tabName1="rstatix" tabName2="lmer" >}}
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
 
-```r
-library(jmv)
-library(tictoc)
-# Repeated measures anova with jmv
-tic()
-anovaRM(
-  data = chapter_12_table_1,
-  rm = list(
-    list(
-      label = "Condition",
-      levels = c("Absent", "Present")),
-    list(
-      label = "Angle",
-      levels = c("0", "4", "8"))),
-  rmCells = list(
-    list(
-      measure = "Absent0",
-      cell = c("Absent", "0")),
-    list(
-      measure = "Absent4",
-      cell = c("Absent", "4")),
-    list(
-      measure = "Absent8",
-      cell = c("Absent", "8")),
-    list(
-      measure = "Present0",
-      cell = c("Present", "0")),
-    list(
-      measure = "Present4",
-      cell = c("Present", "4")),
-    list(
-      measure = "Present8",
-      cell = c("Present", "8"))),
-  rmTerms = ~ Condition + Angle + Condition:Angle,
-  effectSize = 'partEta',
-  emMeans = ~ Condition:Angle,
-  emmPlots = TRUE,
-  depLabel = "Mean Latency")
-```
+<!-- ```{r, plot1, fig.cap = 'figure caption.', warning=FALSE} -->
+<!-- library(jmv) -->
+<!-- # Repeated measures anova with jmv -->
+<!-- anovaRM( -->
+<!--   data = chapter_12_table_1, -->
+<!--   rm = list( -->
+<!--     list( -->
+<!--       label = "Condition", -->
+<!--       levels = c("Absent", "Present")), -->
+<!--     list( -->
+<!--       label = "Angle", -->
+<!--       levels = c("0", "4", "8"))), -->
+<!--   rmCells = list( -->
+<!--     list( -->
+<!--       measure = "Absent0", -->
+<!--       cell = c("Absent", "0")), -->
+<!--     list( -->
+<!--       measure = "Absent4", -->
+<!--       cell = c("Absent", "4")), -->
+<!--     list( -->
+<!--       measure = "Absent8", -->
+<!--       cell = c("Absent", "8")), -->
+<!--     list( -->
+<!--       measure = "Present0", -->
+<!--       cell = c("Present", "0")), -->
+<!--     list( -->
+<!--       measure = "Present4", -->
+<!--       cell = c("Present", "4")), -->
+<!--     list( -->
+<!--       measure = "Present8", -->
+<!--       cell = c("Present", "8"))), -->
+<!--   rmTerms = ~ Condition + Angle + Condition:Angle, -->
+<!--   effectSize = 'partEta', -->
+<!--   emMeans = list(c("Angle", "Condition")), -->
+<!--   emmPlots = TRUE, -->
+<!--   depLabel = "Mean Latency") -->
+<!-- ``` -->
 
-```
-## 
-##  REPEATED MEASURES ANOVA
-## 
-##  Within Subjects Effects                                                                           
-##  ───────────────────────────────────────────────────────────────────────────────────────────────── 
-##                       Sum of Squares    df    Mean Square    F           p             η²-p        
-##  ───────────────────────────────────────────────────────────────────────────────────────────────── 
-##    Condition               285660.00     1     285660.000    33.76596     0.0002560    0.7895522   
-##    Residual                 76140.00     9       8460.000                                          
-##    Angle                   289920.00     2     144960.000    40.71910     0.0000002    0.8189831   
-##    Residual                 64080.00    18       3560.000                                          
-##    Condition:Angle         105120.00     2      52560.000    45.31034    < .0000001    0.8342857   
-##    Residual                 20880.00    18       1160.000                                          
-##  ───────────────────────────────────────────────────────────────────────────────────────────────── 
-##    Note. Type 3 Sums of Squares
-## 
-## 
-##  Between Subjects Effects                                                           
-##  ────────────────────────────────────────────────────────────────────────────────── 
-##                Sum of Squares    df    Mean Square    F    p            η²-p        
-##  ────────────────────────────────────────────────────────────────────────────────── 
-##    Residual          292140.0     9       32460.00                                  
-##  ────────────────────────────────────────────────────────────────────────────────── 
-##    Note. Type 3 Sums of Squares
-```
-
-<div class="figure">
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/plot1-1.png" alt="figure caption." width="672" />
-<p class="caption">Figure 1: figure caption.</p>
-</div>
-
-```r
-toc()
-```
-
-```
-## 4.205 sec elapsed
-```
-{{< /tab >}}
-
-{{< tab tabNum="2" >}}
-As we encountered in guide for [one-way rm-ANOVA](/guides/anova/one-way-anova), we will want to convert our data set from wide format to long format before proceeding to conduct the statistical test. This situation is a bit trickier because there are many more columns to deal with so I've written a separate walkthrough that can be found [here](/guides/r/wide-to-long) in order to emphasize the stats.
+As we encountered in the guide for [one-way rm-ANOVA](/guides/anova/one-way-anova), we will want to convert our data set from wide format to long format before conducting the statistical test. This situation is a bit trickier because there are many more columns to deal with so I've written a separate walk through that can be found [here](/guides/r/wide-to-long) in order to emphasize the procedure for conducting the statistical tests.
 
 
 ```r
 library(tidyverse)
 library(rstatix)
 library(ggpubr)
-library(tictoc)
 
 # Create a new data frame with a subject id
-rm_data <- cbind(id = c(1:10), chapter_12_table_1)
+data <- cbind(id = c(1:10), chapter_12_table_1)
 
 # Convert the data from wide to long
-rm_data <-  rm_data %>%
+data <-  data %>%
   gather(key = Condition.Angle,
          value = Latency,-id) %>%
   separate(col = Condition.Angle,
@@ -170,15 +178,14 @@ rm_data <-  rm_data %>%
   convert_as_factor(Condition, Angle)
 
 # Conduct repeated measures ANOVA
-tic()
-rm_aov <- anova_test(data = rm_data,
+rm.mod <- anova_test(data = data,
                      dv = Latency, 
                      wid = id, 
                      within = c(Condition, Angle), 
                      effect.size = "pes")
 
 
-get_anova_table(rm_aov, correction = "none")
+get_anova_table(rm.mod, correction = "none")
 ```
 
 ```
@@ -192,7 +199,7 @@ get_anova_table(rm_aov, correction = "none")
 
 ```r
 # Generate Plot
-ggline(rm_data,
+ggline(data,
        "Condition", 
        "Latency",
        color = "Angle",
@@ -203,16 +210,44 @@ ggline(rm_data,
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/rstatix-1.png" width="672" />
 
+
+
+{{< /tab >}}
+
+{{< tab tabNum="2" >}}
+A repeated measures ANOVA can also be analyzed under a mixed effects framework using the lme4 package. Mixed effects models contain a mixture of fixed and random effects and are also sometimes referred to as multi-level models or hierarchical linear models. Fixed effects can be thought of as factors in which all possible levels that a researcher is interested in are represented in the data. A random effect on the other hand is a factor for which the levels in the experimental data represent a sample of a larger set. Mixed effects models may be advantageous because they do not require the assumption of independence in ANOVA, the assumption of homogeneity of regression slopes in ANCOVA, and may be better suited for handling unbalanced designs or situations with missing data. While mixed effect models are estimated using slightly different procedures than more traditional models, there are cases in which the results will overlap and the repeated measures ANOVA with two within-subjects factors is one of those situations.
+
+The `lmer()` function from the lme4 package is designed to fit linear mixed-effects regression models via REML or maximum likelihood. Just like the base R `lm()` function, `lmer()` takes a formula specifying the dependent variable predicted by (~) a combination of fixed and random effect variables. Predictor variables encased in parentheses specify random effects, while variables without parentheses are specified as fixed effects. 
+
+The first part of the formula in the example below specifies to predict Latency from the interaction between Condition and Angle as fixed effects. Including just the interaction term is a shortcut for "Latency ~ Condition + Angle + Condition * Angle." The term "(1|id)" specifies a random intercept for each subject which allows each subject to have their own "starting point." The remaining terms with the colons indicate random intercepts for the interactions between subject and Condition (1|Condition:id) and subject and Angle (1|Angle:id).
+
+
 ```r
-toc()
+library(lme4)
+library(lmerTest)
+
+rm.mod <- lmerTest::lmer(Latency ~ Condition * Angle + 
+                 (1|id) + 
+                 (1|Condition:id) + 
+                 (1|Angle:id), 
+               data=data)    
+
+anova(rm.mod)
 ```
 
 ```
-## 0.783 sec elapsed
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                 Sum Sq Mean Sq NumDF DenDF F value    Pr(>F)    
+## Condition        39169   39169     1     9  33.766  0.000256 ***
+## Angle            94468   47234     2    18  40.719 2.087e-07 ***
+## Condition:Angle 105120   52560     2    18  45.310 9.424e-08 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
-#### rstatix elapsed time
-
+<!-- Lmer cheat sheet and specifying two within-subjects factors in lmer() -->
+<!-- https://stats.stackexchange.com/questions/13784/repeated-measures-anova-with-lme-lmer-in-r-for-two-within-subject-factors -->
+<!-- https://stats.stackexchange.com/questions/13166/rs-lmer-cheat-sheet -->
 
 {{< /tab >}}
 {{< /tabs >}}
@@ -220,16 +255,8 @@ toc()
 [Back to tabs](#tests)
 
 ### Interpretation
-- If interaction, simple effects, then cell means
+Both approaches reveal the same results for the F test of the interaction and of the main effects of Angle and Condition. The significant interaction suggests that the effect of noise on latency at each angle is not the same and should be followed up by more tests. From here we could proceed to test for simple effects and cell means. If the interaction was not significant, then we could proceed to test marginal means.
 
-- If no interaction, then test marginal means
-
-### Wrap up
-jmv is much more tedious to code repeated measures. Yes the tables and plots are nice, but it can be a pain in the but to work with. If you have long data, you'll need to convert it to wide. And it's also very slow. I once ran a two-way repeated measures ANOVA on data from over 200 participants. WHile jmv took over a minute, rstatix computed the computation in less than one second. This could be a consideration when planing which package to use.
-
-With rstatix the syntax for repeated measures anova are much simpler. I wouldn't code two-way repeated measures in jmv. Rstatix is faster. 
-
-Because of these transformations, it's important to know how to convert long to wide and wide to long. This can become especially tricky when you have multiple variables to keep track of.
 
 ### References
 <div id="refs" class="references">
