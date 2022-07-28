@@ -1,5 +1,5 @@
 ---
-title: Two-way Repeated Measures ANOVA - Two within-subjects factors
+title: Two-way Repeated Measures ANOVA
 author: Carlos Rodriguez
 date: '2021-05-18'
 slug: two-way-rm-anova
@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with two within-subjects factors.'
 authors: []
-lastmod: "July 27 2022"
+lastmod: "July 28 2022"
 featured: no
 image:
   caption: ''
