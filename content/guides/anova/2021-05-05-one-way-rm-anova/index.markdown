@@ -1,5 +1,5 @@
 ---
-title: One-way Repeated Measures ANOVA
+title: One-way Repeated Measures ANOVA - One within-subjects factor
 author: Carlos Rodriguez
 date: '2021-05-05'
 slug: one-way-rm-anova
@@ -34,10 +34,10 @@ nocite: |
 <!-- </style> -->
 
 
-In this guide we will cover how to conduct one-way repeated measures ANOVA with the jmv and rstatix packages. Repeated measures ANOVA are used in cases where a particular observation from the same subject is taken multiple times. An example of this may be in an experiment of learning and memory where a rat is timed over several trials to measure how long it takes to find an escape platform in the Morris Water Task. Another example will be seen in our data set where scores for a cognitive assessment are compared at multiple ages.
+This guide covers how to conduct one-way repeated measures ANOVA with the jmv and rstatix packages. Repeated measures ANOVAs are used in cases where an observation from the same subject is taken multiple times. For example, an experimenter may wish to examine the changes in scores from a cognitive assessment gathered from the same participants at multiple ages. 
 
 ### The data set
-For this demo, we will use the chapter_11_table_5 dataset from the AMCP package. These data are from a hypothetical study that tracked the age-normed general cognitive scores from the McCarthy Scales of Children's Abilities (MSCA) of 12 children at 4 different time points.
+The chapter_11_table_5 dataset from the AMCP package is from a hypothetical study that tracked the age-normed general cognitive scores from the McCarthy Scales of Children's Abilities (MSCA) of 12 children at 4 different time points, .
 
 
 ```r
@@ -189,9 +189,7 @@ anovaRM(
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
-To perform a repeated measures ANOVA with rstatix, we will first need create a new data frame with the subject id coded by a number. In this case, we have 12 subjects so we will code them 1 through 12. Next, we will want to convert our data from wide to long format. For our purposes, we will want to take the rows the subject's MSCA scores and arrange them into a column while preserving the information about the age in another column. This will make it so that we end up with 48 rows of data even though we started with 12.
-
-We will then want to convert the subject id and the age information to factor. From there, we can create the rm_aov object with the `anova_test()` function. This is the same function that was used in the one- and two-way ANOVA guides, but tweaked slightly. The tweaks are found in the options `wid = id` to specify the subjects id factor, `within = age` to specify that our within subjects factor is age, and `effect.size = "pes"` to correspond with the jmv function. Finally, we will run the `get_anova_table()` function on our rm_aov object with `correction = "none"`. In practice, you may want to change the correction setting even if your data do not violate the assumption of sphericity.
+To perform a repeated measures ANOVA with rstatix, first create a new data frame with the subject id coded by a number. Next, convert the data from wide to long format. Next, convert the subject id and the age information to factor. Then, create the rm_aov object with the `anova_test()` function. This is the same function that was used in the one- and two-way ANOVA guides, but modified slightly. The modifications are found in the options `wid = id` to specify the subjects id factor, `within = age` to specify that our within subjects factor is age, and `effect.size = "pes"` to correspond with the jmv function. Finally, we will run the `get_anova_table()` function on our rm_aov object with `correction = "none"`. In practice, you may want to change the correction setting even if your data do not violate the assumption of sphericity.
 
 ```r
 library(tidyverse)
@@ -478,7 +476,7 @@ ggerrorplot(rm_data,
 [Back to tabs](#tests)
 
 ### Interpretation  
-For the omnibus test, we obtain a significant effect of Age [F(33,3) = 3.03, p < 0.05] which suggests that the means of the 4 ages are not equal. The omega squared value is 0.04 which suggest the about 4% of the variance in scores is acounted for by age in the ages studied.
+For the omnibus test, we obtain a significant effect of Age [F(33,3) = 3.03, p < 0.05] which suggests that the means of the 4 ages are not equal. The omega squared value is 0.04 which suggest the about 4% of the variance in scores is accounted for by age in the ages studied.
 
 ### Wrap up
 For one-way repeated measures ANOVA, using the jmv package in R will become tedious as each column will need to specified in the `rmCells = list(...` argument. This will become even more burdensome in two-way repeated measures ANOVA. 

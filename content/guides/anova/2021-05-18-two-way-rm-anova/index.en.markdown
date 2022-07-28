@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with two within-subjects factors.'
 authors: []
-lastmod: "July 26 2022"
+lastmod: "July 27 2022"
 featured: no
 image:
   caption: ''

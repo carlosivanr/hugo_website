@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: "July 21, 2022"
+lastmod: "July 27, 2022"
 featured: no
 image:
   caption: ''
@@ -25,7 +25,7 @@ Another nice feature in RStudio is that it can integrate version control via Git
 - Select Tools from the menu bar, then click on Version control, and then Project Setup
 - In the Project Options window, select Git/SVN, and then select Git as the version control system in the drop-down menu
 - After selecting Git, a pop-up window will ask if you want to initialize a new git repository. 
-- Select Yes, and then select Yest to restart the R Session
+- Select Yes, and then select Yes to restart the R Session
 - Upon restart, a new Git` tab will be available in the Environment pane
 - Under the Git tab, select the check boxes of the files to upload to a GitHub repository
 - Select the Commit button, type in a Commit message, select the Commit button, and then Close the new window
