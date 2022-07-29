@@ -1,0 +1,175 @@
+---
+title: Mixed ANOVA
+author: Carlos Rodriguez
+date: '2022-07-29'
+slug: mixed-anova
+categories: []
+tags: []
+subtitle: ''
+summary: 'Designs with one between-subjects factor and one within-subjects factor.'
+authors: []
+lastmod: "`r format(Sys.time(), '%B %d, %Y')`"
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+---
+
+
+```{r packages, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(AMCP)
+library(rstatix)
+library(ez)
+library(kableExtra)
+```
+
+
+```{r data, echo=F, message=F, warning=F}
+data("chapter_12_table_15")
+data("chapter_12_table_1")
+
+# Prepare the Chapter 12 Table 1 data by pivoting longer, grouping by subject
+# and angle, and then taking the average of the latency scores.
+temp <- cbind(Subject = 1:nrow(chapter_12_table_1),
+              chapter_12_table_1)
+  
+young <- temp %>% 
+  pivot_longer(cols = Absent0:Present8,
+               names_to = c("Condition", "Angle"),
+               names_sep = -1,
+               values_to = "Latency") %>%
+  group_by(Subject, Angle) %>%
+  summarise(Latency = mean(Latency)) %>%
+  ungroup() %>%
+  mutate(Group = "Young")
+
+
+# Prepare the Chapter 12 Table 15 data by pivoting longer, adding subject, and 
+# the Group variable
+temp <- cbind(Subject = 1:nrow(chapter_12_table_15) + 10, chapter_12_table_15)
+
+old <- temp %>%
+  pivot_longer(cols = Angle0:Angle8,
+               names_to = c("Junk", "Angle"),
+               names_sep = -1,
+               values_to = "Latency") %>%
+  select(-Junk) %>%
+  mutate(Group = "Old")
+
+# Stack the two data frames and convert subject angle and group to factor
+data <- bind_rows(young, old)
+data[, c("Subject", "Angle", "Group")] <- 
+  lapply(data[, c("Subject", "Angle", "Group")], as.factor)
+
+# Subset the Young data for simple effects
+young <- data %>% 
+  filter(Group == "Young") %>%
+  convert_as_factor(Subject, Group)
+
+# Subset the Old data for simple effects
+old <- data %>% 
+  filter(Group == "Old") %>%
+  convert_as_factor(Subject, Group)
+
+rm(temp)
+```
+
+
+## Data
+```{r data_table, echo=F}
+kable(data, "html") %>%
+  kable_styling(fixed_thead = T) %>%
+  scroll_box(height = "300px")
+```
+
+
+## Plot the data
+```{r, echo = F, warning=F, message=F}
+data %>%
+  group_by(Group, Angle) %>%
+  summarise("Mean reaction time (msec)" = mean(Latency)) %>%
+  ggplot(., aes(x = Angle, y = `Mean reaction time (msec)`, color = Group)) +
+  geom_point() +
+  geom_line(aes(group = Group)) +
+  scale_color_manual(values = c( "#440154FF","#1565c0")) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
+
+## Perform ANOVA tests
+```{r rstatix,}
+kable(
+  get_anova_table(
+          anova_test(data = data, 
+                     dv = Latency, 
+                     wid = Subject, 
+                     within = Angle, 
+                     between = Group,
+                     effect.size = "pes", 
+                     detailed = TRUE)))
+```
+
+
+## Simple Effects Young
+```{r simple effects young}
+kable(
+  get_anova_table(
+    anova_test(data = young, 
+                     dv = Latency, 
+                     wid = Subject, 
+                     within = Angle, 
+                     effect.size = "pes", 
+                     detailed = TRUE)))
+```
+
+### Comparisons of Cell Means Young
+```{r}
+kable(
+  young %>% 
+  pairwise_t_test(Latency ~ Angle,
+                  paired = TRUE,
+                  p.adjust.method = "none"))
+```
+
+## Simple Effects Old
+```{r simple effects old,}
+kable(
+  get_anova_table(
+    anova_test(data = old, 
+                     dv = Latency, 
+                     wid = Subject, 
+                     within = Angle, 
+                     effect.size = "pes", 
+                     detailed = TRUE)))
+```
+
+### Comparisons of Cell Means Old
+```{r}
+kable(
+  old %>% 
+    pairwise_t_test(Latency ~ Angle,
+                  paired = TRUE,
+                  p.adjust.method = "none"))
+```
+
+## Simple Effects Angle0
+```{r}
+angle0 <- summary(aov(Latency ~ 1 + Group, data = subset(data, Angle=="0")))
+kable(angle0[[1]])
+```
+
+## Simple Effects Angle4
+```{r}
+angle4 <- summary(aov(Latency ~ 1 + Group, data = subset(data, Angle=="4")))
+kable(angle4[[1]])
+```
+
+## Simple Effects Angle8
+```{r}
+angle8 <- summary(aov(Latency ~ 1 + Group, data = subset(data, Angle=="8")))
+kable(angle8[[1]])
+```
