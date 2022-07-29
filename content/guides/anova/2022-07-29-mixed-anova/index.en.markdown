@@ -1,5 +1,5 @@
 ---
-title: Mixed ANOVA
+title: Mixed design ANOVA
 author: Carlos Rodriguez
 date: '2022-07-29'
 slug: mixed-anova
@@ -27,7 +27,7 @@ type: book
 
 
 
-## Data
+## The data set
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; "><table class="table" style="margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
@@ -402,7 +402,7 @@ type: book
 </table></div>
 
 
-## Plot the data
+## Data plot
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
 ## Perform ANOVA tests

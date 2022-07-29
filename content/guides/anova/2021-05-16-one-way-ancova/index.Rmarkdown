@@ -53,6 +53,8 @@ chapter_9_table_7$Condition <- as.factor(chapter_9_table_7$Condition)
 head(chapter_9_table_7)
 ```
 
+### Perform ANOVA Tests
+
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="paired-t-test">}}
 

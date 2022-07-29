@@ -64,6 +64,8 @@ head(chapter_9_table_7)
 ## 6         1  20   11
 ```
 
+### Perform ANOVA Tests
+
 <!-- -----------------------TABS---------------------------------- -->
 {{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabID="2" tabName2="rstatix" tabID="3" tabName3="paired-t-test">}}
 
@@ -177,7 +179,7 @@ get_emmeans(pwc)
 ```
 
 ```
-## # A tibble: 3 x 8
+## # A tibble: 3 × 8
 ##     Pre Condition emmean    se    df conf.low conf.high method      
 ##   <dbl> <fct>      <dbl> <dbl> <dbl>    <dbl>     <dbl> <chr>       
 ## 1  17.4 1           7.54  1.71    26     4.03      11.0 Emmeans test
@@ -191,12 +193,12 @@ print(pwc)
 ```
 
 ```
-## # A tibble: 3 x 8
-##   .y.   group1 group2    df statistic      p  p.adj p.adj.signif
-## * <chr> <chr>  <chr>  <dbl>     <dbl>  <dbl>  <dbl> <chr>       
-## 1 Post  1      2         26    -1.84  0.0770 0.231  ns          
-## 2 Post  1      3         26    -2.67  0.0129 0.0388 *           
-## 3 Post  2      3         26    -0.826 0.416  1      ns
+## # A tibble: 3 × 9
+##   term          .y.   group1 group2    df statistic      p  p.adj p.adj.signif
+## * <chr>         <chr> <chr>  <chr>  <dbl>     <dbl>  <dbl>  <dbl> <chr>       
+## 1 Pre*Condition Post  1      2         26    -1.84  0.0770 0.231  ns          
+## 2 Pre*Condition Post  1      3         26    -2.67  0.0129 0.0388 *           
+## 3 Pre*Condition Post  2      3         26    -0.826 0.416  1      ns
 ```
 ### Effect sizes
 The process to calculate the effect sizes of the post hoc comparisons is a little more drawn out in this case. First, we will need the `MBESS` package. Next we will need three pieces of information, group means, standard deviations, and sample sizes. We will want the estimated marginal means for this situation because these means have been adjusted to take into consideration the covariate. We can also calculate the standard deviations by multiplying the standard error of each group by the square root of the group sample size. Finally, we can enter those values into the `smd()` function. A nice feature of the `smd()` is that we can calculate a standardized mean difference as biased or unbiased. In practice, it is recommended to set `Unbiased = TRUE` with small samples.

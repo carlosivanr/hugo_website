@@ -1,5 +1,5 @@
 ---
-title: Mixed ANOVA
+title: Mixed design ANOVA
 author: Carlos Rodriguez
 date: '2022-07-29'
 slug: mixed-anova
@@ -79,7 +79,7 @@ rm(temp)
 ```
 
 
-## Data
+## The data set
 ```{r data_table, echo=F}
 kable(data, "html") %>%
   kable_styling(fixed_thead = T) %>%
@@ -87,7 +87,7 @@ kable(data, "html") %>%
 ```
 
 
-## Plot the data
+## Data plot
 ```{r, echo = F, warning=F, message=F}
 data %>%
   group_by(Group, Angle) %>%
