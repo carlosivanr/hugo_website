@@ -1,5 +1,5 @@
 ---
-title: One-way Repeated Measures ANOVA - One within-subjects factor
+title: One-way Repeated Measures ANOVA
 author: Carlos Rodriguez
 date: '2021-05-05'
 slug: one-way-rm-anova
@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one within-subjects factor.'
 authors: []
-lastmod: '2021-05-05360:40:40-06:00'
+lastmod: "July 29 2022"
 featured: no
 image:
   caption: ''

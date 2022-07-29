@@ -206,7 +206,7 @@ anova_test(Scores ~ Group,
 ## 1  Group   3   8 10 0.004     * 0.789
 ```
 ### Post hoc tests
-To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply a different correction procedure such Bonferroni, Holm, or False Discover Rate (FDR). In addition, rstatix provides some convenient ways for producing effect sizes, and summary statistics.
+To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply a different correction procedure such Bonferroni, Holm, or False Discovery Rate (FDR). In addition, rstatix provides some convenient ways for producing effect sizes, and summary statistics.
 
 **Tukey's Honest Significant Difference (HSD)**
 
