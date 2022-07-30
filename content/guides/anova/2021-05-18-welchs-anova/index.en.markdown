@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one between-subjects factor that fail to meet the homogeneity of variance assumption.'
 authors: []
-lastmod: '2021-05-18T21:14:42-06:00'
+lastmod: "July 30, 2022"
 featured: no
 image:
   caption: ''
@@ -42,32 +42,8 @@ pre[class] {
 }
 </style>
 
-When the homogeneity of variance assumption is violated for a one-way ANOVA, a Welch's ANOVA can be conducted instead. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way designs). This guide covers how to test for normality, homogeneity of variance and how to conduct a Welch's ANOVA followed by the appropriate post-hoc tests with the jmv and rstatix packages. The two approaches use the same example data set as the Fisher's [one-way ANOVA](/guides/anova/one-way-anova).
 
-### The data set
-For this module we will use the data from the Chapter 3, Exercise 9 in the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
-
-For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
-
-```r
-library(AMCP)
-
-# Load the data
-data(C3E9)
-
-# Display part of the data
-head(C3E9)
-```
-
-```
-##   Group Scores
-## 1     1      2
-## 2     1      4
-## 3     1      6
-## 4     2     10
-## 5     2     12
-## 6     2     14
-```
+When the homogeneity of variance assumption is violated for a one-way ANOVA, a Welch's ANOVA can be conducted instead. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way between-subjects designs). This guide covers how to test for normality, homogeneity of variance and how to conduct a Welch's ANOVA followed by the appropriate post-hoc tests with the jmv and rstatix packages. The same example data from the [one-way ANOVA](/guides/anova/one-way-anova) is used here.
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
@@ -75,7 +51,9 @@ head(C3E9)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
-The following code chunk demonstrates how to code a Welch's ANOVA in R with the jmv package. The jmv approach uses the exact same function as the Fisher's approach in one-way ANOVA and can take many of the same options to produce plots and conduct tests of normality and equality of variance (homogeneity of variance or homoscedasticity) with the `norm = TRUE` and `eqv = TRUE` options. Games-Howell post hoc tests are produced by setting `phMethod = 'gamesHowell'`.
+<br>
+
+The following code chunk demonstrates how to code a Welch's ANOVA in R with the jmv package. The jmv approach uses the `anovaOneW()` function which can take options to produce plots and conduct tests of normality and equality of variance (homogeneity of variance or homoscedasticity) with the `norm = TRUE` and `eqv = TRUE` options. Games-Howell post hoc tests are produced by setting `phMethod = 'gamesHowell'`.
 
 ```r
 library(jmv)
@@ -85,8 +63,7 @@ anovaOneW(formula = Scores ~ Group,
           welchs = TRUE,
           norm = TRUE,
           eqv = TRUE,
-          phMethod = 'gamesHowell'
-          )
+          phMethod = 'gamesHowell')
 ```
 
 ```
@@ -145,36 +122,48 @@ anovaOneW(formula = Scores ~ Group,
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
+<br>
 In rstatix, the `anova_test()` function can analyse several types of between and within subjects ANOVA designs. However, to conduct a Welch's ANOVA , the `welch_anova_test()` function is required. The syntax to conduct the actual test is rather simple. In the following code chunk, I've chosen to explicitly declare `formula = Scores ~ Group` and `data = C3E9`. However, one could just as easily specify the dataframe and formula as long as data is the first entered variable. Similarly, data and formula do not need to be explicitly specified for the `games_howell_test()` function, but hare specified in the example for consistency. 
 
-To produce the Shapiro-Wilk's test of normality as in the jmv output, we will need to create an analysis of variance (aov) model with the base R `aov()` function. The rstatix package does contain its own `shapiro_test()` function, but it will not test normality of the residuals, only the actual values. In the code snippet below, the `aov()` model is nested within the `residuals()` function, which is nested within the `shapiro.test()` function. This will conduct Shapiro-Wilk's test on the residuals of the aov object. Finally, for the homogeneity of variance test, the rstatix `levene_test()` function specifying a formula and a dataframe does the job. Base R also can also plot the Residuals vs Fitted values and generate Q-Q (quantile-quantile) plots from an `aov()` object to examine homogeneity of variance and normality respectively.
-
 #### Check normality
+To produce the Shapiro-Wilk's test of normality as in the jmv output, we will need to create an analysis of variance (aov) object with the base R `aov()` function. The `aov()` function is actually a wrapper for the `lm()` which highlights the relationship between linear regression and ANOVA. The rstatix package does contain its own `shapiro_test()` function, but it will not test normality of the residuals, only the actual values. In the code chunk below, the aov object is piped to the `residuals()` function, which is then piped to the `shapiro.test()` function. This will conduct Shapiro-Wilk's test on the residuals of the aov object and not the values of the dependent variable. Our Shaprio-Wilk's test result, W = 0.81 is significant with a p-values less than 0.05 which is taken as evidence that our data violate the assumption of normality.
+
+In addition to the Shapiro-Wilk test, we can visualize the residuals of our data and plot them against the expected residuals of a normal distribution. If our data are normally distributed, we would expect the individual data points to hover near the diagonal line. As we can see in the plot, we have quite a few data points fall far away from the line which is additional evidence that our data are not normally distributed. When normality is violated, the Welch's ANOVA is one option to analyse the data.
 
 ```r
 # Convert group to factor
 C3E9$Group <- as.factor(C3E9$Group)
 
-# Produce Q-Q plots
-plot(aov(formula = Scores ~ Group, data = C3E9), 2)
-```
-
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/norm-1.png" width="672" />
-
-```r
 # Base R Shapiro-Wilk test on residuals of the aov object
-shapiro.test(residuals(aov(formula = Scores ~ Group, data = C3E9)))
+aov(Scores ~ Group, data = C3E9) %>% 
+  residuals() %>% 
+  shapiro.test()
 ```
 
 ```
 ## 
 ## 	Shapiro-Wilk normality test
 ## 
-## data:  residuals(aov(formula = Scores ~ Group, data = C3E9))
+## data:  .
 ## W = 0.81079, p-value = 0.01246
 ```
 
+```r
+# Create a plot of standardised residuals, indexed at position 2 of plot(aov(x))
+# 
+# 
+plot(aov(formula = Scores ~ Group, data = C3E9), 2)
+```
+
+<div class="figure">
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/norm-1.png" alt="Q-Q Plot" width="672" />
+<p class="caption">Figure 1: Q-Q Plot</p>
+</div>
+
 #### Check homogeneity of variance
+Finally, for the homogeneity of variance test, the rstatix `levene_test()` function specifying a formula and a data frame does the job. The result is a non-significant p-value for the test statistic. This indicates that the data meet the assumption of homogeneity of variance.
+
+As in the examination of normality above, base R also can also plot the Residuals vs Fitted values to examine homogeneity of variance. The plot maintains a straight red line which is what would be expected for data that meet the homogeneity of variance assumption. When the assumption of homogeneity of variance is violated one can explore the use of a robust ANOVA.
 
 ```r
 library(rstatix)
@@ -183,7 +172,10 @@ library(rstatix)
 plot(aov(formula = Scores ~ Group, data = C3E9), 1)
 ```
 
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/hov-1.png" width="672" />
+<div class="figure">
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/hov-1.png" alt="Residuals vs Fitted Values" width="672" />
+<p class="caption">Figure 2: Residuals vs Fitted Values</p>
+</div>
 
 ```r
 # rstatix Levene's test for homogeneity of variance
@@ -199,11 +191,13 @@ levene_test(formula = Scores ~ Group,
 ```
 
 #### Welch's ANOVA
+Considering that the data failed to meet the assumption of normality, but met the assumption of homogeneity of variance, we can proceed to conduct a Welch's ANOVA.
+
 
 ```r
 # Conduct Welch's ANOVA
 welch_anova_test(formula = Scores ~ Group,
-                 data = C3E9)
+                 data = C3E9) 
 ```
 
 ```
@@ -226,20 +220,86 @@ welch_anova_test(formula = Scores ~ Group,
 games_howell_test(formula = Scores ~ Group,
                   data = C3E9, 
                   conf.level = 0.95, 
-                  detailed = FALSE)
+                  detailed = FALSE) %>%
+  kable(., "html")
 ```
 
-```
-## # A tibble: 6 × 8
-##   .y.    group1 group2 estimate conf.low conf.high p.adj p.adj.signif
-## * <chr>  <chr>  <chr>     <dbl>    <dbl>     <dbl> <dbl> <chr>       
-## 1 Scores 1      2             8    1.35     14.6   0.027 *           
-## 2 Scores 1      3             2   -4.65      8.65  0.646 ns          
-## 3 Scores 1      4             6   -0.648    12.6   0.069 ns          
-## 4 Scores 2      3            -6  -12.6       0.648 0.069 ns          
-## 5 Scores 2      4            -2   -8.65      4.65  0.646 ns          
-## 6 Scores 3      4             4   -2.65     10.6   0.209 ns
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> .y. </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> estimate </th>
+   <th style="text-align:right;"> conf.low </th>
+   <th style="text-align:right;"> conf.high </th>
+   <th style="text-align:right;"> p.adj </th>
+   <th style="text-align:left;"> p.adj.signif </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 1.3523215 </td>
+   <td style="text-align:right;"> 14.6476785 </td>
+   <td style="text-align:right;"> 0.027 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> -4.6476785 </td>
+   <td style="text-align:right;"> 8.6476785 </td>
+   <td style="text-align:right;"> 0.646 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> -0.6476785 </td>
+   <td style="text-align:right;"> 12.6476785 </td>
+   <td style="text-align:right;"> 0.069 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> -6 </td>
+   <td style="text-align:right;"> -12.6476785 </td>
+   <td style="text-align:right;"> 0.6476785 </td>
+   <td style="text-align:right;"> 0.069 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> -2 </td>
+   <td style="text-align:right;"> -8.6476785 </td>
+   <td style="text-align:right;"> 4.6476785 </td>
+   <td style="text-align:right;"> 0.646 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> -2.6476785 </td>
+   <td style="text-align:right;"> 10.6476785 </td>
+   <td style="text-align:right;"> 0.209 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+</tbody>
+</table>
 
 
 {{< /tab >}}

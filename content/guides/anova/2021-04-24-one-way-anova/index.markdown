@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one between-subjects factor.'
 authors: []
-lastmod: '2021-04-24T21:53:52-06:00'
+lastmod: "July 30, 2022"
 featured: no
 image:
   caption: ''
@@ -19,6 +19,8 @@ draft: false
 type: book
 weight: 10
 ---
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
 <!-- Prevent the jmv output from wrapping. Make it scrollable horizontally
 <!-- <style> -->
@@ -42,33 +44,71 @@ pre[class] {
 }
 </style>
 
-The one-way ANOVA is a commonly used statistical technique to compare means among two or more groups. In this guide, we will cover how to perform a one-way ANOVA with the jmv and rstatix packages. The primary assumptions of ANOVA are independence between groups, normally distributed residuals, and homogeneity of variance. When the homogeneity of variance assumption is violated, a [Welch's ANOVA](/guides/anova/welchs-anova) can be conducted instead.
+The one-way ANOVA is a commonly used statistical technique to compare means among two or more groups. This guide covers how to perform a one-way ANOVA in R. The primary assumptions of ANOVA are independence between groups, normally distributed residuals, and homogeneity of variance. When the homogeneity of variance assumption is violated, a [Welch's ANOVA](/guides/anova/welchs-anova) can be conducted instead.
 
 
 ### The data set
-For this demo we will use the data from the Chapter 3, Exercise 9 in the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different psychological treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
+This guide relies on toy data from Exercise 9 in Chapter 3 of the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different therapy treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
 
 For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
-
-```r
-library(AMCP)
-
-# Load the data
-data(C3E9)
-
-# Display part of the data
-head(C3E9)
-```
-
-```
-##   Group Scores
-## 1     1      2
-## 2     1      4
-## 3     1      6
-## 4     2     10
-## 5     2     12
-## 6     2     14
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Group </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Scores </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 14 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+</tbody>
+</table></div>
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
@@ -76,15 +116,18 @@ head(C3E9)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
-Jmv is a package that comes from the standalone <a href="https://jamovi.org/"> jamovi </a> statistical spreadsheet software. Jamovi was designed as an alternative to costly statistical analysis software packages like SPSS or SAS and runs R underneath the hood. The developers of jamovi also maintain an R package with all of the functions of their standalone version.  
+<br>
+Jmv is a package that comes from the standalone <a href="https://jamovi.org/"> jamovi </a> statistical spreadsheet software. Jamovi was designed as an alternative to costly statistical analysis software packages like SPSS or SAS and runs R underneath the hood. 
 
 With the `ANOVA()` function, we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9 and `ss = "3"` to use the Type III sums of squares. The `effectSize = 'partEta'` will output the partial eta squared effect size for the omnibus test. We will also set the `postHocCorr  = 'bonf'` to conduct Bonferroni corrected post hoc tests (although `tukey` can be used as well), `postHocES = "d"` will compute Cohen's d effect sizes for the post hoc tests. Lastly, we want to set `emmMeans = ~ Group` and `emmPlots = TRUE` to plot estimated marginal means and confidence intervals.
 
 
 ```r
 library(jmv)
+library(AMCP)
+data(C3E9)
 
-# Conduct ANOVA test
+# Conduct One-way ANOVA test
 ANOVA(formula = Scores ~ Group, 
       data = C3E9,
       ss = "3",
@@ -127,8 +170,8 @@ ANOVA(formula = Scores ~ Group,
 ```
 
 <div class="figure">
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot1-1.png" alt="anovaOneW plot of means and 95% confidence intervals by group." width="672" />
-<p class="caption">Figure 1: anovaOneW plot of means and 95% confidence intervals by group.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot1-1.png" alt="Plot of mean Scores and 95% confidence intervals by group." width="672" />
+<p class="caption">Figure 1: Plot of mean Scores and 95% confidence intervals by group.</p>
 </div>
 
 
@@ -156,9 +199,11 @@ anovaOneW(formula = Scores ~ Group,
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
-The rstatix package is another way of programming statistical tests in R. One of the benefits of the rstatix package is that it meshes well with the pipe (`%>%`) operator from the tidyverse package. The pipe operator takes the output of one function and feeds it into another function. The pipe operator is useful for chaining functions. We'll see an example of this in the code chunk below to concretize this idea further. The same developer of the rstatix package also developed the ggpubr package which simplifies producing ggplot2 figures. In this guide, the ggpubr package is loaded primarily to simplify producing a jmv style plot.
+<br>
 
-The sample code of conducting the `anova_test()` is not too different than the `ANOVA()` function in jmv. However, for this approach, we will need to change our Group variable to factor, otherwise `anova_test()` will think we will want to predict scores by a numeric variable rather than a categorical one. To determine the type of data you have, you can use the `str()` function on a dataframe which can display the structure of a dataframe and can display if your data are factored or not.
+The rstatix package is another way of programming statistical tests in R. One of the benefits of the rstatix package is that it meshes well with the pipe (`%>%`) operator from the tidyverse package. The pipe operator takes is useful for chaining functions. An example of this chaining will become apparent in the code chunk below. The same developer of the rstatix package also developed the ggpubr package which simplifies producing ggplot2 figures. In this guide, the ggpubr package is loaded primarily to simplify producing a jmv style plot.
+
+The sample code of conducting the `anova_test()` is not too different than the `ANOVA()` function in jmv. However, for this approach, we will need to change our Group variable to factor, otherwise `anova_test()` will think we will want to predict scores from a numeric variable rather than a categorical one. To determine the type of data you have, you can use the `str()` function on a dataframe which can display the structure of a dataframe and can display if your data are factored or not.
 
 Next, we specify a formula predicting Scores by Group (`Scores ~ Group`). Then we tell the function that we want to analyze the C3E9 data, specify our dependent variable (dv; Scores), set the effect size output to partial eta squared ("pes"), and then set the sum of squares method to type III.
 
@@ -211,24 +256,94 @@ To get the output for the post-hoc tests, we will run the `tukey_hsd()` function
 **Tukey's Honest Significant Difference (HSD)**
 
 ```r
-# Tukey post hoc tests
 C3E9 %>%
-  tukey_hsd(Scores ~ Group)
+  tukey_hsd(Scores ~ Group) %>% 
+  kable(., "html")
 ```
 
-```
-## # A tibble: 6 × 9
-##   term  group1 group2 null.value estimate conf.low conf.high   p.adj
-## * <chr> <chr>  <chr>       <dbl>    <dbl>    <dbl>     <dbl>   <dbl>
-## 1 Group 1      2               0        8    2.77     13.2   0.00523
-## 2 Group 1      3               0        2   -3.23      7.23  0.63   
-## 3 Group 1      4               0        6    0.771    11.2   0.0259 
-## 4 Group 2      3               0       -6  -11.2      -0.771 0.0259 
-## 5 Group 2      4               0       -2   -7.23      3.23  0.63   
-## 6 Group 3      4               0        4   -1.23      9.23  0.144  
-## # … with 1 more variable: p.adj.signif <chr>
-```
-
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> term </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> null.value </th>
+   <th style="text-align:right;"> estimate </th>
+   <th style="text-align:right;"> conf.low </th>
+   <th style="text-align:right;"> conf.high </th>
+   <th style="text-align:right;"> p.adj </th>
+   <th style="text-align:left;"> p.adj.signif </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Group </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 2.7705811 </td>
+   <td style="text-align:right;"> 13.2294189 </td>
+   <td style="text-align:right;"> 0.00523 </td>
+   <td style="text-align:left;"> ** </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Group </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> -3.2294189 </td>
+   <td style="text-align:right;"> 7.2294189 </td>
+   <td style="text-align:right;"> 0.63000 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Group </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.7705811 </td>
+   <td style="text-align:right;"> 11.2294189 </td>
+   <td style="text-align:right;"> 0.02590 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Group </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> -6 </td>
+   <td style="text-align:right;"> -11.2294189 </td>
+   <td style="text-align:right;"> -0.7705811 </td>
+   <td style="text-align:right;"> 0.02590 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Group </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> -2 </td>
+   <td style="text-align:right;"> -7.2294189 </td>
+   <td style="text-align:right;"> 3.2294189 </td>
+   <td style="text-align:right;"> 0.63000 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Group </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> -1.2294189 </td>
+   <td style="text-align:right;"> 9.2294189 </td>
+   <td style="text-align:right;"> 0.14400 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+</tbody>
+</table>
 
 #
 
@@ -237,39 +352,171 @@ C3E9 %>%
 ```r
 # Bonferroni corrected post hoc tests
 C3E9 %>% 
-  pairwise_t_test(Scores ~ Group, p.adjust.method = "bonferroni")
+  pairwise_t_test(Scores ~ Group, p.adjust.method = "bonferroni") %>%
+  kable(., "html")
 ```
 
-```
-## # A tibble: 6 × 9
-##   .y.    group1 group2    n1    n2       p p.signif   p.adj p.adj.signif
-## * <chr>  <chr>  <chr>  <int> <int>   <dbl> <chr>      <dbl> <chr>       
-## 1 Scores 1      2          3     3 0.0012  **       0.00717 **          
-## 2 Scores 1      3          3     3 0.256   ns       1       ns          
-## 3 Scores 2      3          3     3 0.00627 **       0.0376  *           
-## 4 Scores 1      4          3     3 0.00627 **       0.0376  *           
-## 5 Scores 2      4          3     3 0.256   ns       1       ns          
-## 6 Scores 3      4          3     3 0.04    *        0.24    ns
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> .y. </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> n1 </th>
+   <th style="text-align:right;"> n2 </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:left;"> p.signif </th>
+   <th style="text-align:right;"> p.adj </th>
+   <th style="text-align:left;"> p.adj.signif </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.00120 </td>
+   <td style="text-align:left;"> ** </td>
+   <td style="text-align:right;"> 0.00717 </td>
+   <td style="text-align:left;"> ** </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.25600 </td>
+   <td style="text-align:left;"> ns </td>
+   <td style="text-align:right;"> 1.00000 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.00627 </td>
+   <td style="text-align:left;"> ** </td>
+   <td style="text-align:right;"> 0.03760 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.00627 </td>
+   <td style="text-align:left;"> ** </td>
+   <td style="text-align:right;"> 0.03760 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.25600 </td>
+   <td style="text-align:left;"> ns </td>
+   <td style="text-align:right;"> 1.00000 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.04000 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.24000 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+</tbody>
+</table>
 **Effect Sizes**
 
 ```r
 # Effect sizes
 C3E9 %>% 
-  cohens_d(Scores ~ Group, var.equal = FALSE)
+  cohens_d(Scores ~ Group, var.equal = FALSE) %>%
+  kable(., "html")
 ```
 
-```
-## # A tibble: 6 × 7
-##   .y.    group1 group2 effsize    n1    n2 magnitude
-## * <chr>  <chr>  <chr>    <dbl> <int> <int> <ord>    
-## 1 Scores 1      2           -4     3     3 large    
-## 2 Scores 1      3           -1     3     3 large    
-## 3 Scores 1      4           -3     3     3 large    
-## 4 Scores 2      3            3     3     3 large    
-## 5 Scores 2      4            1     3     3 large    
-## 6 Scores 3      4           -2     3     3 large
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> .y. </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> effsize </th>
+   <th style="text-align:right;"> n1 </th>
+   <th style="text-align:right;"> n2 </th>
+   <th style="text-align:left;"> magnitude </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> -4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> large </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> -1 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> large </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> -3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> large </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> large </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> large </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> -2 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> large </td>
+  </tr>
+</tbody>
+</table>
 
 **Summary Statistics**
 
@@ -277,19 +524,96 @@ C3E9 %>%
 # Summary statistics
 C3E9 %>% 
   group_by(Group) %>%
-  get_summary_stats()
+  get_summary_stats() %>%
+  kable(., "html")
 ```
 
-```
-## # A tibble: 4 × 14
-##   Group variable     n   min   max median    q1    q3   iqr   mad  mean    sd
-##   <fct> <chr>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-## 1 1     Scores       3     2     6      4     3     5     2  2.96     4     2
-## 2 2     Scores       3    10    14     12    11    13     2  2.96    12     2
-## 3 3     Scores       3     4     8      6     5     7     2  2.96     6     2
-## 4 4     Scores       3     8    12     10     9    11     2  2.96    10     2
-## # … with 2 more variables: se <dbl>, ci <dbl>
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Group </th>
+   <th style="text-align:left;"> variable </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> min </th>
+   <th style="text-align:right;"> max </th>
+   <th style="text-align:right;"> median </th>
+   <th style="text-align:right;"> q1 </th>
+   <th style="text-align:right;"> q3 </th>
+   <th style="text-align:right;"> iqr </th>
+   <th style="text-align:right;"> mad </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> se </th>
+   <th style="text-align:right;"> ci </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2.965 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 1.155 </td>
+   <td style="text-align:right;"> 4.968 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2.965 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 1.155 </td>
+   <td style="text-align:right;"> 4.968 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2.965 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 1.155 </td>
+   <td style="text-align:right;"> 4.968 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:left;"> Scores </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2.965 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 1.155 </td>
+   <td style="text-align:right;"> 4.968 </td>
+  </tr>
+</tbody>
+</table>
 
 
 
@@ -330,10 +654,10 @@ ggerrorplot(C3E9,
 [Back to tabs](#tests)
 
 ### Interpret the output
-For the omnibus test, we obtained a significant effect of Group [F(3,8) = 10, p < 0.01] which suggests that the means of the 4 groups are not equal. In other words, one of the treatments may be significantly different than another. To determine where, if any differences between two groups exist, we conducted post-hoc tests on all possible combinations of pairwise comparisons. These tests revealed a significant difference between group 1 and 2, between group 1 and 4, and between group 2 and 3. The results suggest that phobia scores after rational-emotive therapy were lower when compared to psychoanalytic and behavioral therapies. The results also suggest that phobia scores were on average lower after client-centered therapy compared to psychoanalytic therapy. Finally, there were statistically significant differences between rational-emotive and client-centered therapy and no differences between psychoanalytic and behavioral therapies. The data are simply an example, but provide an idea of how ANOVA can be used to explore which therapies may be better suited for improving certain mental health conditions.
+For the omnibus test, we obtained a significant effect of Group [F(3,8) = 10, p < 0.01] which suggests that the means of the 4 groups are not equal. In other words, one of the treatments may be significantly different than another. To determine where, if any differences between two groups exist, we conducted post-hoc tests on all possible combinations of pairwise comparisons. These tests revealed a significant difference between groups 1 and 2, between groups 1 and 4, and between groups 2 and 3. The results suggest that phobia scores after rational-emotive therapy were lower when compared to psychoanalytic and behavioral therapies. The results also suggest that phobia scores were on average lower after client-centered therapy compared to psychoanalytic therapy. Finally, there were statistically significant differences between rational-emotive and client-centered therapy, but no differences between psychoanalytic and behavioral therapies.
 
 ### Wrap up
-One of the benefits of the `ANOVA()` function lies in eliminating the need to write code to produce a plot of means, confidence intervals, and effect sizes. What is produced with one option within the `ANOVA()` command, takes additional packages and several lines of code to produce with other packages. The `anovaOneW()` function from the jmv package can also be used to perform a one-way ANOVA. However, the `anovaOneW()` is a bit limited in features and is best used for Welch's ANOVA. If you're starting out with R, the jmv package will surely give you a head start in terms of analyzing and visualizing one-way ANOVA tests.
+One of the benefits of the `ANOVA()` function lies in eliminating the need to write the R code to produce a plot of means, confidence intervals, and effect sizes. What is produced with one option within the `ANOVA()` command, takes additional packages and several lines of code to produce with other packages. The `anovaOneW()` function from the jmv package can also be used to perform a one-way ANOVA. However, the `anovaOneW()` is limited in features and is best suited for the Welch's ANOVA. If you're starting out with R, the jmv package can be a nice place to start conducting one-way ANOVA in R.
 
 ### References
 <div id="refs" class="references">
