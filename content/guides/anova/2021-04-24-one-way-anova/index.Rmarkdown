@@ -31,16 +31,17 @@ weight: 10
 <!-- </style>  -->
 
 <!-- Limit the vertical height of output and source -->
-```{css, echo=FALSE}
-pre {
-  max-height: 310px;
-  overflow-y: auto;
-}
 
-pre[class] {
-  max-height: 100px;
-}
-```
+<!-- ```{css, echo=FALSE} -->
+<!-- pre { -->
+<!--   max-height: 310px; -->
+<!--   overflow-y: auto; -->
+<!-- } -->
+
+<!-- pre[class] { -->
+<!--   max-height: 100px; -->
+<!-- } -->
+<!-- ``` -->
 
 The one-way ANOVA is a commonly used statistical technique to compare means among two or more groups. This guide covers how to perform a one-way ANOVA in R. The primary assumptions of ANOVA are independence between groups, normally distributed residuals, and homogeneity of variance. When the homogeneity of variance assumption is violated, a [Welch's ANOVA](/guides/anova/welchs-anova) can be conducted instead.
 
@@ -59,9 +60,10 @@ data(C3E9)
 data <- C3E9
 
 # Display part of the data
-kable(data, "html") %>%
-  kable_styling(fixed_thead = T) %>%
-  scroll_box(height = "300px")                  
+kable(data, "html", booktabs = T) %>%
+  kable_paper("hover", full_width = F) %>%
+  kable_styling(position = "center")
+#C3E9
 ```
 
 ### Perform ANOVA tests {#tests}
@@ -129,13 +131,10 @@ library(rstatix)
 library(ggpubr)
 
 # Display structure of data
-str(C3E9)
+#str(C3E9)
 
 # Convert group to factor
 C3E9$Group <- as.factor(C3E9$Group)
-
-# Display structure of data
-str(C3E9)
 
 # Conduct ANOVA test
 anova_test(Scores ~ Group, 
@@ -144,7 +143,7 @@ anova_test(Scores ~ Group,
            type = 3)
 ```
 ### Post hoc tests
-To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply a different correction procedure such Bonferroni, Holm, or False Discovery Rate (FDR). In addition, rstatix provides some convenient ways for producing effect sizes, and summary statistics.
+To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply the Bonferroni, Holm, or False Discovery Rate (FDR) correction procedures. In addition, rstatix provides some convenient ways for producing effect sizes and summary statistics.
 
 **Tukey's Honest Significant Difference (HSD)**
 ```{r tukey_hsd}
@@ -162,6 +161,7 @@ C3E9 %>%
   pairwise_t_test(Scores ~ Group, p.adjust.method = "bonferroni") %>%
   kable(., "html")
 ```
+
 **Effect Sizes**
 ```{r effect_sizes}
 # Effect sizes
@@ -220,7 +220,7 @@ aov(Scores ~ Group, data = C3E9)
 ```
 
 ### Plot the data  
-One way to produce a plot of the data is to use the ggpubr package. The ggpubr package is a wrapper for ggplot2 and serves to simplify the ggplot2 syntax. The only drawback is that it may not have all of the flexibility of ggplot2. However, if you're new to R, ggpubr is a gentle introduction to making publication quality figures in R. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
+One way to produce a plot of the data is to use the ggpubr package. The ggpubr package is a wrapper for ggplot2 and can simplify some of the ggplot2 syntax. The only drawback is that it may not have all of the flexibility of ggplot2. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
 ```{r blu, echo=FALSE}
 azl <- "#1565c0"
 ```

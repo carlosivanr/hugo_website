@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one between-subjects factor.'
 authors: []
-lastmod: "July 30, 2022"
+lastmod: "August 07, 2022"
 featured: no
 image:
   caption: ''
@@ -33,16 +33,17 @@ weight: 10
 <!-- </style>  -->
 
 <!-- Limit the vertical height of output and source -->
-<style type="text/css">
-pre {
-  max-height: 310px;
-  overflow-y: auto;
-}
 
-pre[class] {
-  max-height: 100px;
-}
-</style>
+<!-- ```{css, echo=FALSE} -->
+<!-- pre { -->
+<!--   max-height: 310px; -->
+<!--   overflow-y: auto; -->
+<!-- } -->
+
+<!-- pre[class] { -->
+<!--   max-height: 100px; -->
+<!-- } -->
+<!-- ``` -->
 
 The one-way ANOVA is a commonly used statistical technique to compare means among two or more groups. This guide covers how to perform a one-way ANOVA in R. The primary assumptions of ANOVA are independence between groups, normally distributed residuals, and homogeneity of variance. When the homogeneity of variance assumption is violated, a [Welch's ANOVA](/guides/anova/welchs-anova) can be conducted instead.
 
@@ -51,11 +52,11 @@ The one-way ANOVA is a commonly used statistical technique to compare means amon
 This guide relies on toy data from Exercise 9 in Chapter 3 of the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different therapy treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
 
 For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+<table class=" lightable-paper lightable-hover table" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;'>
  <thead>
   <tr>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Group </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Scores </th>
+   <th style="text-align:right;"> Group </th>
+   <th style="text-align:right;"> Scores </th>
   </tr>
  </thead>
 <tbody>
@@ -108,7 +109,7 @@ For these data, Group represents the type of therapy the participant was randoml
    <td style="text-align:right;"> 12 </td>
   </tr>
 </tbody>
-</table></div>
+</table>
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
@@ -213,30 +214,11 @@ library(rstatix)
 library(ggpubr)
 
 # Display structure of data
-str(C3E9)
-```
+#str(C3E9)
 
-```
-## 'data.frame':	12 obs. of  2 variables:
-##  $ Group : int  1 1 1 2 2 2 3 3 3 4 ...
-##  $ Scores: int  2 4 6 10 12 14 4 6 8 8 ...
-```
-
-```r
 # Convert group to factor
 C3E9$Group <- as.factor(C3E9$Group)
 
-# Display structure of data
-str(C3E9)
-```
-
-```
-## 'data.frame':	12 obs. of  2 variables:
-##  $ Group : Factor w/ 4 levels "1","2","3","4": 1 1 1 2 2 2 3 3 3 4 ...
-##  $ Scores: int  2 4 6 10 12 14 4 6 8 8 ...
-```
-
-```r
 # Conduct ANOVA test
 anova_test(Scores ~ Group, 
            data = C3E9, 
@@ -251,7 +233,7 @@ anova_test(Scores ~ Group,
 ## 1  Group   3   8 10 0.004     * 0.789
 ```
 ### Post hoc tests
-To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply a different correction procedure such Bonferroni, Holm, or False Discovery Rate (FDR). In addition, rstatix provides some convenient ways for producing effect sizes, and summary statistics.
+To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply the Bonferroni, Holm, or False Discovery Rate (FDR) correction procedures. In addition, rstatix provides some convenient ways for producing effect sizes and summary statistics.
 
 **Tukey's Honest Significant Difference (HSD)**
 
@@ -439,6 +421,7 @@ C3E9 %>%
   </tr>
 </tbody>
 </table>
+
 **Effect Sizes**
 
 ```r
@@ -627,7 +610,7 @@ C3E9 %>%
 
 
 ### Plot the data  
-One way to produce a plot of the data is to use the ggpubr package. The ggpubr package is a wrapper for ggplot2 and serves to simplify the ggplot2 syntax. The only drawback is that it may not have all of the flexibility of ggplot2. However, if you're new to R, ggpubr is a gentle introduction to making publication quality figures in R. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
+One way to produce a plot of the data is to use the ggpubr package. The ggpubr package is a wrapper for ggplot2 and can simplify some of the ggplot2 syntax. The only drawback is that it may not have all of the flexibility of ggplot2. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
 
 
 

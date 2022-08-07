@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with two between-subjects factors.'
 authors: []
-lastmod: '2021-05-04T19:37:58-06:00'
+lastmod: "August 07, 2022"
 featured: no
 image:
   caption: ''
@@ -43,10 +43,10 @@ weight: 20
 
 
 
-In this guide, we will cover different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are an extension of one-ways ANOVAS and can be used for situations where the goal is to statistically compare means of two or more groups that differ along two or more independent variables.
+This guide covers different ways of conducting two-way ANOVAs in R. Two-way ANOVAS are an extension of one-ways ANOVAS where an additional between-subjects factor is of interest.
 
 ### The data set
-We will utilize an example with the chapter_7_table_5 data from the AMCP package. In the example dataset, we have a hypothetical experiment that tests the presence or absence of biofeedback (first independent variable) in combination with three different drugs on measures of blood pressure (second independent variables). The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to the dependent variable and measure blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design. We will also assume that the assumptions of independence, equality of variance, and normality are met for the sample dataset.
+The example data set comes from chapter_7_table_5 from the AMCP package. In the example data set, a hypothetical experiment tests the effect of presence or absence of biofeedback (first between-subjects factor) in combination with three different drugs on measures of blood pressure (second between-subjects ). The Feedback group is coded as a 1 or a 2 where 1 indicates the participants received biofeedback and 2 indicates participants did not. Drug is coded as 1, 2, or 3, and specifies one of three hypothetical drugs that purportedly reduce blood pressure. Finally, Scores refer to the dependent variable and measure blood pressure where lower values are better. This leaves us with a 2x3 between-subjects design. We will also assume that the assumptions of independence, equality of variance, and normality are met for the sample data set.
 
 
 ```r
@@ -75,8 +75,9 @@ head(chapter_7_table_5)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
+<br>
 
-We will begin by loading the jmv package and use `ANOVA()` function which can be used for both one-way and two-way designs. The following code will set Score as the dependent variable and Feedback and Drug as independent variables. The call is set to use type III sums of squares, the effect size for omnibus test will be reported as partial eta squared, post hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be generated.
+First, load the jmv package and use the `ANOVA()` function which can be used for both one-way and two-way designs. The following code will set Score as the dependent variable and Feedback and Drug as independent variables (between-subjects factors). The call is set to use type III sums of squares, the effect size for the omnibus test will be reported as partial eta squared, post hoc tests will be performed with Feedback and Drug factors, and the plots of the means of Feedback and Drug will be generated.
 
 ```r
 library(jmv)
@@ -169,9 +170,11 @@ ANOVA(formula = Score ~ Feedback * Drug,
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
-When using rstatix, it's useful to load the tidyverse package as well. This will make it so that we can use the pipe operator (`%>%`) and the `group_by()` function. Once we load our data, we will first want to convert Feedback and Drug to factor so the values get treated as categorical variable. Next, we will build an ANOVA model with the base R `aov()` function that predicts Score by Feedback and Drug. Next, we will use the rstatix `anova_test()` function on our aov model to produce the output for the omnibus test. The reason for using the `anova_test()` function is because it allows us to specify the type of sums of squares. 
+<br>
 
-There are several ways of calculating the sums of squares including Type I, Type II, and Type III. In Type I SS, the order in which you enter predictors matters and tend not to get used very often. The `aov()` function defaults to Type I, but there is no way built in option to specify the SS. Type II SS can also be used for ANOVA and may be a good option in cases where an interaction is not of interest. Type III SS tend to be recommended and are the default setting in commercial statistical packages such as SPSS and SAS. Type III SS have the advantage of better of evaluating an interaction which can offten be of interest and are recommended for unequal samples.
+To perform a two-way ANOVA with the rstatix package, the Feedback and Drug variables first need to be converted to factor so the numerical values get treated as a categorical variable. Next, the `anova_test()` function can be used to conduct the test and display the results. However, it may be advantageous to first fit an `aov()` model that can later be used with the `emmeans_test()` function.
+<!-- https://www.r-bloggers.com/2011/03/anova-%E2%80%93-type-iiiiii-ss-explained/ -->
+
 
 ```r
 library(tidyverse)
@@ -179,8 +182,8 @@ library(rstatix)
 library(ggpubr)
 
 # Convert Drug and Feedback to factor
-chapter_7_table_5$Drug <- as.factor(chapter_7_table_5$Drug)
-chapter_7_table_5$Feedback <- as.factor(chapter_7_table_5$Feedback)
+chapter_7_table_5 <- chapter_7_table_5 %>%
+  mutate_at(c("Drug", "Feedback"), as.factor)
 
 # Create aov() model
 model <- aov(formula = Score ~ Feedback * Drug,
@@ -198,7 +201,15 @@ anova_test(model, effect.size = "pes", type = 3)
 ## 2          Drug   2  24 10.979 0.000411     * 0.478
 ## 3 Feedback:Drug   2  24  2.504 0.103000       0.173
 ```
-The results from the omnibus test reveal that there is no significant interaction between Drug and Feedback. On the other hand, there are significant main effects for Drug and for Feedback. Because the interaction is not significant, may proceed to perform tests of marginal means. Had the interaction been significant, we could have opted to perfrom tests of simple effects of Drug within Feedback, or Feedback within drug. However, these are primarily suggestions and the approach to analyzing the data should be guided by the research question.
+
+```r
+# Alternative form of using anova_test()
+# anova_test(Score ~ Feedback * Drug,
+#            data = chapter_7_table_5,
+#            effect.size = "pes",
+#            type = 3)
+```
+The results from the omnibus test reveal that there is no significant interaction between Drug and Feedback. On the other hand, there are significant main effects for Drug and for Feedback. Because the interaction is not significant, we may proceed to perform tests of marginal means. Had the interaction been significant, we could have opted to perform tests of simple effects of Drug within Feedback, or Feedback within drug. However, these are primarily suggestions and the approach to analyzing the data should be guided by the research question.
 
 #### Tests of marginal means
 The rstatix package includes a function, `emmeans_test()`, that can perform tests of estimated marginal means. To perform these tests, we will use the aov model that we created in the previous step and we will conduct two separate tests, one for Feedback and one for Drug. The correction method in this example is set to `"none"`, but this can be easily changed according to your situation. The available correction methods can be found by typing `help(anova_test)` in the Console.
@@ -208,6 +219,7 @@ We will also use the `get_summary_stats()` function and illustrate how the tidyv
 To plot the data we will rely on the ggpubr package. The ggpubr and rstatix packages are developed by the same individual and are aimed at simplifying the syntax for conducting statistical tests and generating plots in R. For our purposes we will use the `ggerrorplot()` function to plot means and confidence intervals.
 
 #### Feedback
+
 
 
 ```r
@@ -222,30 +234,74 @@ pwc <- chapter_7_table_5 %>%
 ## NOTE: Results may be misleading due to involvement in interactions
 ```
 
-```r
-# Print the results of the pairwise comparisons of Feedback
-pwc
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> term </th>
+   <th style="text-align:left;"> .y. </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> df </th>
+   <th style="text-align:right;"> statistic </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:right;"> p.adj </th>
+   <th style="text-align:left;"> p.adj.signif </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Feedback </td>
+   <td style="text-align:left;"> Score </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> -2.633285 </td>
+   <td style="text-align:right;"> 0.0145635 </td>
+   <td style="text-align:right;"> 0.0145635 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+</tbody>
+</table>
 
-```
-## # A tibble: 1 x 8
-##   .y.   group1 group2    df statistic      p  p.adj p.adj.signif
-## * <chr> <chr>  <chr>  <dbl>     <dbl>  <dbl>  <dbl> <chr>       
-## 1 Score 1      2         24     -2.63 0.0146 0.0146 *
-```
 
 ```r
 # Print the estimated marginal means of Feedback
-get_emmeans(pwc)
+get_emmeans(pwc) %>% kableExtra::kable(., "html")
 ```
 
-```
-## # A tibble: 2 x 7
-##   Feedback emmean    se    df conf.low conf.high method      
-##   <fct>     <dbl> <dbl> <dbl>    <dbl>     <dbl> <chr>       
-## 1 1           187  3.22    24     180.      194. Emmeans test
-## 2 2           199  3.22    24     192.      206. Emmeans test
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Feedback </th>
+   <th style="text-align:right;"> emmean </th>
+   <th style="text-align:right;"> se </th>
+   <th style="text-align:right;"> df </th>
+   <th style="text-align:right;"> conf.low </th>
+   <th style="text-align:right;"> conf.high </th>
+   <th style="text-align:left;"> method </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 187 </td>
+   <td style="text-align:right;"> 3.222318 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 180.3495 </td>
+   <td style="text-align:right;"> 193.6505 </td>
+   <td style="text-align:left;"> Emmeans test </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 199 </td>
+   <td style="text-align:right;"> 3.222318 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 192.3495 </td>
+   <td style="text-align:right;"> 205.6505 </td>
+   <td style="text-align:left;"> Emmeans test </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 # Modify pwc to include x and y positions for plotting signficance markers
@@ -261,10 +317,7 @@ ggerrorplot(get_emmeans(pwc),
     stat_pvalue_manual(pwc, hide.ns = TRUE, tip.length = FALSE)
 ```
 
-<div class="figure">
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot3-1.png" alt="Means and confidence intervals for Feedback collapsed across Drug. *, p&lt;0.05; **, p&lt;0.01; ***, p&lt;0.001; ns, not significant. n.b. The confidence intervals plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard errors are the same for all levels of Feedback. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. " width="672" />
-<p class="caption">Figure 3: Means and confidence intervals for Feedback collapsed across Drug. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant. n.b. The confidence intervals plotted by the ggpubr and jmv packages are based on estimated marginal means. Note that the standard errors are the same for all levels of Feedback. In some situations, you may want to plot the cell means and the corresponding confidence intervals instead. To plot the cell means with ggpubr, see the code chunk below. </p>
-</div>
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
 #### Plot cell means
 
@@ -301,31 +354,107 @@ pwc <- chapter_7_table_5 %>%
 
 ```r
 # Print the results of the pairwise comparisons of Feedback
-pwc
+pwc %>% kableExtra::kable(., "html")
 ```
 
-```
-## # A tibble: 3 x 8
-##   .y.   group1 group2    df statistic        p    p.adj p.adj.signif
-## * <chr> <chr>  <chr>  <dbl>     <dbl>    <dbl>    <dbl> <chr>       
-## 1 Score 1      2         24    -4.30  0.000246 0.000246 ***         
-## 2 Score 1      3         24    -3.76  0.000958 0.000958 ***         
-## 3 Score 2      3         24     0.538 0.596    0.596    ns
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> term </th>
+   <th style="text-align:left;"> .y. </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> df </th>
+   <th style="text-align:right;"> statistic </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:right;"> p.adj </th>
+   <th style="text-align:left;"> p.adj.signif </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Drug </td>
+   <td style="text-align:left;"> Score </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> -4.300136 </td>
+   <td style="text-align:right;"> 0.0002462 </td>
+   <td style="text-align:right;"> 0.0002462 </td>
+   <td style="text-align:left;"> *** </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Drug </td>
+   <td style="text-align:left;"> Score </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> -3.762619 </td>
+   <td style="text-align:right;"> 0.0009578 </td>
+   <td style="text-align:right;"> 0.0009578 </td>
+   <td style="text-align:left;"> *** </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Drug </td>
+   <td style="text-align:left;"> Score </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 0.537517 </td>
+   <td style="text-align:right;"> 0.5958599 </td>
+   <td style="text-align:right;"> 0.5958599 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 # Print the estimated marginal means of Feedback
-get_emmeans(pwc)
+get_emmeans(pwc) %>% kableExtra::kable(., "html")
 ```
 
-```
-## # A tibble: 3 x 7
-##   Drug  emmean    se    df conf.low conf.high method      
-##   <fct>  <dbl> <dbl> <dbl>    <dbl>     <dbl> <chr>       
-## 1 1        178  3.95    24     170.      186. Emmeans test
-## 2 2        202  3.95    24     194.      210. Emmeans test
-## 3 3        199  3.95    24     191.      207. Emmeans test
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Drug </th>
+   <th style="text-align:right;"> emmean </th>
+   <th style="text-align:right;"> se </th>
+   <th style="text-align:right;"> df </th>
+   <th style="text-align:right;"> conf.low </th>
+   <th style="text-align:right;"> conf.high </th>
+   <th style="text-align:left;"> method </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 178 </td>
+   <td style="text-align:right;"> 3.946518 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 169.8548 </td>
+   <td style="text-align:right;"> 186.1452 </td>
+   <td style="text-align:left;"> Emmeans test </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 202 </td>
+   <td style="text-align:right;"> 3.946518 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 193.8548 </td>
+   <td style="text-align:right;"> 210.1452 </td>
+   <td style="text-align:left;"> Emmeans test </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 199 </td>
+   <td style="text-align:right;"> 3.946518 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 190.8548 </td>
+   <td style="text-align:right;"> 207.1452 </td>
+   <td style="text-align:left;"> Emmeans test </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 # Modify pwc to include x and y positions for plotting signficance markers
@@ -343,7 +472,7 @@ ggerrorplot(get_emmeans(pwc),
 
 <div class="figure">
 <img src="{{< blogdown/postref >}}index_files/figure-html/plot4-1.png" alt="Means and confidence intervals for Drug collapsed across Feedback. *, p&lt;0.05; **, p&lt;0.01; ***, p&lt;0.001; ns, not significant" width="672" />
-<p class="caption">Figure 4: Means and confidence intervals for Drug collapsed across Feedback. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant</p>
+<p class="caption">Figure 3: Means and confidence intervals for Drug collapsed across Feedback. *, p<0.05; **, p<0.01; ***, p<0.001; ns, not significant</p>
 </div>
 
 
@@ -363,19 +492,6 @@ The two tests of marginal means will produce a couple of messages to remind us t
 {{< /tab >}}
 
 {{< /tabs >}}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 [Back to tabs](#tests)
