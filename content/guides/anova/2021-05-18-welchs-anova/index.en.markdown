@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one between-subjects factor that fail to meet the homogeneity of variance assumption.'
 authors: []
-lastmod: "July 30, 2022"
+lastmod: "July 31, 2022"
 featured: no
 image:
   caption: ''
@@ -19,6 +19,8 @@ draft: false
 type: book
 weight: 15
 ---
+<script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />
 
 <!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
 <!-- <style> -->
@@ -123,6 +125,7 @@ anovaOneW(formula = Scores ~ Group,
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
 <br>
+
 In rstatix, the `anova_test()` function can analyse several types of between and within subjects ANOVA designs. However, to conduct a Welch's ANOVA , the `welch_anova_test()` function is required. The syntax to conduct the actual test is rather simple. In the following code chunk, I've chosen to explicitly declare `formula = Scores ~ Group` and `data = C3E9`. However, one could just as easily specify the dataframe and formula as long as data is the first entered variable. Similarly, data and formula do not need to be explicitly specified for the `games_howell_test()` function, but hare specified in the example for consistency. 
 
 #### Check normality
@@ -150,8 +153,6 @@ aov(Scores ~ Group, data = C3E9) %>%
 
 ```r
 # Create a plot of standardised residuals, indexed at position 2 of plot(aov(x))
-# 
-# 
 plot(aov(formula = Scores ~ Group, data = C3E9), 2)
 ```
 
@@ -215,16 +216,16 @@ welch_anova_test(formula = Scores ~ Group,
 #### Post hoc tests
 
 
+
 ```r
 # Games-Howell post-hoc tests
 games_howell_test(formula = Scores ~ Group,
                   data = C3E9, 
                   conf.level = 0.95, 
-                  detailed = FALSE) %>%
-  kable(., "html")
+                  detailed = FALSE)
 ```
 
-<table>
+<table class=" lightable-paper lightable-hover table" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;'>
  <thead>
   <tr>
    <th style="text-align:left;"> .y. </th>

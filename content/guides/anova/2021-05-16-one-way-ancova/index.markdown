@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one between-subjects factor and one continuous covariate.'
 authors: []
-lastmod: '2021-05-16T06:57:23-06:00'
+lastmod: "August 07, 2022"
 featured: no
 image:
   caption: ''
@@ -35,10 +35,10 @@ nocite: |
 <!-- } -->
 <!-- </style> -->
 
-A one-way analysis of covariance (ANCOVA) is an extension of the one-way ANOVA. In some situations, a researcher may wish to statistically control for a concomitant variable. A concomitant variable is one that "comes along" with other variables of interest. These variables are also known as covariates and to concretize this concept, let's take a look at the example data set.
+In some situations, a researcher may wish to statistically control for a concomitant variable. A concomitant variable is one that "comes along" with other variables of interest. These variables are also known as covariates. The one-way analysis of covariance (ANCOVA) is one approach that is used to compare means of groups while accounting for a continuous covariate. 
 
 ### The data set
-For this demo, we will use the data from Chapter 9, Table 7 in the AMCP package. In this hypothetical study, participants are randomly assigned to one of three conditions to examine the effectiveness of a treatment for depression. Participants received a selective serotonin reuptake inhibitor (SSRI) in condition 1, a placebo in condition 2, or were assigned to a wait list control in condition 3. Each participant was also assessed for depression with a pre- and post-treatment inventory. In this type of study, one might want to control for pre-treatment levels of depression when comparing the three conditions in their post-treatment scores. As a result, pre-treatment depression scores can serve as covariates. 
+This guide uses data from Chapter 9, Table 7 in the AMCP package. In this hypothetical study, participants are randomly assigned to one of three conditions to examine the effectiveness of a treatment for depression. Participants received a selective serotonin reuptake inhibitor (SSRI) in condition 1, a placebo in condition 2, or were assigned to a wait list control in condition 3. Each participant was also assessed for depression with a pre- and post-treatment inventory. In this type of study, one might want to control for the pre-treatment levels of depression when comparing the three conditions in their post-treatment scores. As a result, pre-treatment depression scores can serve as covariates. 
 
 
 ```r
@@ -71,7 +71,9 @@ head(chapter_9_table_7)
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
-The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared for the omnibus test, to produce Bonferroni corrected post hoc tests to compare conditions, and post hoc test effect sizes in Cohen's D. Finally, a plot of means by condition with 95% confidence intervals will be generated.
+<br>
+
+The following code chunk will perform a one-way ANCOVA predicting post-treatment depression scores by condition while considering pre-treatment depression scores as a covariate using Type III sums of squares. In addition, the call also asks to provide output for an effect size of partial eta squared for the omnibus test, to produce Bonferroni corrected post hoc tests to compare conditions, and post hoc test Cohen's D effect size. Finally, a plot of means by condition with 95% confidence intervals will be generated.
 
 ```r
 library(jmv)
@@ -140,7 +142,9 @@ ancova(formula = Post ~ Pre + Condition,
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
-The following code chunk will produce the same ANCOVA output with the rstatix package. One slight difference here though is that we are going to save the output to an `anova_test()` object, then print the output with the `get_anova_table()` function. This approach will come in handy when generating the [plot of means](#mean_plots). In the `anova_test()` `formula` argument we enter the covariate first. This is primarily done to pull out the correct F ratio for plotting. In our example, we are setting the sums of squares `type = 3` which means we will get the same output whether we use `formula Post ~  Pre + Condition` or `formula = Post ~ Condition + Pre`. However, if using Type II sums of squares you'll need to enter the covariate first.
+<br>
+
+The following code chunk will produce the same ANCOVA output with the rstatix package. One slight difference here though is that we are going to save the output to an `anova_test()` object, then print the output with the `get_anova_table()` function. This approach will come in handy when generating the [plot of means](#mean_plots). In the `anova_test()` `formula` argument we enter the covariate first. This is primarily done to pull out the correct F ratio for plotting. In our example, we are setting the sums of squares `type = 3` which means we will get the same output whether we use `formula Post ~  Pre + Condition` or `formula = Post ~ Condition + Pre`. However, if using Type II sums of squares enter the covariate first.
 
 ```r
 library(rstatix)
@@ -175,33 +179,115 @@ pwc <- chapter_9_table_7 %>%
                p.adjust.method = "bonferroni")
 
 # Print estimated marginal means
-get_emmeans(pwc)
+get_emmeans(pwc) %>% kableExtra::kable()
 ```
 
-```
-## # A tibble: 3 × 8
-##     Pre Condition emmean    se    df conf.low conf.high method      
-##   <dbl> <fct>      <dbl> <dbl> <dbl>    <dbl>     <dbl> <chr>       
-## 1  17.4 1           7.54  1.71    26     4.03      11.0 Emmeans test
-## 2  17.4 2          12.0   1.71    26     8.48      15.5 Emmeans test
-## 3  17.4 3          14.0   1.71    26    10.5       17.5 Emmeans test
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Pre </th>
+   <th style="text-align:left;"> Condition </th>
+   <th style="text-align:right;"> emmean </th>
+   <th style="text-align:right;"> se </th>
+   <th style="text-align:right;"> df </th>
+   <th style="text-align:right;"> conf.low </th>
+   <th style="text-align:right;"> conf.high </th>
+   <th style="text-align:left;"> method </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 17.36667 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 7.536616 </td>
+   <td style="text-align:right;"> 1.707096 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> 4.027629 </td>
+   <td style="text-align:right;"> 11.04560 </td>
+   <td style="text-align:left;"> Emmeans test </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 17.36667 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 11.984895 </td>
+   <td style="text-align:right;"> 1.706832 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> 8.476452 </td>
+   <td style="text-align:right;"> 15.49334 </td>
+   <td style="text-align:left;"> Emmeans test </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 17.36667 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 13.978490 </td>
+   <td style="text-align:right;"> 1.705586 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> 10.472608 </td>
+   <td style="text-align:right;"> 17.48437 </td>
+   <td style="text-align:left;"> Emmeans test </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 # Print post hoc tests
-print(pwc)
+#print(pwc)
+pwc %>% kableExtra::kable()
 ```
 
-```
-## # A tibble: 3 × 9
-##   term          .y.   group1 group2    df statistic      p  p.adj p.adj.signif
-## * <chr>         <chr> <chr>  <chr>  <dbl>     <dbl>  <dbl>  <dbl> <chr>       
-## 1 Pre*Condition Post  1      2         26    -1.84  0.0770 0.231  ns          
-## 2 Pre*Condition Post  1      3         26    -2.67  0.0129 0.0388 *           
-## 3 Pre*Condition Post  2      3         26    -0.826 0.416  1      ns
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> term </th>
+   <th style="text-align:left;"> .y. </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> df </th>
+   <th style="text-align:right;"> statistic </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:right;"> p.adj </th>
+   <th style="text-align:left;"> p.adj.signif </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Pre*Condition </td>
+   <td style="text-align:left;"> Post </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> -1.8411994 </td>
+   <td style="text-align:right;"> 0.0770305 </td>
+   <td style="text-align:right;"> 0.2310916 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Pre*Condition </td>
+   <td style="text-align:left;"> Post </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> -2.6692923 </td>
+   <td style="text-align:right;"> 0.0129231 </td>
+   <td style="text-align:right;"> 0.0387692 </td>
+   <td style="text-align:left;"> * </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Pre*Condition </td>
+   <td style="text-align:left;"> Post </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> -0.8262695 </td>
+   <td style="text-align:right;"> 0.4161696 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:left;"> ns </td>
+  </tr>
+</tbody>
+</table>
+
 ### Effect sizes
-The process to calculate the effect sizes of the post hoc comparisons is a little more drawn out in this case. First, we will need the `MBESS` package. Next we will need three pieces of information, group means, standard deviations, and sample sizes. We will want the estimated marginal means for this situation because these means have been adjusted to take into consideration the covariate. We can also calculate the standard deviations by multiplying the standard error of each group by the square root of the group sample size. Finally, we can enter those values into the `smd()` function. A nice feature of the `smd()` is that we can calculate a standardized mean difference as biased or unbiased. In practice, it is recommended to set `Unbiased = TRUE` with small samples.
+The process to calculate the effect sizes of the post hoc comparisons is a little more drawn out in this case. First, we will need the `MBESS` package. Next we will need three pieces of information, group means, standard deviations, and sample sizes. We will want the estimated marginal means for this situation because these means have been adjusted to take into consideration the covariate. We can also calculate the standard deviations by multiplying the standard error of each group by the square root of the group sample size. Finally, we can enter those values into the `smd()` function which stands for the standardized mean difference. A nice feature of the `smd()` is that we can calculate a standardized mean difference as biased or unbiased. In practice, it is recommended to set `Unbiased = TRUE` with small samples.
 
 ```r
 library(MBESS)
