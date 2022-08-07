@@ -33,7 +33,7 @@ draft: false
 In this guide, I cover how to conduct two-way repeated measures ANOVA with two within-subjects factors.
 
 ### The data set
-For this guide, we will use the data from Chapter 12, Table 1 in the AMCP package. In this hypothetical study, 10 subjects are participating in an experiment that tests how visual information can interfere with recognizing letters. Each subject performs a letter recognition task in two conditions, noise absent or present. Noise refers to visual information that is presented along with either a letter T or I that the subject needs to identify. Whithin each condition, visual information was either presented at 0&deg; (directly in front of the participant), at 4&deg; (slightly offset to one side), or at 8&deg; (even more offset to the side). Thus, noise and degree represent our repeated measures. Finally, the dependent variable in this study is the latency in milliseconds needed to identify the letter.
+For this guide, we will use the data from Chapter 12, Table 1 in the AMCP package. In this hypothetical study, 10 subjects are participating in an experiment that tests how visual information can interfere with recognizing letters. Each subject performs a letter recognition task in two conditions, noise absent or present. Noise refers to visual information that is presented along with either a letter T or I that the subject needs to identify. Within each condition, visual information was either presented at 0&deg; (directly in front of the participant), at 4&deg; (slightly offset to one side), or at 8&deg; (even more offset to the side). Thus, noise and degree represent our repeated measures. Finally, the dependent variable in this study is the latency in milliseconds needed to identify the letter.
 
 ```{r warning=FALSE}
 library(AMCP)
@@ -51,6 +51,7 @@ kableExtra::kable(head(chapter_12_table_1))
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
+<br>
 
 <!-- ```{r, plot1, fig.cap = 'figure caption.', warning=FALSE} -->
 <!-- library(jmv) -->
@@ -90,7 +91,7 @@ kableExtra::kable(head(chapter_12_table_1))
 <!--   depLabel = "Mean Latency") -->
 <!-- ``` -->
 
-As we encountered in the guide for [one-way rm-ANOVA](/guides/anova/one-way-anova), we will want to convert our data set from wide format to long format before conducting the statistical test. This situation is a bit trickier because there are many more columns to deal with so I've written a separate walk through that can be found [here](/guides/r/wide-to-long) in order to emphasize the procedure for conducting the statistical tests.
+As we encountered in the guide for [one-way rm-ANOVA](/guides/anova/one-way-anova), we will want to convert our data set from wide format to long format before conducting the statistical test. This situation is a bit trickier because there are many more columns to deal with so I've written a separate walk through that can be found [here](/guides/r/wide-to-long) in order to focus on the procedures for conducting the statistical tests.
 
 ```{r rstatix, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -119,10 +120,65 @@ rm.mod <- anova_test(data = data,
                      within = c(Condition, Angle), 
                      effect.size = "pes")
 
+# Print ANOVA table and  Mauchly's Test for Sphericity 
+rm.mod
+```
 
-get_anova_table(rm.mod, correction = "none")
 
-# Generate Plot
+
+
+
+
+### Interpretation
+The results of Mauchly's test indicate that we have not violated the assumption of sphericity and do not require any corrections on the F-values. In addition, the results suggest a significant interaction between noise and condition. As a result, the next step will be to test for simple effects. In other words, we can decompose the significant interaction into testing the effect of angle at each level of noise and then test the effect of noise at each level of angle. Each of these tests can be thought of as a series of one-way repeated measures tests.
+
+**The effect of angle at each level of condition**
+
+Let's begin by carrying out two one-way repeated measures ANOVAs, one for each level of Condition. To help visualize these analyses, we can plot the data with the `ggline()` function. The results of these analyses reveal significant effects of angle when conducted on on absent and present data separately. These significant effects can be further investigated with pair wise comparisons.
+```{r}
+data %>% 
+  group_by(Condition) %>% 
+  anova_test(dv = Latency, wid = id, within = Angle, effect.size = "pes") %>% 
+  get_anova_table() %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  kableExtra::kable()
+  
+  
+# Generate Plot 1
+ggline(data,
+       "Angle", 
+       "Latency",
+       color = "Condition",
+       add = "mean_se",
+       palette = "jama",
+       position = position_dodge(.2))
+
+
+# Pairwise comparisons at each level of Condition
+data %>% 
+  group_by(Condition) %>%
+  pairwise_t_test(
+    Latency ~ Angle,
+    paired = TRUE,
+    p.adjust.method = "bonferroni") %>%
+  kableExtra::kable()
+```
+
+
+
+**The effect of condition at each level of angle**
+
+Now we move towards carrying out three one-way repeated measures ANOVAs, one for each level of Angle. As before, we can plot the data with the `ggline()` function to help with the interpretation of the data. The results of these analyses reveal significant effects of condition when conducted separately at each level of angle. These significant effects are further investigated with pair wise comparisons.
+```{r}
+data %>% 
+  group_by(Angle) %>% 
+  anova_test(dv = Latency, wid = id, within = Condition, effect.size = "pes") %>% 
+  get_anova_table() %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  kableExtra::kable()
+
+
+# Generate Plot 2
 ggline(data,
        "Condition", 
        "Latency",
@@ -130,7 +186,17 @@ ggline(data,
        add = "mean_se",
        palette = "jama",
        position = position_dodge(.2))
+
+# Pairwise comparisons at each level of Angle
+data %>% 
+  group_by(Angle) %>%
+  pairwise_t_test(
+    Latency ~ Condition,
+    paired = TRUE,
+    p.adjust.method = "bonferroni") %>%
+  kableExtra::kable()
 ```
+
 
 
 ```{r include=FALSE}
@@ -143,9 +209,11 @@ ggline(data,
 {{< /tab >}}
 
 {{< tab tabNum="2" >}}
+<br>
+
 A repeated measures ANOVA can also be analyzed under a mixed effects framework using the lme4 package. Mixed effects models contain a mixture of fixed and random effects and are also sometimes referred to as multi-level models or hierarchical linear models. Fixed effects can be thought of as factors in which all possible levels that a researcher is interested in are represented in the data. A random effect on the other hand is a factor for which the levels in the experimental data represent a sample of a larger set. Mixed effects models may be advantageous because they do not require the assumption of independence in ANOVA, the assumption of homogeneity of regression slopes in ANCOVA, and may be better suited for handling unbalanced designs or situations with missing data. While mixed effect models are estimated using slightly different procedures than more traditional models, there are cases in which the results will overlap and the repeated measures ANOVA with two within-subjects factors is one of those situations.
 
-The `lmer()` function from the lme4 package is designed to fit linear mixed-effects regression models via REML or maximum likelihood. Just like the base R `lm()` function, `lmer()` takes a formula specifying the dependent variable predicted by (~) a combination of fixed and random effect variables. Predictor variables encased in parentheses specify random effects, while variables without parentheses are specified as fixed effects. 
+The `lmer()` function from the lme4 package is designed to fit linear mixed-effects regression models via REML or maximum likelihood. Just like the base R `lm()` function, `lmer()` takes a formula specifying the dependent variable predicted by (~) a combination of fixed- and random- effect variables. Predictor variables encased in parentheses specify random effects, while variables without parentheses are specified as fixed effects. 
 
 The first part of the formula in the example below specifies to predict Latency from the interaction between Condition and Angle as fixed effects. Including just the interaction term is a shortcut for "Latency ~ Condition + Angle + Condition * Angle." The term "(1|id)" specifies a random intercept for each subject which allows each subject to have their own "starting point." The remaining terms with the colons indicate random intercepts for the interactions between subject and Condition (1|Condition:id) and subject and Angle (1|Angle:id).
 
@@ -162,6 +230,7 @@ rm.mod <- lmerTest::lmer(Latency ~ Condition * Angle +
 anova(rm.mod)
 ```
 
+For these data, the `lmer()` function produces the exact same results as the `anova_test()` function. The 
 <!-- Lmer cheat sheet and specifying two within-subjects factors in lmer() -->
 <!-- https://stats.stackexchange.com/questions/13784/repeated-measures-anova-with-lme-lmer-in-r-for-two-within-subject-factors -->
 <!-- https://stats.stackexchange.com/questions/13166/rs-lmer-cheat-sheet -->
@@ -170,9 +239,6 @@ anova(rm.mod)
 {{< /tabs >}}
 
 [Back to tabs](#tests)
-
-### Interpretation
-Both approaches reveal the same results for the F test of the interaction and of the main effects of Angle and Condition. The significant interaction suggests that the effect of noise on latency at each angle is not the same and should be followed up by more tests. From here we could proceed to test for simple effects and cell means. If the interaction was not significant, then we could proceed to test marginal means.
 
 
 ### References

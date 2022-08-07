@@ -57,7 +57,7 @@ library(AMCP)
 data("chapter_7_table_5")
 
 # Inspect data
-head(chapter_7_table_5)
+kableExtra::kable(head(chapter_7_table_5))
 ```
 
 ### Perform ANOVA tests {#tests}

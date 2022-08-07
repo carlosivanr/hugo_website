@@ -51,18 +51,50 @@ data(chapter_9_table_7)
 chapter_9_table_7$Condition <- as.factor(chapter_9_table_7$Condition)
 
 # Inspect Data
-head(chapter_9_table_7)
+kableExtra::kable(head(chapter_9_table_7))
 ```
 
-```
-##   Condition Pre Post
-## 1         1  18   12
-## 2         1  16    0
-## 3         1  16   10
-## 4         1  15    9
-## 5         1  14    0
-## 6         1  20   11
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Condition </th>
+   <th style="text-align:right;"> Pre </th>
+   <th style="text-align:right;"> Post </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 11 </td>
+  </tr>
+</tbody>
+</table>
 
 ### Perform ANOVA Tests
 

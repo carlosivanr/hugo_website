@@ -55,6 +55,8 @@ kable(head(chapter_11_table_5))
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
+<br>
+
 With the jmv package, coding repeated measures ANOVA is a bit more cumbersome compared to one- and two-way ANOVAS. We will have to set the rm option which takes a "list of lists". For the one-way repeated measures design, we will need a list of one list that contains a label which will be "Age-in-months", and a character vector of the levels of the age factor (i.e. 30, 60, 42, 48). Next, we will work on the rmCells by making another list of lists. This list will be made up of 4 lists, one for each level, and each list will have a `measure` that corresponds to the name of the column of the dataframe containing the data, and a `cell` that corresponds to each level. Now we can move on to specifying the repeated measure terms in "rmTerms." For our purposes we will set `spherCorr = 'none'`, but in practice you may want to apply a correction for sphericity depending on your data. We will then set `effectSize = 'omega'`, and set `emMeans = TRUE` to produce the marginal means by months so that we can plot the data when `emmPlots = TRUE`. 
 
 ```{r plot1, fig.cap = 'anovaRM plot of means by group.', warning = FALSE, include = TRUE}
@@ -95,6 +97,8 @@ anovaRM(
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
+<br>
+
 To perform a repeated measures ANOVA with rstatix, first create a new data frame with the subject id coded by a number. Next, convert the data from wide to long format. Next, convert the subject id and the age information to factor. Then, create the rm_aov object with the `anova_test()` function. This is the same function that was used in the one- and two-way ANOVA guides, but modified slightly. The modifications are found in the options `wid = id` to specify the subjects id factor, `within = age` to specify that our within subjects factor is age, and `effect.size = "pes"` to correspond with the jmv function. Finally, we will run the `get_anova_table()` function on our rm_aov object with `correction = "none"`. In practice, you may want to change the correction setting even if your data do not violate the assumption of sphericity.
 ```{r, message = FALSE, warning = FALSE, include = TRUE}
 library(tidyverse)

@@ -50,7 +50,7 @@ data(chapter_9_table_7)
 chapter_9_table_7$Condition <- as.factor(chapter_9_table_7$Condition)
 
 # Inspect Data
-head(chapter_9_table_7)
+kableExtra::kable(head(chapter_9_table_7))
 ```
 
 ### Perform ANOVA Tests

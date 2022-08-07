@@ -56,18 +56,50 @@ library(AMCP)
 data("chapter_7_table_5")
 
 # Inspect data
-head(chapter_7_table_5)
+kableExtra::kable(head(chapter_7_table_5))
 ```
 
-```
-##   Score Feedback Drug
-## 1   170        1    1
-## 2   175        1    1
-## 3   165        1    1
-## 4   180        1    1
-## 5   160        1    1
-## 6   186        1    2
-```
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Score </th>
+   <th style="text-align:right;"> Feedback </th>
+   <th style="text-align:right;"> Drug </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 170 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 175 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 180 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 160 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 186 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+</tbody>
+</table>
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
