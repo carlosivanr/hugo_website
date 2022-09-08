@@ -8,13 +8,14 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: "July 27, 2022"
+lastmod: "September 08, 2022"
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
 projects: []
+type: book
 ---
 
 Another nice feature in RStudio is that it can integrate version control via Git and GitHub. This feature allows users to painlessly contribute their code to an online repository to share or keep as a backup. In this post, I will go through the steps of connecting an existing RStudio project to GitHub. The only requirements are that you have a pre-existing GitHub account and Git installed on your local machine.

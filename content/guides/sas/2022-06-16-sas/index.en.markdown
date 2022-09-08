@@ -15,6 +15,9 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
+draft: true
+type: book
+
 ---
 
 
@@ -70,4 +73,54 @@ RUN;
 # VBAR3d gender;
 # RUN;
 
+```
+
+
+```r
+# this chunk has the engine set back to `R`
+
+# run a short bit of r code
+# scatterplot of cars dataset
+plot(cars)
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+
+```r
+# check the current engine
+knitr::opts_chunk$get()$engine
+```
+
+```
+## [1] "R"
+```
+
+```r
+# reset the engine globally (i.e. so it will work outside of
+# this chunk so you don't have to keep typing engine=`R`)
+knitr::opts_chunk$set(engine="R",  engine.path=NULL, 
+        engine.opts=NULL, comment=NA)
+
+# confirm that this change was applied
+knitr::opts_chunk$get()$engine
+```
+
+```
+## [1] "R"
+```
+
+```r
+knitr::opts_chunk$get()$engine.path
+```
+
+```
+## NULL
+```
+
+```r
+knitr::opts_chunk$get()$engine.opts
+```
+
+```
+## NULL
 ```

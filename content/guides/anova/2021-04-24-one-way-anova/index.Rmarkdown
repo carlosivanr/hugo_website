@@ -54,6 +54,7 @@ For these data, Group represents the type of therapy the participant was randoml
 library(AMCP)
 library(tidyverse)
 library(kableExtra)
+library(DT)
 
 # Load the data
 data(C3E9)

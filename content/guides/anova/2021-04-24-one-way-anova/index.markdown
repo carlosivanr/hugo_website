@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one between-subjects factor.'
 authors: []
-lastmod: "August 07, 2022"
+lastmod: "August 08, 2022"
 featured: no
 image:
   caption: ''

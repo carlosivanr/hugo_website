@@ -1,0 +1,24 @@
+---
+title: "Iris Demo"
+format: pdf
+params: 
+  species: "setosa"
+---
+
+
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+
+df <- iris %>% 
+  filter(Species == params$species)
+```
+  
+Report for the species: `r params$species`
+
+```{r}
+df %>% 
+  filter(Species == params$species) %>% 
+  ggplot(aes(Sepal.Width))+
+  geom_histogram() +
+  ggtitle(str_c("Distribution of Sepal.Length for ", params$species))
+```
