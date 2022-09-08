@@ -8,14 +8,13 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2022-09-01T17:17:36-06:00'
+lastmod: "September 08, 2022"
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
 projects: []
-draft: true
 type: book
 ---
 

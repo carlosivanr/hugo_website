@@ -8,14 +8,13 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2022-09-01T17:17:36-06:00'
+lastmod: "`r format(Sys.time(), '%B %d, %Y')`"
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
 projects: []
-draft: false
 type: book
 ---
 
