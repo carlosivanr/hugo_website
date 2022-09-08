@@ -2,7 +2,7 @@
 title: Workflow
 linkTitle: Workflow
 summary: Workflow tips for R
-date: '2022-06-14'
+date: '2023-06-14'
 type: book
 draft: false
 weight: 10
