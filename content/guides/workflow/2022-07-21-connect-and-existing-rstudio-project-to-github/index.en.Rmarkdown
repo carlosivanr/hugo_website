@@ -18,7 +18,7 @@ projects: []
 type: book
 ---
 
-Another nice feature in RStudio is that it can integrate version control via Git and GitHub. This feature allows users to painlessly contribute their code to an online repository to share or keep as a backup. In this post, I will go through the steps of connecting an existing RStudio project to GitHub. The only requirements are that you have a pre-existing GitHub account and Git installed on your local machine.
+A nice feature in RStudio is that it can integrate version control via Git and GitHub. This feature allows users to painlessly contribute their code to an online repository to share or keep as a backup. In this post, I will go through the steps of connecting an existing RStudio project to GitHub.com. The only requirements are that you have a pre-existing GitHub account and have [Git and Git Bash](https://git-scm.com/downloads) installed on your local machine.
 
 
 # In RStudio...
@@ -35,21 +35,39 @@ Another nice feature in RStudio is that it can integrate version control via Git
 - Sign in to your account and navigate to your Repositories page
 - Then select the green New button, to create a new repository.
 - Type in a new repository name and select public or private, then select the green Create repository button.
-- From here, I copy the three lines of code from the section titled "... or push existing repository from the command line"
+- Verify that "Add README" is not selected as this can changes how to set up the repository
+- From here, copy the three lines of code from the section titled "... or push existing repository from the command line"
 
 # Back to RStudio...
-- If on a linux machine windows, you should be able to go back to RStudio, and open a new terminal window
-- Go to Tools in the menu bar,  select Terminal, and then New Terminal
-- Then paste in the three commands from the GitHub page
+## Linux
+- On a linux machine, you should be able to go back to RStudio, and open a new terminal window
+- Go to Tools in the menu bar, select Terminal, and then New Terminal
+- Then paste in the three commands from the GitHub page, into the terminal window and press enter
 
-- On a windows machine, you can install Git Bash and you can set RStudio to open Git Bash terminals instead of Command Prompt
-- Got to Tools in the menu bar and select Terminal Options
-- In the new window that pops up, select Git Bash from the drop down menu and select Apply and OK
-- You can then open a new terminal window and paste in the three commands from the GitHub page
+## Windows
+- On a windows machine, set RStudio to open Git Bash terminals instead of Command Prompt or Windows Powershell
+- Go to Tools in the menu bar and select Terminal Options
+- Select Git Bash from the drop down menu, select Apply, then OK
+- You can then open a new terminal window by going to Tools, Terminal, New Terminal, 
+- In the new terminal window, paste in the three commands from the GitHub page and press enter
 
+## Re-authorize OAuth Application 'Git Credential Manager'
+- If you run into an issue with this error,
+- Open Credential Manager in Windows (type it into the task bar search field)
+- Delete the existing credential for github.com
+- Re-initialize the credential manager in Git Bash then run git pull.
+- Follow the instructions to authenticate with SSO
+```{bash, eval = FALSE}
+git config --global credential.helper manager-core
+
+git pull
+```
+
+# Final Thoughts
 That's all there is to setting up an existing Rproject with a GitHub repository. Now when you are ready to commit changes, select the Git tab of in the Environment pane. From there:
 - Select Commit
 - Type in a Commit message
 - Select Commit
 - Select the Push button
+At this point, one can add the README file to describe your repository. It can be added from github.com which would then need to be pulled into the existing branch, or created locally and pushed to github.com.
 
