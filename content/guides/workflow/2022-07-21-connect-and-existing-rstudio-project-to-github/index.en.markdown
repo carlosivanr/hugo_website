@@ -57,6 +57,7 @@ A nice feature in RStudio is that it can integrate version control via Git and G
 - Delete the existing credential for github.com
 - Re-initialize the credential manager in Git Bash then run git pull.
 - Follow the instructions to authenticate with SSO
+- Then paste in the three commands from the GitHub page.
 
 ```bash
 git config --global credential.helper manager-core
@@ -70,5 +71,6 @@ That's all there is to setting up an existing Rproject with a GitHub repository.
 - Type in a Commit message
 - Select Commit
 - Select the Push button
+
 At this point, one can add the README file to describe your repository. It can be added from github.com which would then need to be pulled into the existing branch, or created locally and pushed to github.com.
 
