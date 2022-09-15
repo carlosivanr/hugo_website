@@ -1,5 +1,5 @@
 ---
-title: Connect and existing RStudio project to GitHub
+title: Connect an existing RStudio project to GitHub
 author: Carlos Rodriguez
 date: '2022-07-21'
 slug: connect-and-existing-rstudio-project-to-github
@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: "September 12, 2022"
+lastmod: "September 14, 2022"
 featured: no
 image:
   caption: ''
