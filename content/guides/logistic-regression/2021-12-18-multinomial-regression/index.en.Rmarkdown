@@ -33,7 +33,6 @@ library(broom)
 ### Load Data
 ```{r}
 chatData<-read.delim("Chat-Up Lines.dat", header = TRUE)
-#chatData$Gender<-relevel(chatData$Gender, ref = 2)
 ```
 
 ### Inspect Data
@@ -91,10 +90,7 @@ tidymodel <- tidy(chatModel2)
 
 tidymodel$expB <- exp(tidymodel$estimate)
 
-#tidymodel$`2.5%` <- 
-#test <- data.frame(exp(confint(chatModel2)))
 kable(tidymodel)
-
 ```
 
   
