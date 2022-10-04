@@ -97,6 +97,7 @@ As we encountered in the guide for [one-way rm-ANOVA](/guides/anova/one-way-anov
 library(tidyverse)
 library(rstatix)
 library(ggpubr)
+library(broom.mixed)
 
 # Create a new data frame with a subject id
 data <- cbind(id = c(1:10), chapter_12_table_1)
@@ -211,7 +212,7 @@ data %>%
 {{< tab tabNum="2" >}}
 <br>
 
-A repeated measures ANOVA can also be analyzed under a mixed effects framework using the lme4 package. Mixed effects models contain a mixture of fixed and random effects and are also sometimes referred to as multi-level models or hierarchical linear models. Fixed effects can be thought of as factors in which all possible levels that a researcher is interested in are represented in the data. A random effect on the other hand is a factor for which the levels in the experimental data represent a sample of a larger set. Mixed effects models may be advantageous because they do not require the assumption of independence in ANOVA, the assumption of homogeneity of regression slopes in ANCOVA, and may be better suited for handling unbalanced designs or situations with missing data. While mixed effect models are estimated using slightly different procedures than more traditional models, there are cases in which the results will overlap and the repeated measures ANOVA with two within-subjects factors is one of those situations.
+A repeated measures ANOVA can also be analyzed under a mixed effects framework using the lme4 package. Mixed effects models contain a mixture of fixed and random effects and are also sometimes referred to as multi-level models or hierarchical linear models. Fixed effects can be thought of as factors in which all possible levels that a researcher is interested in are represented in the data. A random effect on the other hand is a factor for which the levels in the experimental data represent a sample of a larger set. Mixed effects models may be advantageous because they do not require the assumption of independence in ANOVA, the assumption of homogeneity of regression slopes in ANCOVA, and may be better suited for handling unbalanced designs or situations with missing data. While mixed effect models are estimated using slightly different procedures than more traditional models, there are cases in which the results will overlap. The balanced repeated measures ANOVA with two within-subjects factors is one of those cases.
 
 The `lmer()` function from the lme4 package is designed to fit linear mixed-effects regression models via REML or maximum likelihood. Just like the base R `lm()` function, `lmer()` takes a formula specifying the dependent variable predicted by (~) a combination of fixed- and random- effect variables. Predictor variables encased in parentheses specify random effects, while variables without parentheses are specified as fixed effects. 
 
@@ -220,14 +221,17 @@ The first part of the formula in the example below specifies to predict Latency 
 ```{r lmer, warning=FALSE, message=FALSE}
 library(lme4)
 library(lmerTest)
+library(broom.mixed)
 
-rm.mod <- lmerTest::lmer(Latency ~ Condition * Angle + 
-                 (1|id) + 
+rm.mod <- lmerTest::lmer(Latency ~ Condition + Angle + Condition:Angle + 
+                 (1|id) +
                  (1|Condition:id) + 
                  (1|Angle:id), 
                data=data)    
 
 anova(rm.mod)
+summary(rm.mod)
+tidy(rm.mod)
 ```
 
 For these data, the `lmer()` function produces the exact same results as the `anova_test()` function. The 
