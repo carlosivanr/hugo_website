@@ -111,6 +111,7 @@ kable(
                      between = Group,
                      effect.size = "pes", 
                      detailed = TRUE)))
+
 ```
 
 
