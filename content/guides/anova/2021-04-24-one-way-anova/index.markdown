@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one between-subjects factor.'
 authors: []
-lastmod: "August 08, 2022"
+lastmod: "October 06, 2022"
 featured: no
 image:
   caption: ''
@@ -22,36 +22,12 @@ weight: 10
 <script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
-<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally
-<!-- <style> -->
-<!-- pre code, pre, code { -->
-<!--   white-space: pre !important; -->
-<!--   overflow-x: scroll !important; -->
-<!--   word-break: keep-all !important; -->
-<!--   word-wrap: initial !important; -->
-<!-- } -->
-<!-- </style>  -->
-
-<!-- Limit the vertical height of output and source -->
-
-<!-- ```{css, echo=FALSE} -->
-<!-- pre { -->
-<!--   max-height: 310px; -->
-<!--   overflow-y: auto; -->
-<!-- } -->
-
-<!-- pre[class] { -->
-<!--   max-height: 100px; -->
-<!-- } -->
-<!-- ``` -->
-
-The one-way ANOVA is a commonly used statistical technique to compare means among two or more groups. This guide covers how to perform a one-way ANOVA in R. The primary assumptions of ANOVA are independence between groups, normally distributed residuals, and homogeneity of variance. When the homogeneity of variance assumption is violated, a [Welch's ANOVA](/guides/anova/welchs-anova) can be conducted instead.
-
+The one-way ANOVA is a commonly used statistical technique to compare the means of a continuous variable among two or more groups (categorical variable). This guide covers how to perform a one-way between-subjects ANOVA in R. The primary assumptions of ANOVA are independence between groups, normally distributed residuals, and homogeneity of variance. When the homogeneity of variance assumption is violated, consider a [Welch's ANOVA](/guides/anova/welchs-anova).
 
 ### The data set
-This guide relies on toy data from Exercise 9 in Chapter 3 of the AMCP package. In this exercise, a psychologist assigned 12 subjects to one of 4 different therapy treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
+This guide relies on toy data from Exercise 9 in Chapter 3 of the AMCP package. In this exercise, a psychologist randomly assigned 12 subjects to one of 4 different therapy treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
 
-For these data, Group represents the type of therapy the participant was randomly assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each of the 12 rows represent each subject.
+For these data, Group represents the type of therapy the participant was assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each row represents the group and scores for one subject.
 <table class=" lightable-paper lightable-hover table" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;'>
  <thead>
   <tr>
@@ -113,12 +89,12 @@ For these data, Group represents the type of therapy the participant was randoml
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
-{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" tabName3="Welch's jmv" tabName4="Welch's rstatix"  >}}
+{{< tabs tabTotal="2" tabID="1" tabName1="jmv" tabName2="rstatix" >}}
 
 <!-- -----------------------Tab 1---------------------------------- -->
 {{< tab tabNum="1" >}}
 <br>
-Jmv is a package that comes from the standalone <a href="https://jamovi.org/"> jamovi </a> statistical spreadsheet software. Jamovi was designed as an alternative to costly statistical analysis software packages like SPSS or SAS and runs R underneath the hood. 
+Jmv is an R package that comes from the standalone [jamovi](https://jamovi.org/) statistical spreadsheet software. Jamovi was designed as an alternative to costly statistical analysis software packages like SPSS or SAS and runs R underneath the hood. 
 
 With the `ANOVA()` function, we will predict Scores by Group (`Scores ~ Group`), set the data to be analyzed as C3E9 and `ss = "3"` to use the Type III sums of squares. The `effectSize = 'partEta'` will output the partial eta squared effect size for the omnibus test. We will also set the `postHocCorr  = 'bonf'` to conduct Bonferroni corrected post hoc tests (although `tukey` can be used as well), `postHocES = "d"` will compute Cohen's d effect sizes for the post hoc tests. Lastly, we want to set `emmMeans = ~ Group` and `emmPlots = TRUE` to plot estimated marginal means and confidence intervals.
 
@@ -177,16 +153,16 @@ ANOVA(formula = Scores ~ Group,
 
 
 #### Nota Bene 
-When using the `postHocES = "d"` option, it may be necessary to update the jmv package remotely. This will depend on the version of jmv installed from cran. One way to get the latest updates for jmv is to run the following commands and then restarting RStudio. I've noticed that without the updates the Cohen's d effect sizes can be off, so you may want to double check effect sizes.
+When using the `postHocES = "d"` option, it may be necessary to update the jmv package remotely. This will depend on the version of jmv installed from [CRAN](https://cran.r-project.org/). One way to get the latest updates for jmv is to run the following commands and then restarting RStudio. I've noticed that without the updates the Cohen's d effect sizes can be off, so you may want to double check effect sizes. Finally, you may want to update to the latest R version as some folks have reported R crashing when using the jmv package with some versions of R.
 
 ```r
 remotes::install_github('jamovi/jmvcore')
 remotes::install_github('jamovi/jmv')
 ```
 
+
 #### One-way ANOVA with the `anovaOneW()` function
 The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results for the omnibus, although the `anvoaOneW()` function is limited to `tukey` post hoc tests.
-<!-- Alternative jmv one way ANOVA -->
 
 ```r
 anovaOneW(formula = Scores ~ Group,
@@ -202,23 +178,37 @@ anovaOneW(formula = Scores ~ Group,
 {{< tab tabNum="2" >}}
 <br>
 
-The rstatix package is another way of programming statistical tests in R. One of the benefits of the rstatix package is that it meshes well with the pipe (`%>%`) operator from the tidyverse package. The pipe operator takes is useful for chaining functions. An example of this chaining will become apparent in the code chunk below. The same developer of the rstatix package also developed the ggpubr package which simplifies producing ggplot2 figures. In this guide, the ggpubr package is loaded primarily to simplify producing a jmv style plot.
-
-The sample code of conducting the `anova_test()` is not too different than the `ANOVA()` function in jmv. However, for this approach, we will need to change our Group variable to factor, otherwise `anova_test()` will think we will want to predict scores from a numeric variable rather than a categorical one. To determine the type of data you have, you can use the `str()` function on a dataframe which can display the structure of a dataframe and can display if your data are factored or not.
-
-Next, we specify a formula predicting Scores by Group (`Scores ~ Group`). Then we tell the function that we want to analyze the C3E9 data, specify our dependent variable (dv; Scores), set the effect size output to partial eta squared ("pes"), and then set the sum of squares method to type III.
+Rstatix is another package for conducting statistical tests in R. One of the benefits of the rstatix package is that it works well with the pipe (`%>%`) operator from the tidyverse/magrittr packages. The developer of the rstatix package also maintains the ggpubr package which simplifies producing plots in R. In this guide, I will demonstrate how to conduct a one-way between-subjects ANOVA with rstatix and generate a plot of means with error bars with ggpubr.
 
 
 ```r
 library(rstatix)
 library(ggpubr)
+library(AMCP)
+library(tidyverse)
 
-# Display structure of data
-#str(C3E9)
+# Load the data
+data(C3E9)
+data <- C3E9
+```
 
+For this approach, we will need to change our Group variable to factor, otherwise `anova_test()` will think we will want to predict scores from a numeric variable rather than a categorical one. Use the `str()` function on a dataframe or the `class()` function on a column to determine if your data are factored or not.
+
+```r
+# Display structure of data (output not shown)
+str(C3E9)
+```
+
+
+```r
 # Convert group to factor
 C3E9$Group <- as.factor(C3E9$Group)
+```
 
+Next, specify a formula predicting Scores by Group (`Scores ~ Group`). Then we tell the function that we want to analyze the C3E9 data, specify our dependent variable (dv; Scores), set the effect size output to partial eta squared ("pes"), and then set the sum of squares method to type III.
+
+
+```r
 # Conduct ANOVA test
 anova_test(Scores ~ Group, 
            data = C3E9, 
@@ -630,7 +620,7 @@ ggerrorplot(C3E9,
 <img src="{{< blogdown/postref >}}index_files/figure-html/ggpubr-1.png" alt="Plot of means and 95% confidence intervals produced by ggpbur." width="672" />
 <p class="caption">Figure 2: Plot of means and 95% confidence intervals produced by ggpbur.</p>
 </div>
-<!-- The color was picked off of the theme which is in themes/github.com/wowchemy/wowchemy-hugo-modules/wowchemy/data/themese/minimial.toml  -->
+
 {{< /tab >}}
 {{< /tabs >}}
 
@@ -640,7 +630,7 @@ ggerrorplot(C3E9,
 For the omnibus test, we obtained a significant effect of Group [F(3,8) = 10, p < 0.01] which suggests that the means of the 4 groups are not equal. In other words, one of the treatments may be significantly different than another. To determine where, if any differences between two groups exist, we conducted post-hoc tests on all possible combinations of pairwise comparisons. These tests revealed a significant difference between groups 1 and 2, between groups 1 and 4, and between groups 2 and 3. The results suggest that phobia scores after rational-emotive therapy were lower when compared to psychoanalytic and behavioral therapies. The results also suggest that phobia scores were on average lower after client-centered therapy compared to psychoanalytic therapy. Finally, there were statistically significant differences between rational-emotive and client-centered therapy, but no differences between psychoanalytic and behavioral therapies.
 
 ### Wrap up
-One of the benefits of the `ANOVA()` function lies in eliminating the need to write the R code to produce a plot of means, confidence intervals, and effect sizes. What is produced with one option within the `ANOVA()` command, takes additional packages and several lines of code to produce with other packages. The `anovaOneW()` function from the jmv package can also be used to perform a one-way ANOVA. However, the `anovaOneW()` is limited in features and is best suited for the Welch's ANOVA. If you're starting out with R, the jmv package can be a nice place to start conducting one-way ANOVA in R.
+One of the benefits of jmv's `ANOVA()` function lies in eliminating the need to write the R code to produce a plot of means, confidence intervals, and effect sizes. The `anovaOneW()` function from the jmv package can also be used to perform a one-way ANOVA. However, the `anovaOneW()` is limited in features and may not be the best tool for complex analyses.
 
 ### References
 <div id="refs" class="references">
@@ -682,3 +672,6 @@ Wickham, Hadley. 2019. *Tidyverse: Easily Install and Load the ’Tidyverse’*.
 </div>
 
 </div>
+
+
+
