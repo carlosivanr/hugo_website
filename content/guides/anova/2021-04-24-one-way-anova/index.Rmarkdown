@@ -81,23 +81,23 @@ remotes::install_github('jamovi/jmv')
 ```
 
 
-#### One-way ANOVA with the `anovaOneW()` function
-The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results for the omnibus, although the `anvoaOneW()` function is limited to `tukey` post hoc tests.
-```{r eval=FALSE, include=TRUE}
-anovaOneW(formula = Scores ~ Group,
-          data = C3E9,
-          fishers = TRUE,
-          welchs = FALSE,
-          descPlot = TRUE,
-          phMethod = 'tukey')
-```
+<!-- #### One-way ANOVA with the `anovaOneW()` function -->
+<!-- The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results for the omnibus, although the `anvoaOneW()` function is limited to `tukey` post hoc tests. -->
+<!-- ```{r eval=FALSE, include=TRUE} -->
+<!-- anovaOneW(formula = Scores ~ Group, -->
+<!--           data = C3E9, -->
+<!--           fishers = TRUE, -->
+<!--           welchs = FALSE, -->
+<!--           descPlot = TRUE, -->
+<!--           phMethod = 'tukey') -->
+<!-- ``` -->
 {{< /tab >}}
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
 <br>
 
-Rstatix is another package for conducting statistical tests in R. One of the benefits of the rstatix package is that it works well with the pipe (`%>%`) operator from the tidyverse/magrittr packages. The developer of the rstatix package also maintains the ggpubr package which simplifies producing plots in R. In this guide, I will demonstrate how to conduct a one-way between-subjects ANOVA with rstatix and generate a plot of means with error bars with ggpubr.
+Rstatix is another package for conducting statistical tests in R. One of the benefits of the rstatix package is that it works well with the pipe (`%>%`) operator from the tidyverse/magrittr packages which can facilitate subsetting your data. More importantly, rstatix simplifies much of the manual writing of code for certain statistical test such as the ANOVA. The developer of the rstatix package also maintains the ggpubr package which simplifies producing plots in R. In this guide, I will demonstrate how to conduct a one-way between-subjects ANOVA with rstatix and generate a plot of means with error bars with ggpubr.
 
 ```{r rstatix, message=FALSE, warning=FALSE}
 library(rstatix)
@@ -132,7 +132,7 @@ anova_test(Scores ~ Group,
 ```
 
 ### Post hoc tests
-To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply the Bonferroni, Holm, or False Discovery Rate (FDR) correction procedures. In addition, rstatix provides some convenient ways for producing effect sizes and summary statistics.
+To get the output for the post hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply the Bonferroni, Holm, or False Discovery Rate (FDR) correction procedures. In addition, rstatix provides some convenient ways for producing effect sizes and summary statistics.
 
 **Tukey's Honest Significant Difference (HSD)**
 ```{r tukey_hsd}
@@ -140,8 +140,6 @@ C3E9 %>%
   tukey_hsd(Scores ~ Group) %>% 
   kable(., "html")
 ```
-
-#
 
 **Bonferroni Corrected Tests**
 ```{r bonferroni}
@@ -156,8 +154,7 @@ C3E9 %>%
 ```{r effect_sizes}
 # Effect sizes
 C3E9 %>% 
-  cohens_d(Scores ~ Group, 
-           var.equal = FALSE) %>%
+  cohens_d(Scores ~ Group) %>%
   kable(., "html")
 ```
 
@@ -171,7 +168,7 @@ C3E9 %>%
 ```
 
 ### Plot the data  
-The ggpubr package is a wrapper for ggplot2 and can simplify some of the ggplot2 syntax. The only drawback is that it may not have all of the flexibility of ggplot2. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
+The ggpubr package is a wrapper for ggplot2 and can simplify some of the ggplot2 syntax. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
 ```{r blu, echo=FALSE}
 azl <- "#1565c0"
 ```
@@ -194,10 +191,10 @@ ggerrorplot(C3E9,
 [Back to tabs](#tests)
 
 ### Interpret the output
-For the omnibus test, we obtained a significant effect of Group [F(3,8) = 10, p < 0.05] which suggests that the means of the 4 groups are not equal. In other words, at least one of the treatments is significantly different than another. To determine where, if any differences between two groups exist, we conducted post-hoc tests on all possible combinations of pairwise comparisons. These tests revealed a significant difference between groups 1 and 2, between groups 1 and 4, and between groups 2 and 3. The results suggest that phobia scores after rational-emotive therapy (1) were lower when compared to psychoanalytic(2) and behavioral therapies(4). The results also suggest that phobia scores were on average lower after client-centered therapy (3) compared to psychoanalytic therapy(2)
+For the omnibus test, we obtained a significant effect of Group [F(3,8) = 10, p < 0.05] which suggests that the means of the 4 groups are not equal. In other words, at least one of the treatments is significantly different than another. To determine where, if any differences between two groups exist, we conducted post-hoc tests on all possible combinations of pairwise comparisons. These tests revealed a significant difference between groups 1 and 2, between groups 1 and 4, and between groups 2 and 3 when correcting for multiple comparisons via the Bonferroni procedure. The results suggest that phobia scores after rational-emotive therapy (1) were lower compared to psychoanalytic (2) and behavioral therapies (4). The results also suggest that phobia scores were on average lower after client-centered therapy (3) compared to psychoanalytic therapy (2). It these were actual data, we would then perhaps conclude with suggesting that rational-emotive therapy may be an optimal approach for treating phobias and that additional research is needed.
 
-### Wrap up
-One of the benefits of jmv's `ANOVA()` function lies in eliminating the need to write the R code to produce a plot of means, confidence intervals, and effect sizes. The `anovaOneW()` function from the jmv package can also be used to perform a one-way ANOVA. However, the `anovaOneW()` is limited in features and may not be the best tool for complex analyses.
+### Wrap-up
+One of the benefits of jmv's `ANOVA()` function lies in eliminating the need to write the R code to produce a plot of means, confidence intervals, and effect sizes. In addition, the rstatix package provides additional and more flexible tools for conducting ANOVAs.
 
 ### References
 <div id="refs" class="references">

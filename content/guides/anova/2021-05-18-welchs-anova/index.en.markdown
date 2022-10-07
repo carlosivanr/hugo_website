@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: 'Designs with one between-subjects factor that fail to meet the homogeneity of variance assumption.'
 authors: []
-lastmod: "July 31, 2022"
+lastmod: "October 06, 2022"
 featured: no
 image:
   caption: ''
@@ -22,17 +22,6 @@ weight: 15
 <script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />
 
-<!-- Prevent the jmv output from wrapping. Make it scrollable horizontally -->
-<!-- <style> -->
-<!-- pre code, pre, code { -->
-<!--   white-space: pre !important; -->
-<!--   overflow-x: scroll !important; -->
-<!--   word-break: keep-all !important; -->
-<!--   word-wrap: initial !important; -->
-<!-- } -->
-<!-- </style> -->
-
-<!-- Limit the vertical height of output and source -->
 <style type="text/css">
 pre {
   max-height: 310px;
@@ -45,7 +34,8 @@ pre[class] {
 </style>
 
 
-When the homogeneity of variance assumption is violated for a one-way ANOVA, a Welch's ANOVA can be conducted instead. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way between-subjects designs). This guide covers how to test for normality, homogeneity of variance and how to conduct a Welch's ANOVA followed by the appropriate post-hoc tests with the jmv and rstatix packages. The same example data from the [one-way ANOVA](/guides/anova/one-way-anova) is used here.
+
+When the homogeneity of variance assumption is violated for a one-way ANOVA, a Welch's ANOVA can be conducted instead. One limitation for the Welch's ANOVA is that it is restricted to data with only one explanatory factor (i.e. one-way between-subjects designs). This guide covers how to test for normality, homogeneity of variance and how to conduct a Welch's ANOVA followed by the appropriate post hoc tests with the jmv and rstatix packages. The same example data from the [one-way ANOVA](/guides/anova/one-way-anova) are used here.
 
 ### Perform ANOVA tests {#tests}
 <!-- -----------------------TABS---------------------------------- -->
@@ -55,7 +45,7 @@ When the homogeneity of variance assumption is violated for a one-way ANOVA, a W
 {{< tab tabNum="1" >}}
 <br>
 
-The following code chunk demonstrates how to code a Welch's ANOVA in R with the jmv package. The jmv approach uses the `anovaOneW()` function which can take options to produce plots and conduct tests of normality and equality of variance (homogeneity of variance or homoscedasticity) with the `norm = TRUE` and `eqv = TRUE` options. Games-Howell post hoc tests are produced by setting `phMethod = 'gamesHowell'`.
+The following code chunk demonstrates how to code a Welch's ANOVA in R with the jmv package. The jmv approach uses the `anovaOneW()` function which can take options to produce plots and conduct tests of normality and equality of variance (homogeneity of variance or homoscedasticity) with the `norm = TRUE` and `eqv = TRUE` options respectively. Games-Howell post hoc tests are produced by setting `phMethod = 'gamesHowell'`.
 
 ```r
 library(jmv)

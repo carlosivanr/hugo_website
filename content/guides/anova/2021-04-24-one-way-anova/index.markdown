@@ -25,7 +25,7 @@ weight: 10
 The one-way ANOVA is a commonly used statistical technique to compare the means of a continuous variable among two or more groups (categorical variable). This guide covers how to perform a one-way between-subjects ANOVA in R. The primary assumptions of ANOVA are independence between groups, normally distributed residuals, and homogeneity of variance. When the homogeneity of variance assumption is violated, consider a [Welch's ANOVA](/guides/anova/welchs-anova).
 
 ### The data set
-This guide relies on toy data from Exercise 9 in Chapter 3 of the AMCP package. In this exercise, a psychologist randomly assigned 12 subjects to one of 4 different therapy treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
+This guide relies on toy data from Exercise 9 in Chapter 3 of the AMCP package. In this exercise, a psychologist randomly assigned 12 subjects to one of 4 different therapy treatments. These treatments consisted of rational-emotive, psychoanalytic, client-centered, and behavioral therapies coded as 1 through 4 respectively. The 4 different treatments were used to investigate which therapy is more effective at reducing phobia scores.
 
 For these data, Group represents the type of therapy the participant was assigned to. Scores represent the score from a post-therapy fear scale where higher numbers indicate higher levels of phobia. Finally, each row represents the group and scores for one subject.
 <table class=" lightable-paper lightable-hover table" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;'>
@@ -102,6 +102,7 @@ With the `ANOVA()` function, we will predict Scores by Group (`Scores ~ Group`),
 ```r
 library(jmv)
 library(AMCP)
+
 data(C3E9)
 
 # Conduct One-way ANOVA test
@@ -161,24 +162,23 @@ remotes::install_github('jamovi/jmv')
 ```
 
 
-#### One-way ANOVA with the `anovaOneW()` function
-The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results for the omnibus, although the `anvoaOneW()` function is limited to `tukey` post hoc tests.
-
-```r
-anovaOneW(formula = Scores ~ Group,
-          data = C3E9,
-          fishers = TRUE,
-          welchs = FALSE,
-          descPlot = TRUE,
-          phMethod = 'tukey')
-```
+<!-- #### One-way ANOVA with the `anovaOneW()` function -->
+<!-- The following code chunk displays how to use the `anovaOneW()` function to analyze the same data and get the same results for the omnibus, although the `anvoaOneW()` function is limited to `tukey` post hoc tests. -->
+<!-- ```{r eval=FALSE, include=TRUE} -->
+<!-- anovaOneW(formula = Scores ~ Group, -->
+<!--           data = C3E9, -->
+<!--           fishers = TRUE, -->
+<!--           welchs = FALSE, -->
+<!--           descPlot = TRUE, -->
+<!--           phMethod = 'tukey') -->
+<!-- ``` -->
 {{< /tab >}}
 
 <!-- -----------------------Tab 2---------------------------------- -->
 {{< tab tabNum="2" >}}
 <br>
 
-Rstatix is another package for conducting statistical tests in R. One of the benefits of the rstatix package is that it works well with the pipe (`%>%`) operator from the tidyverse/magrittr packages. The developer of the rstatix package also maintains the ggpubr package which simplifies producing plots in R. In this guide, I will demonstrate how to conduct a one-way between-subjects ANOVA with rstatix and generate a plot of means with error bars with ggpubr.
+Rstatix is another package for conducting statistical tests in R. One of the benefits of the rstatix package is that it works well with the pipe (`%>%`) operator from the tidyverse/magrittr packages which can facilitate subsetting your data. More importantly, rstatix simplifies much of the manual writing of code for certain statistical test such as the ANOVA. The developer of the rstatix package also maintains the ggpubr package which simplifies producing plots in R. In this guide, I will demonstrate how to conduct a one-way between-subjects ANOVA with rstatix and generate a plot of means with error bars with ggpubr.
 
 
 ```r
@@ -192,7 +192,7 @@ data(C3E9)
 data <- C3E9
 ```
 
-For this approach, we will need to change our Group variable to factor, otherwise `anova_test()` will think we will want to predict scores from a numeric variable rather than a categorical one. Use the `str()` function on a dataframe or the `class()` function on a column to determine if your data are factored or not.
+For this approach, we will need to change our Group variable to factor to specify that our Group variable, although coded as the integers 1 through 4, represent a categorical variable and not a numeric one. Use the `str()` function on a dataframe or the `class()` function on a column to determine if your data are factored or not. Then, use the `as.factor()` function to change Group's data type. 
 
 ```r
 # Display structure of data (output not shown)
@@ -205,7 +205,7 @@ str(C3E9)
 C3E9$Group <- as.factor(C3E9$Group)
 ```
 
-Next, specify a formula predicting Scores by Group (`Scores ~ Group`). Then we tell the function that we want to analyze the C3E9 data, specify our dependent variable (dv; Scores), set the effect size output to partial eta squared ("pes"), and then set the sum of squares method to type III.
+Next, we use the `anova_test()` function to conduct the ANOVA. First, specify a formula predicting Scores by Group (`Scores ~ Group`). Next, specify the dataframe to analyze. Finally, set the effect size output and the sum of squares method to type III. Most commercial statistical software packages and jmv default to the Type III sums of squares and are set as such to mirror the results in the jmv package.
 
 
 ```r
@@ -222,6 +222,7 @@ anova_test(Scores ~ Group,
 ##   Effect DFn DFd  F     p p<.05   pes
 ## 1  Group   3   8 10 0.004     * 0.789
 ```
+
 ### Post hoc tests
 To get the output for the post-hoc tests, we will run the `tukey_hsd()` function on the same data with the same formula (`Scores ~ Group`). We can also conduct pair wise comparisons with the `pairwise_t_test()` function and apply the Bonferroni, Holm, or False Discovery Rate (FDR) correction procedures. In addition, rstatix provides some convenient ways for producing effect sizes and summary statistics.
 
@@ -317,14 +318,13 @@ C3E9 %>%
 </tbody>
 </table>
 
-#
-
 **Bonferroni Corrected Tests**
 
 ```r
 # Bonferroni corrected post hoc tests
 C3E9 %>% 
-  pairwise_t_test(Scores ~ Group, p.adjust.method = "bonferroni") %>%
+  pairwise_t_test(Scores ~ Group, 
+                  p.adjust.method = "bonferroni") %>%
   kable(., "html")
 ```
 
@@ -417,7 +417,7 @@ C3E9 %>%
 ```r
 # Effect sizes
 C3E9 %>% 
-  cohens_d(Scores ~ Group, var.equal = FALSE) %>%
+  cohens_d(Scores ~ Group) %>%
   kable(., "html")
 ```
 
@@ -588,19 +588,8 @@ C3E9 %>%
 </tbody>
 </table>
 
-
-
-<!-- To produce a jmv style plot, things get a little trickier. First, we will need to calculate means and confidence intervals. Luckily, `get_summary_stats()` can do this painlessly because of the pipe operator from the tidyverse package. Essentially, the C3E9 data is fed to `group_by()` which will separate the data by Group, then the output is fed in `get_summary_stats()` which will compute descriptive statistics such as means, medians, confidence intervals, and others. The summary_data is then what we will use to generate a plot with the `ggplot()` function.   -->
-
-
-
-
-<!-- The ggplot code is the trickiest part of using this approach. I'll attempt to explain the basic components here, but don't get discouraged if it doesn't make sense. It can take a while to fully get a hold of ggplot. I know it frustrated me plenty when I started with it. First, summary_data is used as the input, because it contains the means and confidence intervals. Next, we will specify what to plot on the x axis and what to plot on the y axis. Then, we will tell ggplot to add a layer of geometric element in the form of error bars. We can then set the ymin and ymax of the error bars as mean-ci and mean+ci as these values are in the input summary_data. Next, we will want to add some points (geom_point), then change their fill, color, and shape. The ggtitle will add a title to our plot, while ylab changes the label on the y axis. To wrap things up, we will add a theme to the plot to change the background, and then set the title to be centered horizontally. -->
-
-
-
 ### Plot the data  
-One way to produce a plot of the data is to use the ggpubr package. The ggpubr package is a wrapper for ggplot2 and can simplify some of the ggplot2 syntax. The only drawback is that it may not have all of the flexibility of ggplot2. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
+The ggpubr package is a wrapper for ggplot2 and can simplify some of the ggplot2 syntax. In this next code chunk, I use the `ggpubr()` function on our C3E9 data, specify the x and y variables, set add to `"mean"` to plot the means, set `desc_stat = "mean_ci"` to plot the confidence intervals, set `error.plot = "errorbar"` to draw the error bars, and `width = .1` to specify the length of errorbar tips. The rest of the options are straightforward.
 
 
 
@@ -627,10 +616,10 @@ ggerrorplot(C3E9,
 [Back to tabs](#tests)
 
 ### Interpret the output
-For the omnibus test, we obtained a significant effect of Group [F(3,8) = 10, p < 0.01] which suggests that the means of the 4 groups are not equal. In other words, one of the treatments may be significantly different than another. To determine where, if any differences between two groups exist, we conducted post-hoc tests on all possible combinations of pairwise comparisons. These tests revealed a significant difference between groups 1 and 2, between groups 1 and 4, and between groups 2 and 3. The results suggest that phobia scores after rational-emotive therapy were lower when compared to psychoanalytic and behavioral therapies. The results also suggest that phobia scores were on average lower after client-centered therapy compared to psychoanalytic therapy. Finally, there were statistically significant differences between rational-emotive and client-centered therapy, but no differences between psychoanalytic and behavioral therapies.
+For the omnibus test, we obtained a significant effect of Group [F(3,8) = 10, p < 0.05] which suggests that the means of the 4 groups are not equal. In other words, at least one of the treatments is significantly different than another. To determine where, if any differences between two groups exist, we conducted post-hoc tests on all possible combinations of pairwise comparisons. These tests revealed a significant difference between groups 1 and 2, between groups 1 and 4, and between groups 2 and 3 when correcting for multiple comparisons via the Bonferroni procedure. The results suggest that phobia scores after rational-emotive therapy (1) were lower compared to psychoanalytic (2) and behavioral therapies (4). The results also suggest that phobia scores were on average lower after client-centered therapy (3) compared to psychoanalytic therapy (2). It these were actual data, we would then perhaps conclude with suggesting that rational-emotive therapy may be an optimal approach for treating phobias and that additional research is needed.
 
-### Wrap up
-One of the benefits of jmv's `ANOVA()` function lies in eliminating the need to write the R code to produce a plot of means, confidence intervals, and effect sizes. The `anovaOneW()` function from the jmv package can also be used to perform a one-way ANOVA. However, the `anovaOneW()` is limited in features and may not be the best tool for complex analyses.
+### Wrap-up
+One of the benefits of jmv's `ANOVA()` function lies in eliminating the need to write the R code to produce a plot of means, confidence intervals, and effect sizes. In addition, the rstatix package provides additional and more flexible tools for conducting ANOVAs.
 
 ### References
 <div id="refs" class="references">
