@@ -21,7 +21,7 @@ weight: 30
 ---
 
 
-Surveys often contain the responses to a given question in a Likert style format where the available responses are something like "Strongly Agree", "Agree", "Neutral", "Disagree", or "Strongly Disagree." The following represents a "cheat-sheet" for using {ggplot} to display these responses in a bar chart.
+Surveys often contain responses to a given question in a Likert style format where the available responses are something like "Strongly Agree", "Agree", "Neutral", "Disagree", or "Strongly Disagree." The following represents a "cheat-sheet" for using {ggplot} to display these responses in a bar chart.
 ```{r, echo=FALSE}
 pacman::p_load(tidyverse,
                magrittr,
@@ -111,7 +111,7 @@ data %>%
   labs(y = "Percent", x = "") +
   facet_wrap(~level)
 ```
-Responses in this type of char can be double checked with a call to `tbl_likert()` from the {bstfun} package. However, note that the rounding between `tbl_liker()` and the ggplot call will be slightly off due to rounding error.
+Responses in this type of char can be double checked with a call to `tbl_likert()` from the {bstfun} package. However, note that the rounding between `tbl_likert()` and the ggplot call will be slightly off due to rounding error.
 ```{r}
 data %>% 
   select(sample_question_2.factor:sample_question_3.factor) %>%
@@ -131,7 +131,7 @@ data %>%
                names_to = "level",
                values_to = "response") %>%
   group_by(response, site, level) %>%
-  summarise(freq = n()) %>%
+  summarise(freq = n(), .groups = "drop") %>%
   ungroup() %>%
   drop_na() %>%
   group_by(level, site) %>%
@@ -216,9 +216,10 @@ data %>%
   facet_wrap(~level)
 ```
 
-To display
+To display a double check our work, we can use the `tbl_summary()` function from the {gtsummary} package. As noted before, the values may be slightly off due to rounding error.
 ```{r}
 data %>% 
+  drop_na(site) %>%
   select(sample_question_2.factor:sample_question_3.factor, site) %>%
   tbl_summary(by = "site",
               digits = all_categorical() ~ 1)
