@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: "July 19, 2022"
+lastmod: "November 05, 2022"
 featured: no
 image:
   caption: ''
@@ -16,6 +16,8 @@ image:
   preview_only: no
 projects: []
 draft: true
+type: book
+weight: 10
 ---
 
 

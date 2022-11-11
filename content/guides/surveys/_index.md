@@ -11,7 +11,7 @@ weight: 90
 {{< figure src="featured.jpg" >}}
 -->
 
-<!-- {{< toc hide_on="xl" >}} -->
+{{< toc hide_on="xl" >}}
 
 
 {{< list_children >}}

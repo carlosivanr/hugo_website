@@ -15,6 +15,8 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
+type: book
+weight: 20
 ---
 
 
@@ -32,7 +34,7 @@ data <- sample_n(data, 150)
 ```
 
 
-It is not uncommon for surveys to collect race and ethnicity data from participants. In some cases, these questions can allow participants to select multiple responses if they would like to endorse more than one race or ethnicity. In this post, I will cover how to create a table and bar chart to display race and ethnicity data.
+It is not uncommon for surveys to collect race and ethnicity data from participants. In some cases, these questions allow participants to select more than one response often under the instructions of "select all that apply." This guide covers how to create a table and bar chart in R to display race and ethnicity responses where participants can select more than one option.
 
 
 ### Packages
@@ -42,141 +44,139 @@ library(gtsummary)
 library(bstfun)
 ```
 
-### Tables
-For displaying race and ethnicity data in a table, I use a combination of the [gt_summary](https://www.danieldsjoberg.com/gtsummary/) and [btsfun](https://www.danieldsjoberg.com/bstfun/index.html) packages. In order to use these packages, my first step is to create a data frame in a way that looks like the table below. In this preparation, each row represent a participant and each column represent a distinct race or ethnic category coded as a binary variable where 1 indicates that the participant selected that category. Each participant can then endorse multiple categories.
+## Create Tables
+### Prepare data
+The first step is to create a data frame in a way that looks like the table below. In this format, each row represents a participant and each column represents one of the available responses coded as a binary variable where 1 indicates that the participant selected that category. Each participant can then endorse multiple categories.
 ```{r, echo = FALSE}
 race_vars <- names(data %>% select(starts_with("demographic") & 
                               !ends_with(".factor") & 
                               contains("race") &
                               !contains("other")))
-race_names <- as.character(data %>% 
+
+race_labels <- as.character(data %>% 
                              select(all_of(race_vars)) %>% 
-                             map_df(., ~attr(.x, "label"))
-                           )
+                             map_df(., ~ attr(.x, "label")))
 ```
+
+
 ```{r table1, echo = FALSE}
 kable(head(data %>% select(all_of(race_vars)) %>%
              mutate_at(all_of(race_vars), ~ as.numeric(.)) %>% 
-             rename_at(all_of(race_vars), ~ race_names) %>%
-             arrange(desc(`Hispanic or Latino`))), caption = "The aim to create a data frame like this.")
+             rename_at(all_of(race_vars), ~ race_labels) %>%
+             arrange(desc(`Hispanic or Latino`))), caption = "Example data frame.")
 ```
 
-1. My example data are already formatted in such a way, so my first step will be to create a character vector of the columns names that contain the responses of interest. In my example data, these columns start with "demographic" and contain "race." However, I want to exclude some of the columns that end with a ".factor" and contain the string "other." I then wrap this selection with the `names()` function to assign the column names to a character vector. This vector will be used as an argument in a subsequent step and it comes in handy when using the `select()` verb to subset the data.
+### Create a vector of the columns to be displayed 
+Once the data frame is prepared, create a character vector of the column names that contain the responses of interest. In the example data, these column names start with the string "demographic" and contain "race." However, some of these column names end with ".factor" or contain the string "other" and need to be excluded. To accomplish this, I use the {dplyr} verb `select()` nested within the `names()` function. This vector will be used as an argument in a subsequent step.
 ```{r}
 race_vars <- names(data %>% select(starts_with("demographic") & 
                               !ends_with(".factor") & 
                               contains("race") &
                               !contains("other")))
+```
+```{r echo = FALSE}
 race_vars
 ```
 
-2. Next, I begin piping the data to `select()` using the vector of variables created in Step 1 and then through the `tbl_summary()` function. Then, we can pipe the output table to the `add_variable_grouping()` function to indent all of the columns under a grouping variable, "Race/Ethnicity", and once again uses our vector of variables from Step 1. The example data displayed here are labelled, so even though the columns are named something like "demographic_4_race___*", the `tbl_summary()` function will display the corresponding labels automatically.
-```{r table of race/ethnicity, eval=FALSE}
+
+### Create a tbl_summary() table
+To create the table, begin by piping the data to `select()` and use the character vector of column names of the variables of interest. Next, pipe the output to the `tbl_summary()` function from the {gtsummary} package. Finally, pipe the output table to the `add_variable_grouping()` function of the {bstfun} package to indent all of the variables under a grouping named "Race/Ethnicity." In the example data, all of the colum names are labelled. Thus, even though the columns are named something like "demographic_4_race___1", the `tbl_summary()` function will display the corresponding label "American Indian or Alaskan Native."
+```{r table of race/ethnicity}
 data %>% 
   select(all_of(race_vars)) %>%
   tbl_summary() %>%
   add_variable_grouping("Race/Ethnicity" = race_vars)
 ```
 
-```{r table2, echo=FALSE}
-# Create a table summary object
-tab2 <- data %>% 
+### Sort the order by frequency
+So far, we have a decent looking table. However, we may want to sort the responses according to the frequency (%). Since our columns consist of binary responses, we can take the sums of each column, and then use the sums to determine the order. One way to accomplish this task, is by piping the columns of interest to the `colSums()` function followed by the `order()` function and assigning it to a vector named index. Next, use the index to order the columns of interest and assign it to a new vectore named ordered_race_vars. Finally, use the ordered_race_vars vector in the `select()` and `add_variable_grouping()` functions as above. All this does is essentially change the order in which the columns are selected and piped into the `tbl_summary()` function.
+
+```{r}
+index <- data %>% 
   select(all_of(race_vars)) %>%
+  colSums() %>%
+  order(decreasing = TRUE)
+
+ordered_race_vars <- race_vars[index]
+
+data %>%
+  select(all_of(ordered_race_vars)) %>% 
   tbl_summary() %>%
-  add_variable_grouping("Race/Ethnicity" = race_vars)
-
-# Remove the asterisks in the table summary object
-tab2[["table_styling"]][["header"]][["label"]][5] <- str_sub(
-  tab2[["table_styling"]][["header"]][["label"]][5], 3, -3)
-
-tab2[["table_styling"]][["header"]][["label"]][6] <- str_sub(
-  tab2[["table_styling"]][["header"]][["label"]][6], 3, -3)
-
-# Display the table summary object as_kable to add the caption
-as_kable(tab2, caption = "Percent of participants endorsing a category.")
+  add_variable_grouping("Race/Ethnicity" = ordered_race_vars)
 ```
 
 <br>
 
-### Bar Charts
-One way to display this type of information is in a bar char that displays the percent of participants that endorse any given category. Unlike `tbl_summary()` where the columns labels are automatically displayed, `ggplot()` requires manually setting labels if the column names aren't presentable.
+## Create Bar Charts
 
-1. As a result, my first step is to get the labels of the columns. I show two different approaches in getting labels. The first is through a for-loop and the second is through the `map_df()` function in the purrr package. If the data are not labelled, then creating a vector of labels can still be helpful if you want to preserve your column names for what ever reason and simply change the labels on the plot.
+### Extract column labels
+One way to visually display survey responses to race and ethnicity questions is to use the {ggplot} package. While `tbl_summary()` will play nicely with  columns that are labelled, the `geom_*()` functions do not. Thus my strategy is to use the native column names to generate a bar chart, and then use the columns labels to label the plot. The rationale for this approach is avoid additional problems if your eventual column names contain spaces or special characters that tend to not play well with R column-naming conventions.
+
+1. One option to extract the labels in the example data is to use the `map_df()` function from the {purrr} package in combination with the `attr()` function to extract the labels. The following code chunk essentially applies the `attr()` function to all of the input columns.
 ```{r , get the labels}
-# Use the vector of race_vars to get the column labels
-race_names <- ""
-for (i in 1:length(race_vars)){
-  race_names[i] <- attr(data[, race_vars[i]], "label")
-}
-
 # Alternative form using purrr
-race_names <- as.character(data %>% 
+race_labels <- as.character(data %>% 
                              select(all_of(race_vars)) %>% 
-                             map_df(., ~attr(.x, "label"))
-                           )
+                             map_df(., ~ attr(.x, "label")))
 
-race_names
+race_labels
 ```
 
-
-2. My next step is to use the race_vars and race_names in a chain of commands that selects the columns, converts them numeric, renames them, converts to long format, and then factors the categories The reason for converting numeric here is because the labelled columns some times do not play well with tidyverse functions. Converting to numeric facilitates the use of the `rename_at()` verb with the vector of variable names. The output shows an example of what the data look like at this step.
-```{r }
+### Prepare data
+The next step is to use the race_vars and race_labels in a chain of commands that selects the columns, converts them to numeric, renames them, converts to long format, and then factors the categories. The reason for converting to numeric class here is because the labelled columns do not play well with {dplyr} functions. Converting to numeric essentially clears out any labelled meta data from the column and facilitates any subsequent {dplyr} verbs to be successfully applied to the data. The output shows an example of what the data look like at this step.
+```{r}
 plot_data <- data %>% 
   select(all_of(race_vars)) %>%
   mutate_at(all_of(race_vars), ~ as.numeric(.)) %>% 
-  rename_at(all_of(race_vars), ~ race_names) %>%
-  pivot_longer(all_of(race_names),
+  rename_at(all_of(race_vars), ~ race_labels) %>%
+  pivot_longer(all_of(race_labels),
                names_to = "Category",
                values_to = "Endorsed") %>%
-  mutate(Category = factor(Category, levels = race_names))
+  mutate(Category = factor(Category, levels = race_labels))
+```
 
+```{r, echo = FALSE}
 plot_data
 ```
 
-```{r, echo=FALSE, eval = FALSE}
-kable(head(data %>% 
-  select(all_of(race_vars)) %>%
-  mutate_at(all_of(race_vars), ~ as.numeric(.)) %>% 
-  rename_at(all_of(race_vars), ~ race_names) %>%
-  pivot_longer(all_of(race_names),
-               names_to = "Category",
-               values_to = "Endorsed") %>%
-  mutate(Category = factor(Category, levels = race_names))))
-```
-
-3. Building from there, the next step is to `group_by()` category, `summarise()` the sum of Endorsed as Frequency, and then calculate the proportion of participants that endorse a particular category with the `mutate()` verb.
+3. Building from here, the next step is to use the long format date to count the number of responses for each category, and then calculate the proportion of responses out of all participants. This can be accomplished with the `group_by()`, `summarise()`, and `mutate()` functions.
 
 ```{r}
 plot_data <- plot_data %>%
   group_by(Category) %>%
   summarise(Frequency = sum(Endorsed, na.rm = TRUE)) %>%
   mutate(Proportion = Frequency/nrow(data))
+```
 
+
+```{r, echo = FALSE}
 plot_data
 ```
 
-4. The other option is to use `reorder()` within the ggplot call to order the responses by proportion. Both options are shown here, but the `reorder()` function is what is displayed as it happens later in the chain of commands. After setting the levels, I group by category and `summarise()` the sum of participants that endorsed a given category in a new column called "Frequency". Next, I create a new column called "Proportion" that is "Frequency" over the number of participants given by the number of rows in the data frame, not responses.
+### Plot the prepared data
+At this point, we have the basic building blocks to plot the data.
+```{r}
+plot_data %>%
+  ggplot(., aes(x = Category, y = Proportion)) +
+  geom_col()
+```
+From here, we can order the bars by Proportion by using the `reorder()` function and add a color and fill and flip the coordinates to fix the overplotted x-axis tick labels.
 
-3. Finally, the remaining data frame is ready to be piped into `ggplot()` where I will subsequently flip the coordinates to display horizontal bars and change the x label to "Category" with the `xlab()` layer. The color and fill arguments inside `geom_col()`, `theme_minimal()`, and the axis.line argument of the `theme()`functions add the finishing touches to this plot. 
+```{r}
+plot_data %>%
+  ggplot(aes(x = reorder(Category, Proportion), y = Proportion)) +
+  geom_col(color = "#1565c0", fill = "#1565c0") +
+  coord_flip()
 
+```
 
-
-```{r , plot of race/ethnicity}
-data %>% 
-  select(all_of(race_vars)) %>%
-  mutate_at(all_of(race_vars), ~ as.numeric(.)) %>% 
-  rename_at(all_of(race_vars), ~ race_names) %>%
-  pivot_longer(all_of(race_names),
-               names_to = "Category",
-               values_to = "Endorsed") %>%
-  mutate(Category = factor(Category, levels = race_names)) %>%
-  group_by(Category) %>%
-  summarise(Frequency = sum(Endorsed, na.rm = TRUE)) %>%
-  mutate(Proportion = Frequency/nrow(data)) %>%
+From here, we can apply some additional modifications by changing the theme and axis lines.
+```{r}
+plot_data %>%
   ggplot(aes(x = reorder(Category, Proportion), y = Proportion)) +
   geom_col(color = "#1565c0", fill = "#1565c0") +
   coord_flip() +
-  theme_minimal() +
   xlab("Category") +
+  theme_minimal() +
   theme(axis.line = element_line(color = "grey70"))
 ```
