@@ -156,7 +156,7 @@ data %>%
               digits = all_categorical() ~ 1)
 ```
 
-```{r}
+
 ```{r echo = FALSE, eval = FALSE}
 # Development Version. Need to do a list() in the tapply statement
 data %>% 

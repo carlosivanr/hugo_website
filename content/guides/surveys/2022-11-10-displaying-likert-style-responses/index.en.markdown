@@ -20,7 +20,13 @@ type: book
 weight: 30
 ---
 
+Surveys often contain the responses to a given question in a Likert style format where the available responses are something like “Strongly Agree”, “Agree”, “Neutral”, “Disagree”, or “Strongly Disagree.” The following represents a “cheat-sheet” for using {ggplot} to display these responses in a bar chart.
+
 ## Bar chart with perecentage of factored responses relative to the whole sample
+
+This version calculates and displays the percent of responses from the entire survey sample. The key for this type of chart is to set group = 1 in the `aes()` call, set clip = “off” in the `coord_flip()` layer in combination with setting limits in the `scale_y_continuous()` layer to prevent the percent labels from getting clipped. The legend and x label (which is actually on the y axis as display because of `coord_flip()` have been removed for simplicity. Also, the `theme()` axis.text.x setting is in place in case the x-axis ticks need to be rotated to prevent overplotting.
+**Requires:**
+- Factored responses that are ordered in the way they need to appear in the chart
 
 ``` r
 data %>%
@@ -30,7 +36,7 @@ data %>%
   geom_text(aes(label = scales::percent(..prop..), y= ..prop.. ), stat= "count", size = 3,
               hjust = -.15, colour = "black") +
   coord_flip(clip = "off") +
-  scale_y_continuous(labels = scales::percent, limits = c(0, .75)) + # limits extends the chart to prevent clipping 
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) + # limits extends the chart to prevent clipping 
   labs(y = "Percent", x = "") +
   theme_minimal() +
   theme(legend.position = "top", axis.text.x = element_text(angle = -0, hjust = 0)) +
@@ -39,14 +45,16 @@ data %>%
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
-## Faceted bar chart by a grouping variable
+## Faceted bar chart faceted by a grouping variable
+
+This version is an extension of basic bar chart, but adds the `facet_wrap()` layer to display responses to a grouping variable. In this example, the survey responses were collected from various “sites” that can be displayed separately. This option can be useful if the number of grouping variables is small. The two different `geom_bar()` layers control which variable to fill with color, either the response or the grouping variable (site).
 
 ``` r
 data %>%
   drop_na(sample_question_1.factor, site) %>%
   ggplot(., aes(sample_question_1.factor, group = 1)) +
-  geom_bar(aes(y = ..prop.., fill = site), position = position_dodge()) + # Applies fill to site
-  #geom_bar(aes(y = ..prop.., fill = factor(..x..)), position = position_dodge()) + # Applies fill to response
+  #geom_bar(aes(y = ..prop.., fill = site), position = position_dodge()) + # Applies fill to site
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), position = position_dodge()) + # Applies fill to response
   geom_text(aes(label = scales::percent(round(..prop..,2)), y= ..prop.. ), stat= "count", size = 3,
               hjust = -.15, colour = "black") +
   coord_flip(clip = "off") +
@@ -61,6 +69,8 @@ data %>%
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
 ## Bar chart with perecentage of factored responses relative to a grouping variable
+
+This style displays the same information as the faceted bar chart above, but places all of the bars in one panel. Again, this style works best when the number of values in a grouping variable is small to prevent over crowding each x-axis tick.
 
 ``` r
 data %>%
@@ -80,19 +90,23 @@ data %>%
 
 ## Bar chart faceted by related survey items
 
+Rather than faceting by a grouping variable, this style of chart will create multiple panels for multiple survey items. The key to this approach is to select the columns that are to be displayed and then converting the data to long format. Once the data are in long format, the remaining percentage calculations can be accomplished within the `geom_bar()` layer and displayed by the `geom_text()` layer. This style can be useful for displaying related survey items that a reader may want to compare.
+
+**Requires:**
+- At least two input columns of with ordered and factored responses with the same number of levels.
+
 ``` r
 data %>% 
   select(sample_question_2.factor:sample_question_3.factor) %>%
-  drop_na() %>%
   pivot_longer(cols = everything(),
                names_to = "level",
                values_to = "Response") %>%
-  group_by(Response, level) %>%
+  drop_na() %>%
   ggplot(., aes(Response, group = 1)) +
   geom_bar(aes(y = ..prop.., fill = factor(..x..)), position = position_dodge()) +
-  geom_text(aes(label = scales::percent(..prop..), y= ..prop.. ), stat= "count", size = 3,
+  geom_text(aes(label = scales::percent(..prop.., accuracy = 0.1L), y= ..prop.. ), stat= "count", size = 3,
               hjust = -.15, colour = "black") +
-  scale_y_continuous(labels = scales::percent, limits = c(0, .75)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
   coord_flip() +
   theme_minimal() +
   guides(fill = "none") +
@@ -101,19 +115,20 @@ data %>%
 ```
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+Responses in this type of char can be double checked with a call to `tbl_likert()` from the {bstfun} package. However, note that the rounding between `tbl_liker()` and the ggplot call will be slightly off due to rounding error.
 
 ``` r
 data %>% 
   select(sample_question_2.factor:sample_question_3.factor) %>%
-  tbl_likert()
+  tbl_likert(digits = list(everything() ~ 1))
 ```
 
-<div id="hjdpmjsgxz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="nqliperxli" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#hjdpmjsgxz .gt_table {
+#nqliperxli .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -138,7 +153,7 @@ data %>%
   border-left-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_heading {
+#nqliperxli .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -150,7 +165,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_title {
+#nqliperxli .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -162,7 +177,7 @@ data %>%
   border-bottom-width: 0;
 }
 
-#hjdpmjsgxz .gt_subtitle {
+#nqliperxli .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -174,13 +189,13 @@ data %>%
   border-top-width: 0;
 }
 
-#hjdpmjsgxz .gt_bottom_border {
+#nqliperxli .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_col_headings {
+#nqliperxli .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -195,7 +210,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_col_heading {
+#nqliperxli .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -215,7 +230,7 @@ data %>%
   overflow-x: hidden;
 }
 
-#hjdpmjsgxz .gt_column_spanner_outer {
+#nqliperxli .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -227,15 +242,15 @@ data %>%
   padding-right: 4px;
 }
 
-#hjdpmjsgxz .gt_column_spanner_outer:first-child {
+#nqliperxli .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hjdpmjsgxz .gt_column_spanner_outer:last-child {
+#nqliperxli .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hjdpmjsgxz .gt_column_spanner {
+#nqliperxli .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -247,7 +262,7 @@ data %>%
   width: 100%;
 }
 
-#hjdpmjsgxz .gt_group_heading {
+#nqliperxli .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -272,7 +287,7 @@ data %>%
   vertical-align: middle;
 }
 
-#hjdpmjsgxz .gt_empty_group_heading {
+#nqliperxli .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -287,15 +302,15 @@ data %>%
   vertical-align: middle;
 }
 
-#hjdpmjsgxz .gt_from_md > :first-child {
+#nqliperxli .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hjdpmjsgxz .gt_from_md > :last-child {
+#nqliperxli .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hjdpmjsgxz .gt_row {
+#nqliperxli .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -314,7 +329,7 @@ data %>%
   overflow-x: hidden;
 }
 
-#hjdpmjsgxz .gt_stub {
+#nqliperxli .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -327,7 +342,7 @@ data %>%
   padding-right: 5px;
 }
 
-#hjdpmjsgxz .gt_stub_row_group {
+#nqliperxli .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -341,11 +356,11 @@ data %>%
   vertical-align: top;
 }
 
-#hjdpmjsgxz .gt_row_group_first td {
+#nqliperxli .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hjdpmjsgxz .gt_summary_row {
+#nqliperxli .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -355,16 +370,16 @@ data %>%
   padding-right: 5px;
 }
 
-#hjdpmjsgxz .gt_first_summary_row {
+#nqliperxli .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_first_summary_row.thick {
+#nqliperxli .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hjdpmjsgxz .gt_last_summary_row {
+#nqliperxli .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -374,7 +389,7 @@ data %>%
   border-bottom-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_grand_summary_row {
+#nqliperxli .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -384,7 +399,7 @@ data %>%
   padding-right: 5px;
 }
 
-#hjdpmjsgxz .gt_first_grand_summary_row {
+#nqliperxli .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -394,11 +409,11 @@ data %>%
   border-top-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_striped {
+#nqliperxli .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hjdpmjsgxz .gt_table_body {
+#nqliperxli .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -407,7 +422,7 @@ data %>%
   border-bottom-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_footnotes {
+#nqliperxli .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -421,7 +436,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_footnote {
+#nqliperxli .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -430,7 +445,7 @@ data %>%
   padding-right: 5px;
 }
 
-#hjdpmjsgxz .gt_sourcenotes {
+#nqliperxli .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -444,7 +459,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#hjdpmjsgxz .gt_sourcenote {
+#nqliperxli .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -452,64 +467,64 @@ data %>%
   padding-right: 5px;
 }
 
-#hjdpmjsgxz .gt_left {
+#nqliperxli .gt_left {
   text-align: left;
 }
 
-#hjdpmjsgxz .gt_center {
+#nqliperxli .gt_center {
   text-align: center;
 }
 
-#hjdpmjsgxz .gt_right {
+#nqliperxli .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hjdpmjsgxz .gt_font_normal {
+#nqliperxli .gt_font_normal {
   font-weight: normal;
 }
 
-#hjdpmjsgxz .gt_font_bold {
+#nqliperxli .gt_font_bold {
   font-weight: bold;
 }
 
-#hjdpmjsgxz .gt_font_italic {
+#nqliperxli .gt_font_italic {
   font-style: italic;
 }
 
-#hjdpmjsgxz .gt_super {
+#nqliperxli .gt_super {
   font-size: 65%;
 }
 
-#hjdpmjsgxz .gt_footnote_marks {
+#nqliperxli .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#hjdpmjsgxz .gt_asterisk {
+#nqliperxli .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hjdpmjsgxz .gt_indent_1 {
+#nqliperxli .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hjdpmjsgxz .gt_indent_2 {
+#nqliperxli .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hjdpmjsgxz .gt_indent_3 {
+#nqliperxli .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hjdpmjsgxz .gt_indent_4 {
+#nqliperxli .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hjdpmjsgxz .gt_indent_5 {
+#nqliperxli .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -526,15 +541,15 @@ data %>%
   </thead>
   <tbody class="gt_table_body">
     <tr><td class="gt_row gt_left">sample_question_2.factor</td>
-<td class="gt_row gt_center">2 (1.4%)</td>
-<td class="gt_row gt_center">58 (41%)</td>
-<td class="gt_row gt_center">74 (52%)</td>
-<td class="gt_row gt_center">8 (5.6%)</td></tr>
+<td class="gt_row gt_center">2.0 (1.4%)</td>
+<td class="gt_row gt_center">58.0 (40.8%)</td>
+<td class="gt_row gt_center">74.0 (52.1%)</td>
+<td class="gt_row gt_center">8.0 (5.6%)</td></tr>
     <tr><td class="gt_row gt_left">sample_question_3.factor</td>
-<td class="gt_row gt_center">2 (1.4%)</td>
-<td class="gt_row gt_center">54 (38%)</td>
-<td class="gt_row gt_center">83 (58%)</td>
-<td class="gt_row gt_center">4 (2.8%)</td></tr>
+<td class="gt_row gt_center">2.0 (1.4%)</td>
+<td class="gt_row gt_center">54.0 (37.8%)</td>
+<td class="gt_row gt_center">83.0 (58.0%)</td>
+<td class="gt_row gt_center">4.0 (2.8%)</td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">
@@ -547,34 +562,29 @@ data %>%
 
 ## Bar chart with grouping variable and faceted by related survey item
 
-``` r
-# Create a dataframe with the group specific sample sizes. These will later be
-# merged into a dataframe to calculate the percent of responses relative to a
-# grouping variable.
-n_site <- data %>%
-  drop_na(site) %>%
-  select(site, sample_question_2.factor:sample_question_3.factor) %>%
-  group_by(site) %>%
-  summarise_all(~sum(!is.na(.))) %>%
-  pivot_longer(cols = sample_question_2.factor:sample_question_3.factor,
-               names_to = "level",
-               values_to = "n")
-  
+Building off of the previous chart, this style will facet two or more survey items and include the percent of responses relative to the grouping variable. Like the preceding chart, a key to this approach is convert the columns of interest into long format. From there, the next step is to group by all variables to count the number of responses. Next, we want to ungroup and drop the NAs followed by grouping again by the item (level) and grouping variable (site). Next, are two instances of using the mutate verb. One is to calculate the numerical percentage and the other is to create the label to display on top of the bar.
 
+**Requires:**
+- Two or more factored and ordered survey responses
+- One grouping variable
+
+``` r
 data %>% 
   select(sample_question_2.factor:sample_question_3.factor, site) %>%
   pivot_longer(cols = sample_question_2.factor:sample_question_3.factor,
                names_to = "level",
-               values_to = "Response") %>%
-  group_by(Response, site, level) %>%
+               values_to = "response") %>%
+  group_by(response, site, level) %>%
   summarise(freq = n()) %>%
-  left_join(., n_site, by = c("site", "level")) %>%
+  ungroup() %>%
   drop_na() %>%
-  mutate(prop = round((freq / n * 100), 1)) %>%
-  ggplot(., aes(x = Response, y = prop, fill = site, label = str_c(prop,"%"))) +
+  group_by(level, site) %>%
+  mutate(prop = round(freq/sum(freq, na.rm = T),3) * 100) %>% # Get the % to plot
+  mutate(prop_label = scales::percent(freq/sum(freq, na.rm = T), accuracy = 0.1L)) %>% # Get the % label
+  ggplot(., aes(x = response, y = prop, fill = site, label = prop_label)) +
   geom_col(position = "dodge2") +
   geom_text(position = position_dodge(.9), size = 3, hjust = -.1) +
-  coord_flip(clip = "off")+
+  coord_flip(clip = "off") +
   scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
   theme_minimal() +
   guides(fill = guide_legend(title = "Site")) +
@@ -583,10 +593,12 @@ data %>%
   facet_wrap(~level)
 ```
 
-    ## `summarise()` has grouped output by 'Response', 'site'. You can override using
+    ## `summarise()` has grouped output by 'response', 'site'. You can override using
     ## the `.groups` argument.
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+
+To display
 
 ``` r
 data %>% 
@@ -597,12 +609,12 @@ data %>%
 
     ## 8 observations missing `site` have been removed. To include these observations, use `forcats::fct_explicit_na()` on `site` column before passing to `tbl_summary()`.
 
-<div id="cgekpfqild" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="ykotobopqj" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#cgekpfqild .gt_table {
+#ykotobopqj .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -627,7 +639,7 @@ data %>%
   border-left-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_heading {
+#ykotobopqj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -639,7 +651,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_title {
+#ykotobopqj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -651,7 +663,7 @@ data %>%
   border-bottom-width: 0;
 }
 
-#cgekpfqild .gt_subtitle {
+#ykotobopqj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -663,13 +675,13 @@ data %>%
   border-top-width: 0;
 }
 
-#cgekpfqild .gt_bottom_border {
+#ykotobopqj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_col_headings {
+#ykotobopqj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -684,7 +696,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_col_heading {
+#ykotobopqj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -704,7 +716,7 @@ data %>%
   overflow-x: hidden;
 }
 
-#cgekpfqild .gt_column_spanner_outer {
+#ykotobopqj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -716,15 +728,15 @@ data %>%
   padding-right: 4px;
 }
 
-#cgekpfqild .gt_column_spanner_outer:first-child {
+#ykotobopqj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cgekpfqild .gt_column_spanner_outer:last-child {
+#ykotobopqj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cgekpfqild .gt_column_spanner {
+#ykotobopqj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -736,7 +748,7 @@ data %>%
   width: 100%;
 }
 
-#cgekpfqild .gt_group_heading {
+#ykotobopqj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -761,7 +773,7 @@ data %>%
   vertical-align: middle;
 }
 
-#cgekpfqild .gt_empty_group_heading {
+#ykotobopqj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -776,15 +788,15 @@ data %>%
   vertical-align: middle;
 }
 
-#cgekpfqild .gt_from_md > :first-child {
+#ykotobopqj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cgekpfqild .gt_from_md > :last-child {
+#ykotobopqj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cgekpfqild .gt_row {
+#ykotobopqj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -803,7 +815,7 @@ data %>%
   overflow-x: hidden;
 }
 
-#cgekpfqild .gt_stub {
+#ykotobopqj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -816,7 +828,7 @@ data %>%
   padding-right: 5px;
 }
 
-#cgekpfqild .gt_stub_row_group {
+#ykotobopqj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -830,11 +842,11 @@ data %>%
   vertical-align: top;
 }
 
-#cgekpfqild .gt_row_group_first td {
+#ykotobopqj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cgekpfqild .gt_summary_row {
+#ykotobopqj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -844,16 +856,16 @@ data %>%
   padding-right: 5px;
 }
 
-#cgekpfqild .gt_first_summary_row {
+#ykotobopqj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_first_summary_row.thick {
+#ykotobopqj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cgekpfqild .gt_last_summary_row {
+#ykotobopqj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -863,7 +875,7 @@ data %>%
   border-bottom-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_grand_summary_row {
+#ykotobopqj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -873,7 +885,7 @@ data %>%
   padding-right: 5px;
 }
 
-#cgekpfqild .gt_first_grand_summary_row {
+#ykotobopqj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -883,11 +895,11 @@ data %>%
   border-top-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_striped {
+#ykotobopqj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cgekpfqild .gt_table_body {
+#ykotobopqj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -896,7 +908,7 @@ data %>%
   border-bottom-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_footnotes {
+#ykotobopqj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -910,7 +922,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_footnote {
+#ykotobopqj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -919,7 +931,7 @@ data %>%
   padding-right: 5px;
 }
 
-#cgekpfqild .gt_sourcenotes {
+#ykotobopqj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -933,7 +945,7 @@ data %>%
   border-right-color: #D3D3D3;
 }
 
-#cgekpfqild .gt_sourcenote {
+#ykotobopqj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -941,64 +953,64 @@ data %>%
   padding-right: 5px;
 }
 
-#cgekpfqild .gt_left {
+#ykotobopqj .gt_left {
   text-align: left;
 }
 
-#cgekpfqild .gt_center {
+#ykotobopqj .gt_center {
   text-align: center;
 }
 
-#cgekpfqild .gt_right {
+#ykotobopqj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cgekpfqild .gt_font_normal {
+#ykotobopqj .gt_font_normal {
   font-weight: normal;
 }
 
-#cgekpfqild .gt_font_bold {
+#ykotobopqj .gt_font_bold {
   font-weight: bold;
 }
 
-#cgekpfqild .gt_font_italic {
+#ykotobopqj .gt_font_italic {
   font-style: italic;
 }
 
-#cgekpfqild .gt_super {
+#ykotobopqj .gt_super {
   font-size: 65%;
 }
 
-#cgekpfqild .gt_footnote_marks {
+#ykotobopqj .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#cgekpfqild .gt_asterisk {
+#ykotobopqj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cgekpfqild .gt_indent_1 {
+#ykotobopqj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cgekpfqild .gt_indent_2 {
+#ykotobopqj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cgekpfqild .gt_indent_3 {
+#ykotobopqj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cgekpfqild .gt_indent_4 {
+#ykotobopqj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cgekpfqild .gt_indent_5 {
+#ykotobopqj .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
