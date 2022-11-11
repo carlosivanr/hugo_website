@@ -23,12 +23,15 @@ weight: 30
 
 
 ```{r, echo=FALSE}
-pacman::p_load(tidyverse)
+pacman::p_load(tidyverse,
+               magrittr,
+               gtsummary,
+               bstfun)
 ```
 
 ```{r load data, echo=FALSE}
 load("C:/Users/rodrica2/OneDrive/Web Site/hugo_website/content/guides/surveys/2022-07-04-survey-data/sample_data.Rdata")
-data <- sample_n(data, 150)
+# data <- sample_n(data, 150)
 ```
 
 ## Bar chart with perecentage of factored responses relative to the whole sample
@@ -37,10 +40,10 @@ data %>%
   drop_na(sample_question_1.factor) %>%
   ggplot(., aes(sample_question_1.factor, group = 1)) +
   geom_bar(aes(y = ..prop.., fill = factor(..x..)), position = position_dodge()) +
-  coord_flip(clip = "off") +
-  scale_y_continuous(labels = scales::percent, limits = c(0, .75)) + # limits extends the chart to prevent clipping 
   geom_text(aes(label = scales::percent(..prop..), y= ..prop.. ), stat= "count", size = 3,
               hjust = -.15, colour = "black") +
+  coord_flip(clip = "off") +
+  scale_y_continuous(labels = scales::percent, limits = c(0, .75)) + # limits extends the chart to prevent clipping 
   labs(y = "Percent", x = "") +
   theme_minimal() +
   theme(legend.position = "top", axis.text.x = element_text(angle = -0, hjust = 0)) +
@@ -55,10 +58,10 @@ data %>%
   ggplot(., aes(sample_question_1.factor, group = 1)) +
   geom_bar(aes(y = ..prop.., fill = site), position = position_dodge()) + # Applies fill to site
   #geom_bar(aes(y = ..prop.., fill = factor(..x..)), position = position_dodge()) + # Applies fill to response
-  coord_flip(clip = "off") +
-  scale_y_continuous(labels = scales::percent) +
   geom_text(aes(label = scales::percent(round(..prop..,2)), y= ..prop.. ), stat= "count", size = 3,
               hjust = -.15, colour = "black") +
+  coord_flip(clip = "off") +
+  scale_y_continuous(labels = scales::percent) +
   labs(y = "Percent", x = "") +
   theme_minimal() +
   theme(legend.position = "top", axis.text.x = element_text(angle = -0, hjust = 0)) +
@@ -72,8 +75,8 @@ data %>%
   drop_na(sample_question_1.factor, site) %>%
   ggplot(., aes(sample_question_1.factor, fill = site)) +
   geom_bar(aes(y=..count../tapply(..count.., ..fill.. ,sum)[..fill..]), position="dodge2") +
-  coord_flip(clip = "off") +
   geom_text(aes(y=..count../tapply(..count.., ..fill.. ,sum)[..fill..], label = scales::percent(round(..count../tapply(..count.., ..fill.. ,sum)[..fill..],2))), stat="count", position=position_dodge(1), hjust=-0.15, size = 3) +
+  coord_flip(clip = "off") +
   scale_y_continuous(labels = scales::percent) +
   theme_minimal() +
   theme(legend.position = "top") +
@@ -81,7 +84,98 @@ data %>%
   labs(y = "Percent", x = "")
 ```
 
+## Bar chart faceted by related survey items
 ```{r}
+data %>% 
+  select(sample_question_2.factor:sample_question_3.factor) %>%
+  drop_na() %>%
+  pivot_longer(cols = everything(),
+               names_to = "level",
+               values_to = "Response") %>%
+  group_by(Response, level) %>%
+  ggplot(., aes(Response, group = 1)) +
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), position = position_dodge()) +
+  geom_text(aes(label = scales::percent(..prop..), y= ..prop.. ), stat= "count", size = 3,
+              hjust = -.15, colour = "black") +
+  scale_y_continuous(labels = scales::percent, limits = c(0, .75)) +
+  coord_flip() +
+  theme_minimal() +
+  guides(fill = "none") +
+  labs(y = "Percent", x = "") +
+  facet_wrap(~level)
+```
 
+```{r}
+data %>% 
+  select(sample_question_2.factor:sample_question_3.factor) %>%
+  tbl_likert()
+```
+
+## Bar chart with grouping variable and faceted by related survey item
+```{r}
+# Create a dataframe with the group specific sample sizes. These will later be
+# merged into a dataframe to calculate the percent of responses relative to a
+# grouping variable.
+n_site <- data %>%
+  drop_na(site) %>%
+  select(site, sample_question_2.factor:sample_question_3.factor) %>%
+  group_by(site) %>%
+  summarise_all(~sum(!is.na(.))) %>%
+  pivot_longer(cols = sample_question_2.factor:sample_question_3.factor,
+               names_to = "level",
+               values_to = "n")
+  
+
+data %>% 
+  select(sample_question_2.factor:sample_question_3.factor, site) %>%
+  pivot_longer(cols = sample_question_2.factor:sample_question_3.factor,
+               names_to = "level",
+               values_to = "Response") %>%
+  group_by(Response, site, level) %>%
+  summarise(freq = n()) %>%
+  left_join(., n_site, by = c("site", "level")) %>%
+  drop_na() %>%
+  mutate(prop = round((freq / n * 100), 1)) %>%
+  ggplot(., aes(x = Response, y = prop, fill = site, label = str_c(prop,"%"))) +
+  geom_col(position = "dodge2") +
+  geom_text(position = position_dodge(.9), size = 3, hjust = -.1) +
+  coord_flip(clip = "off")+
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
+  theme_minimal() +
+  guides(fill = guide_legend(title = "Site")) +
+  theme(legend.position = "top", axis.text.x = element_text(angle = -0, hjust = 0)) +
+  labs(y = "Percent", x = "") +
+  facet_wrap(~level)
+```
+
+
+```{r}
+data %>% 
+  select(sample_question_2.factor:sample_question_3.factor, site) %>%
+  tbl_summary(by = "site",
+              digits = all_categorical() ~ 1)
+```
+
+```{r}
+```{r echo = FALSE, eval = FALSE}
+# Development Version. Need to do a list() in the tapply statement
+data %>% 
+  select(sample_question_2.factor:sample_question_3.factor, site) %>%
+  drop_na() %>%
+  pivot_longer(cols = sample_question_2.factor:sample_question_3.factor,
+               names_to = "level",
+               values_to = "Response") %>%
+  ggplot(., aes(Response, fill = site)) +
+  geom_bar(aes(y=..count../tapply(..count.., ..fill.. ,sum)[..fill..]), position="dodge2") +
+  #geom_bar(aes(y=..count../tapply(..count.., list(..group.., ..fill..), sum)[..group..]), position="dodge2") +
+  #geom_text(aes(y=..count../tapply(..count.., ..fill.. ,sum)[..fill..], label = scales::percent(round(..count../tapply(..count.., ..fill.. ,sum)[..fill..],2))), stat="count", position=position_dodge(1), hjust=-0.15, size = 3) +
+  #geom_text(aes(label = scales::percent(..prop..), y= ..prop.. ), stat= "count", size = 3, hjust = -.15, colour = "black") +
+  scale_y_continuous(labels = scales::percent, limits = c(0, .75)) +
+  coord_flip() +
+  theme_minimal() +
+  guides(fill = guide_legend(title = "Site")) +
+  theme(legend.position = "top", axis.text.x = element_text(angle = -0, hjust = 0)) +
+  labs(y = "Percent", x = "") +
+  facet_wrap(~level)
 ```
 
