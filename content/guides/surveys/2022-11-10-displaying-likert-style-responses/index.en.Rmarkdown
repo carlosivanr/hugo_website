@@ -42,13 +42,13 @@ load("C:/Users/rodrica2/OneDrive/Web Site/hugo_website/content/guides/surveys/20
 ```
 
 
+## Bar charts for factored survey responses
 ```{r table1, echo = FALSE}
 kableExtra::kable(head(data %>% select(sample_question_1.factor, 
                            sample_question_2.factor, 
                            sample_question_3.factor)), caption = "Example survey responses.")
 ```
 
-## Bar charts for factored survey responses
 ### Bar chart with perecentage of factored responses relative to the whole sample
 This version calculates and displays the percent of responses from the entire survey sample. The key for this type of chart is to set group = 1 in the `aes()` call, set clip = "off" in the `coord_flip()` layer in combination with setting limits in the `scale_y_continuous()` layer to prevent the percent labels from getting clipped. The legend and x label (which is actually on the y axis as display because of `coord_flip()` have been removed for simplicity. Also, the `theme()` axis.text.x setting is in place in case the x-axis ticks need to be rotated to prevent overplotting.
 **Requires:**
@@ -305,17 +305,6 @@ kableExtra::kable(head(
 ```
 
 
-```{r table4, echo=FALSE}
-kableExtra::kable(head(
-  data %>% 
-  select(sample_question_1.integer:sample_question_4.integer) %>%
-  summarise(across(everything(), ~ mean(.x, na.rm = TRUE))) %>%
-  pivot_longer(cols = sample_question_1.integer:sample_question_4.integer,
-               names_to = "question",
-               values_to = "mean") 
-  ), caption = "Example summarized responses.")
-```
-
 ```{r}
 data %>% 
   select(sample_question_1.integer:sample_question_4.integer) %>%
@@ -335,3 +324,22 @@ data %>%
   
 ```
 
+```{r, eval = FALSE}
+data %>% 
+  select(sample_question_1.integer:sample_question_4.integer) %>%
+  summarise(across(everything(), ~ mean(.x, na.rm = TRUE))) %>%
+  pivot_longer(cols = sample_question_1.integer:sample_question_4.integer,
+               names_to = "question",
+               values_to = "mean")
+```
+
+```{r table4, echo=FALSE}
+kableExtra::kable(head(
+  data %>% 
+  select(sample_question_1.integer:sample_question_4.integer) %>%
+  summarise(across(everything(), ~ mean(.x, na.rm = TRUE))) %>%
+  pivot_longer(cols = sample_question_1.integer:sample_question_4.integer,
+               names_to = "question",
+               values_to = "mean") 
+  ), caption = "Example summarized responses.")
+```
