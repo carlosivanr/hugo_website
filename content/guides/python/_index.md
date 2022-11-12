@@ -5,7 +5,7 @@ summary: A series of machine learning projects conducted in python.
 date: '2021-09-17'
 type: book
 weight: 50
-draft: false
+draft: true
 ---
 <!--
 {{< figure src="featured.jpg" >}}
