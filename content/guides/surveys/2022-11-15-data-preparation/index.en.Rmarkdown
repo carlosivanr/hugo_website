@@ -15,7 +15,7 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
-draft: True
+draft: False
 ---
 
 # WORK IN PROGRESS
