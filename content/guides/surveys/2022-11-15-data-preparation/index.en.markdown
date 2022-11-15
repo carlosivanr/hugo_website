@@ -1,0 +1,149 @@
+---
+title: Data Preparation
+author: Carlos Rodriguez
+date: '2022-11-15'
+slug: data-preparation
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-11-15T07:14:39-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: True
+---
+
+# WORK IN PROGRESS
+
+```r
+pacman::p_load(tidyverse,
+               magrittr)
+```
+
+
+
+## Dealing with NAs
+
+
+### na_if()
+
+### replace_na()
+- Requires character or integer. 
+- Does not work with factors, use `fct_explicit_na()` 
+- Does not work labelled variables, convert to numeric or character first
+**Multiple variables**
+
+```r
+data %>%
+  mutate(across(sample_question_1.integer:sample_question_3.integer, ~ as.numeric(., 0))) %>% #convert to numeric or character if variables are labelled
+  mutate(across(sample_question_1.integer:sample_question_3.integer, ~ replace_na(., 0)))
+```
+
+
+### fct_explicit_na()
+Replaces any NA in a factored variable with "Missing". This is useful in cases where one needs to plot "Missing" values because the default for {ggplot2} is to drop an values with NAs.
+
+- Requires factored variable
+
+**One variable case**
+
+```r
+data %>% 
+  mutate(sample_question_1.factor = fct_explicit_na(sample_question_1.factor))
+```
+
+**Multiple variables**
+
+```r
+data %>% 
+  mutate(across(sample_question_1.factor:sample_question_3.factor, ~ fct_explicit_na(., "Missing")))
+```
+
+### drop_na()
+The `drop_na()` simply eliminates any rows that contain an NA in the input variable/s.
+**One variable case**
+
+```r
+data %>%
+  drop_na(sample_question_1.factor)
+```
+
+**Multiple variables**
+
+```r
+data %>%
+  drop_na(sample_question_1.factor:sample_question_3.factor)
+```
+
+
+## Recoding values
+### recode_()
+Old values are placed on the LHS while new values are placed on the RHS
+Recode numeric to character
+- Requires numeric class variable. Labelled columns by themselves will not work
+
+**One variable case**
+
+```r
+data %>%
+  mutate(sample_question_1.integer = as.numeric(sample_question_1.integer)) %>% #convert to numeric or character if variables are labelled
+  mutate(sample_question_1.integer = recode(sample_question_1.integer,
+                                            `1` = "Strongly Disagree", 
+                                            `2` = "Disagree",
+                                            `3` = "Neutral",
+                                            `4` = "Agree",
+                                            `5` = "Strongly Agree"))            
+```
+
+
+**Multiple variables**
+- Requires that all variables have the same set of values
+
+```r
+data %>%
+  mutate(across(sample_question_1.integer:sample_question_3.integer, ~ as.numeric(.))) %>%
+  mutate(across(sample_question_1.integer:sample_question_3.integer, ~ recode(.,
+                                            `1` = "Strongly Disagree", 
+                                            `2` = "Disagree",
+                                            `3` = "Neutral",
+                                            `4` = "Agree",
+                                            `5` = "Strongly Agree")))
+```
+
+
+### ifelse()
+### if_else()
+- For dates because it preserves the input type
+
+### collapse_()
+
+## Renaming Columns
+- New values are placed the LHS, while old values are placed on the RHS which is to `recode()`
+
+```r
+data %>%
+  rename("New name: Q1" = sample_question_1.factor,
+         "New name: Q2" = sample_question_2.factor,
+         "New name: Q3" = sample_question_3.factor)
+```
+
+
+```r
+#set the old column names that will be renamed
+col_names <- names(data %>% select(sample_question_1.factor:sample_question_3.factor))
+
+# Set the new col names that will be used
+labels <- c("Q1", "Q2", "Q3")
+  
+# Rename the columns by the the values in labels
+data %>%
+  rename_at(all_of(col_names), ~ labels)
+```
+
+
+## RowWise sums

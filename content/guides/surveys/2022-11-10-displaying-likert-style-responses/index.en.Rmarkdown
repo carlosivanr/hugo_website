@@ -41,7 +41,6 @@ load("C:/Users/rodrica2/OneDrive/Web Site/hugo_website/content/guides/surveys/20
 # data <- sample_n(data, 150)
 ```
 
-
 ## Bar charts for factored survey responses
 ```{r table1, echo = FALSE}
 kableExtra::kable(head(data %>% select(sample_question_1.factor, 
