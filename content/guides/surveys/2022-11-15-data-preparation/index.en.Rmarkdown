@@ -23,7 +23,8 @@ weigh: 5
 # !!!WORK IN PROGRESS!!!
 ```{r}
 pacman::p_load(tidyverse,
-               magrittr)
+               magrittr,
+               haven)
 ```
 
 ```{r load data, echo=FALSE}
@@ -35,7 +36,7 @@ load("C:/Users/rodrica2/OneDrive/Web Site/hugo_website/content/guides/surveys/20
 
 ```
 
-### na_if()
+<!-- ### na_if() -->
 
 ### replace_na()
 Replaces any NA value with the desired character or integer.
@@ -52,9 +53,15 @@ data %>%
   mutate(across(sample_question_1.integer:sample_question_3.integer, ~ replace_na(., 0)))
 ```
 
+```{r}
+data %>%
+  mutate(across(sample_question_1.integer:sample_question_3.integer, ~ as.numeric(.))) %>%
+  mutate(across(sample_question_1.integer:sample_question_3.integer, ~ replace_na(., 0)))
+```
+
 
 ### fct_explicit_na()
-Replaces any NA value in a factored variable with "Missing". This is useful in cases where one needs to plot "Missing" values because the default for {ggplot2} is to drop an values with NAs.
+Replaces any NA value in a factored variable with "Missing". This is useful in cases where one needs to plot "Missing" values because the default for {ggplot2} is to drop any values with NAs.
 
 - Requires factored variable
 
@@ -88,7 +95,7 @@ data %>%
 
 ## Recoding values
 ### recode_()
-Old values are placed on the LHS while new values are placed on the RHS.
+Old values are placed on the let-hand side (LHS) while new values are placed on the right-hand side (RHS).
 - Requires a numeric class variable. 
 - Does not work with labelled variables. Convert to numeric or character class first.
 - Integers are encased with back ticks.
