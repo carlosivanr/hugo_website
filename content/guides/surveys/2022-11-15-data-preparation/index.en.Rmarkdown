@@ -53,13 +53,6 @@ data %>%
   mutate(across(sample_question_1.integer:sample_question_3.integer, ~ replace_na(., 0)))
 ```
 
-```{r}
-data %>%
-  mutate(across(sample_question_1.integer:sample_question_3.integer, ~ as.numeric(.))) %>%
-  mutate(across(sample_question_1.integer:sample_question_3.integer, ~ replace_na(., 0)))
-```
-
-
 ### fct_explicit_na()
 Replaces any NA value in a factored variable with "Missing". This is useful in cases where one needs to plot "Missing" values because the default for {ggplot2} is to drop any values with NAs.
 
