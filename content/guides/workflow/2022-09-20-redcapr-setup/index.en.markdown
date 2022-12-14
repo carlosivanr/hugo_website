@@ -1,5 +1,5 @@
 ---
-title: RedCapR Setup
+title: Setup RedCapR API
 author: Carlos Rodriguez
 date: '2022-09-20'
 slug: redcapr-setup
@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: "September 20, 2022"
+lastmod: "December 13, 2022"
 featured: no
 image:
   caption: ''
@@ -17,6 +17,7 @@ image:
 projects: []
 type: book
 draft: true
+weight: 25
 ---
 
 

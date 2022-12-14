@@ -1,5 +1,5 @@
 ---
-title: Connect an existing Rstudio github repo to a new one
+title: Move an existing GitHub repo to a new one
 author: Carlos Rodriguez
 date: '2022-09-14'
 slug: connect-an-existing-rstudio-github-repo-to-a-new-one
@@ -16,9 +16,10 @@ image:
   preview_only: no
 projects: []
 type: book
+weight: 15
 ---
 
-In the event of having to move one github repository a different repository, say because of a switch to an organization, the following commands should complete the task.
+In the event of having to move one github repository a different repository, due to needing to separate professional and personal accounts, the following commands should complete the task.
 
 ## 1 Disconnect the local repository from GitHub
 The first step is disconnect the local repository from GitHub. To accomplish this, navigate to the directory of the git repository. Typically, I will open up an Rstudio project that has git version controlled enabled. Then I will open a new bash terminal. The terminal should open in the same directory as the git repository. Finally, type the following bash command to disconnect the local git repot from the GitHub one.

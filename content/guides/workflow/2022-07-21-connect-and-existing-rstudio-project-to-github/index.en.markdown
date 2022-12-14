@@ -2,13 +2,13 @@
 title: Connect an existing RStudio project to GitHub
 author: Carlos Rodriguez
 date: '2022-07-21'
-slug: connect-and-existing-rstudio-project-to-github
+slug: connect-an-existing-rstudio-project-to-github
 categories: []
 tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: "September 14, 2022"
+lastmod: "December 13, 2022"
 featured: no
 image:
   caption: ''
@@ -16,6 +16,7 @@ image:
   preview_only: no
 projects: []
 type: book
+weight: 10
 ---
 
 A nice feature in RStudio is that it can integrate version control via Git and GitHub. This feature allows users to painlessly contribute their code to an online repository to share or keep as a backup. In this post, I will go through the steps of connecting an existing RStudio project to GitHub.com. The only requirements are that you have a pre-existing GitHub account and have [Git and Git Bash](https://git-scm.com/downloads) installed on your local machine.

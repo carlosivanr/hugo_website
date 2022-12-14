@@ -46,11 +46,11 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-I am an experimental psychologist by training. My research has focused on leveraging neuroimaging technology to better understand how prenatal alcohol alters functional network connectivity. My professional and educational experiences have provided a solid foundation in research design, statistical analyses, and public speaking.
+Welcome! I am an experimental psychologist by training with a concentration in behavioral neuroscience. My research has primarily focused on leveraging neuroimaging technology to better understand how prenatal alcohol alters functional network connectivity in humans and rodents. Currently, I am a statistical data analyst at the CU Anschutz Medical Campus where I serve on multiple research and evaluation projects in the health care services space.
 
-In addition to my research, I have a longstanding commitment to mentoring students from under-represented backgrounds. I have mentored URM students in achieving their research career goals through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science.
+In addition to my research work, I have a longstanding commitment to mentoring students from under-represented backgrounds. I have mentored under-represented students in achieve their research career goals through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science. 
 
-Currently, I am at the CU Anschutz Medical Campus where I serve on multiple research and program evaluation projects in the health care services space. 
+Let's connect on LinkedIn.
 
 
 

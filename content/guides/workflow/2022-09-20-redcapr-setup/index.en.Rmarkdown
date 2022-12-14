@@ -17,6 +17,7 @@ image:
 projects: []
 type: book
 draft: true
+weight: 25
 ---
 
 ```{r setup, include=FALSE}
@@ -24,12 +25,12 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
 ## Load library
-```{r}
+```{r, eval = FALSE}
 library(REDCapR)
 ```
 
 ## Create a template file named credentials
-```{r}
+```{r, eval = FALSE}
 # Creates an example local credential file
 create_credential_local(
   "credentials"
@@ -46,7 +47,7 @@ create_credential_local(
 - Ensure that it is ignored by any version control system
 
 ## Create a credential object
-```{r}
+```{r, eval=FALSE}
 # set path to credential file
 path_credential <- "./credentials"
 
@@ -58,7 +59,7 @@ credential  <- retrieve_credential_local(
 
 
 ## Read in the REDCap data
-```{r}
+```{r, eval=FALSE}
 data <-
   redcap_read(
     redcap_uri  = credential$redcap_uri,
