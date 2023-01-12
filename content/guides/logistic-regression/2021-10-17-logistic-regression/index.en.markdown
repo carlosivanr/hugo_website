@@ -26,7 +26,7 @@ draft: false
 ---
 
 
-Logistic regression is a statistical technique to understand the relationship between categorical outcome variables and categorical or continuous predictor variables. Binary logistic regression is used in circumstances to understand binary outcomes such as whether or not someone survived a hostpital stay or whether or not a medical intervention was successful or not. For this guide, we will work with example data in which eels are used in an experimental treatment to cure a medical condition. Our outcome will fall into one of two possibilities, Cured or Not Cured, and our predictor is whether someone received the Intervention or not. Thus we have a situation in which a binary outcome will be predicted by a dichotomous categorical predictor variable.
+Logistic regression is a statistical technique to understand the relationship between categorical outcome variables and categorical or continuous predictor variables. Binary logistic regression can be used in situations where the outcome takes on one of two values, such as whether or not someone survived a hospital stay or whether or not a medical intervention was successful or not. For this guide, we will work with example data in which eels are used as an experimental treatment to cure a medical condition. Our outcome will fall into one of two possibilities, Cured or Not Cured, and our predictor is whether someone received the Intervention or not.
 
 
 ```r
@@ -92,7 +92,7 @@ kable(head(eelData))
 </table>
 
 ### Prepare data
-Before building our logistic regression model, we will need to convert Cured and Intervention to factors. Additionally, we will need to order the levels so that Not Cured and No Treatment are the baseline categories and are set as 0 rather than 1.
+Before building our logistic regression model, we will need to convert Cured and Intervention to factored variables. Additionally, we will need to order the levels so that Not Cured and No Treatment are the baseline (reference) categories.
 
 ```r
 eelData$Cured <- factor(eelData$Cured, levels = c("Not Cured", "Cured"))
@@ -100,7 +100,7 @@ eelData$Intervention <- factor(eelData$Intervention, levels = c("No Treatment", 
 ```
 
 ### Visualize data
-The data consist of a dichotomous outcome variable, Cured or Not Cured, and a dichotomous predictor variable, Intervention or No Treatment. One way to visualize these data is through a stacked bar chart where we can count each possible combination of Cured and Intervention variables to get an idea of the value counts.
+The data consist of a dichotomous outcome variable, Cured or Not Cured, and a dichotomous predictor variable, Intervention or No Treatment. One way to visualize these data is through a stacked bar chart where we can count each possible combination of Cured and Intervention values to get an idea of the counts.
 
 ```r
 colors <- c( "#440154FF","#1565c0")
@@ -117,8 +117,9 @@ ggplot(eelData, aes(x = Cured, color = Intervention, fill = Intervention)) +
 
 
 
+
 ### Model the data with one predictor variable
-For our first logistic regression model, we will attempt to predict Cured from Intervention. Instead of using the `lm()` function as in the linear regression, we will use the `glm()` function. For logistic regression, we will need to set the  `family = binomial()` argument, and then specify the data. Lastly, we will use the `summary()` to display the output.
+For our first logistic regression model, we will attempt to predict Cured from Intervention only. For a logistic regression analysis, we will use the `glm()` function, specify `binomial()` as the family argument, and then specify the data. Lastly, we will use the `summary()` to display the output.
 
 ```r
 eel_model.1 <- glm(Cured ~ Intervention, family = binomial(), data = eelData)
@@ -156,10 +157,10 @@ The output of the `summary()` function can be divided into four sections.
   * The first section is the "**Call:**," which is simply a reproduction of the `glm()` function used to create the model. 
   * The next section, "**Deviance Residuals:**," contains information about the differences between the model predictions the and the actual values. 
   * In the third, "**Coefficients:**," section we find information regarding the model parameters. The same section will contain a standard error, z-value, and p-value.
-  * Finally, the last section displays information about the **overall fit** of the model. In logistic regression, the primary values to inspect are the Null and Residual deviance statistics.
+  * Finally, the last section displays information about the **overall fit** of the model. In the logistic regression output, the primary values to inspect are the Null and Residual deviance statistics.
 
 ### Deviance statistics
-The "Null deviance" value provides information on a model that does not contain any predictors other than the constant. In contrast, the "Residual deviance" value provides information regarding fit in the model that does contain our predictors. If the model fits the data well, then we would expect lower residuals deviance values compared to the null deviance values. The difference between the residual and null deviance values follows a chi-square distribution and can tested for statistical significance. This is accomplished with the `pchisq()` function which calculates the area under the curve for of a chi-distribution either to the left or right of a given value and degrees of freedom. The result of this command is a p-value of 0.002 (rounded) which would indicate that including our predictor "Intervention" significantly improves the fit of the model.
+The "Null deviance" value provides information on a model that does not contain any predictors other than the constant, which is akin to the mean in a simple linear regression model. In contrast, the "Residual deviance" value provides information regarding fit in the model that does contain our predictors. If the model fits the data well, then we would expect lower residuals deviance values compared to the null deviance values. The difference between the residual and null deviance values follows a chi-square distribution and can be tested for statistical significance. This is accomplished with the `pchisq()` function which calculates the area under the curve of a chi-distribution with corresponding degrees of freedom. The result of this command is a p-value of 0.002 (rounded) which would indicate that including our predictor "Intervention" significantly improves the fit of the model.
 
 
 ```r
@@ -206,10 +207,10 @@ kable(data.frame(Intervention.Model, Value))
 <!-- The AIC for our model is measure of fit that takes into consideration the number of predictors. The higher the number of the predictors, the more the fit is penalized. The AIC is 148.16 and can be used to compare other models in which additional predictors are included. -->
 
 ### Coefficients
-The estimate or b-value for the model is 1.23. In linear regression, the coefficients reprsent as the change in the outcome variable that can be expected for a unit increase in a predictor variable. In logistic regression, the coefficients represent the change in the logit of the outcome variable that can be expected for a unit change in the predictor variable. The logit of the coutome variable corresponds to the natural logarithm  of the odds of the outcome variable occurring. The z-values are normally distributed and can be tested for significance. In our example, Intervention is statistically significant which means that the predictor is making a significant contribution to the prediction of the outcome variable.
+The estimate or b-value for the model is 1.23. In linear regression, the coefficients represent the change in the outcome variable that can be expected for after a one unit increase in a predictor variable. In logistic regression, the coefficients represent the change in the logit of the outcome variable that can be expected for the same one unit change in the predictor variable. The logit of the outcome variable corresponds to the natural logarithm of the odds of the outcome variable occurring. The z-values are normally distributed and can be tested for significance. In our example, Intervention is statistically significant which indicates that the predictor, whether or not someone received the intervention, is making a significant contribution to the prediction of the outcome variable.
 
 ### Odds ratio
-In the case of where the predictor variables are dichotomous, the odds ratio, defined as the exponential (`exp()` function) of the coefficients, has a straightforward interpretation. A value greater than one indicates that as the predictor increases, the odds (not to be confused with probability) of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. The odds ratio with our example is 3.417 and is greater than 1. This means that receiving an intervention increases the odds of cured outcome.
+In cases where the predictor variable is dichotomous, the odds ratio is defined as the exponentiated (`exp()` function) coefficient and has a straightforward interpretation. A value greater than one indicates that as the predictor increases, the odds (not to be confused with probability) of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. The odds ratio in this example is 3.42. This means that receiving an intervention increases the odds of a "Cured" outcome.
 
 ```r
 # Odds ratio
@@ -303,7 +304,7 @@ Pseudo R-squareds: Provide additional ways of assessing model fit, but have to b
   - All of these values provide an idea of the significance of the model
 AIC: Another way of assessing model fit that takes into consideration the number of predictors in the model.
 Coefficients: Tell us the change in the logit of the outcome variable that can be expected for a one-unit increase in the predictor variable. Individual contributions of predictors. The z-statistic tells us if the coefficient is significantly different than zero. But when the coefficient is large, the standard error can become inflated, which underestimates the z-statistic and increases the likelihood of making a type II error (Which is a false negative, telling a pregnant woman she is not pregnant)
-Odds ratio:  Calculated as the exponential of beta coefficients. This indicates the change in odds resulting from a unit change in the predictor. But if the predictor is a categorical variable, . The odds value is NOT the same as probability, bc odds is calculated as P(event)/P(no event). The odds ratio is interpreted at a cutoff of 1. Greater than 1 means that as the predictor increases the odds of the outcome occurring increases. A value less than one indicates that as the predictor increases the odds of the outcome occurring decreases. 
+Odds ratio:  Calculated as the exponential of B. This indicates the change in odds resulting from a unit change in the predictor. But if the predictor is a categorical variable, . The odds value is NOT the same as probability, bc odds is calculated as P(event)/P(no event). The odds ratio is interpreted at a cutoff of 1. Greater than 1 means that as the predictor increases the odds of the outcome occurring increases. A value less than one indicates that as the predictor increases the odds of the outcome occurring decreases. 
 
 In the second part of this series, we will create a model with an additional variable, duration, that will quantify the number of days that a participant presented with a problem prior to treatment.
 

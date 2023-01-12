@@ -20,7 +20,7 @@ weight: 80
 draft: false
 ---
 
-In this guide we continue with logistic regression by adding a second predictor variable to our model, compare two models, and assess the model diagnostics. 
+In this guide we continue with logistic regression by adding a second predictor variable to our model, compare the model with one predictor to the model with two predictors, and finally inspect the model diagnostics. 
 
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
@@ -38,9 +38,9 @@ eel_model.1 <- glm(Cured ~ Intervention, family = binomial(), data = eelData)
 
 
 ### Model data with two predictors
-In our second model, we will include an additional variable, "Duration," which measures the amount of time each participant had spent dealing with the illness before seeking medical treatment. Notice that the residual deviance for the second model is the exact same as the residual deviance for the first model. The residual deviance is one way assess model fit and including the "Duration" variable does not change the residual deviance. 
+In our second model, we will include an additional variable, "Duration," which measures the amount of time each participant had spent dealing with the illness before seeking medical treatment. Notice that the residual deviance for the second model is the exact same as the residual deviance for the first model. The residual deviance is one way assess model fit thus including the "Duration" variable does not change the residual deviance. 
 
-An additional piece of information to consider is the Akaike Information Criterion (AIC). The AIC is another way of assessing model fit that takes into consideration the number of predictors in the model. The AIC is for the model.2 is larger than the AIC for model.1 which suggests that model.1 is the better model as lower values are better. After considering the deviance statistic and increased AIC, we can then conclude that adding the "Duration" variable does not improve the fit of model.
+An additional piece of information to consider is the Akaike Information Criterion (AIC). The AIC is another way of assessing model fit that takes into consideration the number of predictors in the model. The AIC for the model.2 is larger than the AIC for model.1 which suggests that model.1 is the better model as lower values are better. After considering the deviance statistic and increased AIC, we can then conclude that adding the "Duration" variable does not improve the fit of model.
 
 ```{r}
 eel_model.2 <- glm(Cured ~ Intervention + Duration, family = binomial(), data = eelData)
@@ -49,7 +49,7 @@ summary(eel_model.2)
 ```
 
 ### Compare Models
-A more objective way to compare logistic regression models is perform a chi-squared test, since the differences in the deviance statistics follow a chi-square distribution. To accomplish this, we simply subtract the model.2 deviance from model.1, subtract the degrees of model.2 from model.1, and then compute the probability of obtaining that value with pchisq() function. The results of these calculations indicate that the p-value is 0.964 and thus model.2 is not a significant improvement when compared to model.1.
+A more objective way to compare logistic regression models is perform a chi-squared test, since the differences in the deviance statistics follow a chi-square distribution. To accomplish this, we simply subtract the model.2 deviance from model.1, subtract the degrees of freedom from model.2 from the degrees of freedom from model.1, and then utilize the resulting values with the pchisq() function. The result of these calculations indicate that the p-value is 0.964 and thus model.2 does not represent a significant improvement when compared to model.1.
 
 ```{r}
 modelChi <- eel_model.1$deviance - eel_model.2$deviance
@@ -64,7 +64,7 @@ anova(eel_model.1, eel_model.2)
 ```
 
 ### Diagnostics
-The final step in this guide will be to perform diagnostics. Since model.2 was not an improvement from model.1, we will focus on examining the predicted probabilities, residuals, degrees of freedom for our coefficients, and leverage values.
+The final step in this guide will be to perform diagnostics. Since model.2 was not an improvement from model.1, we will focus on examining the predicted probabilities, residuals, degrees of freedom for our coefficients, and leverage values from model.1.
 ```{r, warning=FALSE}
 eelData$predicted.probabilities <- fitted(eel_model.1)
 eelData$standardized.residuals <- rstandard(eel_model.1)
@@ -75,7 +75,7 @@ eelData$leverage <- hatvalues(eel_model.1)
 ```
 
 ### Predicted probabilities
-The output of the table lists the first several cases of predicted probabilites. Recall that intervention was the only significant predictor in this model. Intervention can only take on a value of 0 or 1, either No Treatment or Intervention. The predicted probability of getting cured without treatment is 0.43 which means that about 43% of these patients will be cured. However, the predicted probability for getting the intervention is .72 which means that about 72% of patients receiving the intervention will be cured.
+The output of the table lists the first several cases of predicted probabilities. Recall that intervention was the only significant predictor in this model. Intervention can only take on a value of 0 or 1, either No Treatment or Intervention. The predicted probability of getting cured without treatment is 0.43 which means that about 43% of these patients will be cured. However, the predicted probability for getting the intervention is .72 which means that about 72% of patients receiving the intervention will be cured.
 ```{r, warning=FALSE}
 kable(head(eelData %>%
   select(Cured, Intervention, Duration, predicted.probabilities)))
