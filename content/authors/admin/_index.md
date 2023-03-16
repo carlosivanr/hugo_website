@@ -46,11 +46,11 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-Welcome! I am senior instructor and statistical data analyst in the Department of Family Medicine at the University of Colorado Anschutz Medical Campus. In my current role, I am part of an NIH-funded research team focused on studying the effectiveness of a novel pragmatic approach to address weight management in primary care. Furhtermore, I collaborate with other research teams on projects related to well-being among clinicians, integrated physical and behavioral health care models, and addressing health inequities in primary care. 
+I am senior instructor and statistical data analyst in the Department of Family Medicine at the University of Colorado Anschutz Medical Campus. In my current role, I am part of an NIH-funded research team focused on studying the effectiveness of a novel pragmatic approach to address weight management in primary care. I also collaborate with other research teams on projects related to well-being among clinicians, integrated physical and behavioral health care models, and addressing health inequities in primary care. 
 
-Prior to my current position, I conducted research that utilized neuroimaging technology to better understand how prenatal alcohol alters functional network connectivity in humans and in rodents.
+Prior to my current position, I completed a Ph.D. in psychology and underwent post-doctoral training centered on functional neuroimaging. My research was primarily aimed at better understanding how prenatal alcohol alters network connectivity in the brain and how machine learning approaches could be leveraged to develop non-invasive diagnostic tools for fetal alcohol spectrum disorders.
 
-In addition to my research work, I have a longstanding commitment to mentoring students from under-represented backgrounds. I have mentored under-represented students in achieving their research career goals through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science. 
+In addition to my research, I have a longstanding commitment to mentoring students from under-represented backgrounds. I have mentored under-represented students in achieving their research career goals through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science. 
 
 
 
