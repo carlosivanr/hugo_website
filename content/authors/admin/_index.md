@@ -16,7 +16,7 @@ highlight_name: false
 # interests:
 # - Neuroscience
 # - Statistics
-# - Data analysis & visualizaion
+# - Data analysis & visualization
 # - Promoting diversity in research
 # role: Statistical Data Analyst
 organizations:
@@ -46,11 +46,11 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-Welcome! I am an experimental psychologist by training with a concentration in behavioral neuroscience. My research has primarily focused on leveraging neuroimaging technology to better understand how prenatal alcohol alters functional network connectivity in humans and rodents. Currently, I am a statistical data analyst at the CU Anschutz Medical Campus where I serve on multiple research and evaluation projects in the health care services space.
+Welcome! I am senior instructor and statistical data analyst in the Department of Family Medicine at the University of Colorado Anschutz Medical Campus. In my current role, I am part of an NIH-funded research team focused on studying the effectiveness of a novel pragmatic approach to address weight management in primary care. Furhtermore, I collaborate with other research teams on projects related to well-being among clinicians, integrated physical and behavioral health care models, and addressing health inequities in primary care. 
+
+Prior to my current position, I conducted research that utilized neuroimaging technology to better understand how prenatal alcohol alters functional network connectivity in humans and in rodents.
 
 In addition to my research work, I have a longstanding commitment to mentoring students from under-represented backgrounds. I have mentored under-represented students in achieving their research career goals through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science. 
-
-Let's connect on LinkedIn.
 
 
 
