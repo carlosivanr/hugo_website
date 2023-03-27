@@ -8,7 +8,7 @@ tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: "December 13, 2022"
+lastmod: "March 27, 2023"
 featured: no
 image:
   caption: ''
@@ -36,7 +36,7 @@ A nice feature in RStudio is that it can integrate version control via Git and G
 - Sign in to your account and navigate to your Repositories page
 - Then select the green New button, to create a new repository.
 - Type in a new repository name and select public or private, then select the green Create repository button.
-- Verify that "Add README" is not selected as this can changes how to set up the repository
+- Verify that "Add README" is not selected as this changes how to set up the repository
 - From here, copy the three lines of code from the section titled "... or push existing repository from the command line"
 
 # Back to RStudio...
