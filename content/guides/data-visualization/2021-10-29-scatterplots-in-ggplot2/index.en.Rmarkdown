@@ -27,10 +27,12 @@ In this guide, I'll use data from the correlation walkthrough [here](/guides/cor
 ```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(kableExtra)
+library(here)
+
 ```
 
 ```{r, echo=FALSE}
-data <- read.table(file = "/Users/c/hugo_website/content/guides/correlation/2021-10-08-correlation-in-r/Exam Anxiety.dat", header = TRUE)
+data <- read.table(file = here("content/guides/correlation/2021-10-08-correlation-in-r/Exam Anxiety.dat"), header = T)
 ```
 
 ```{r}

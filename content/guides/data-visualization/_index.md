@@ -1,7 +1,7 @@
 ---
-title: Data Import and Preparation
-linkTitle: Data Import and Preparation
-summary: How to import, manipulate, and visualize data in R and Python.
+title: Data Visualization
+linkTitle: Data Vizualization
+summary: How to visualize data in R.
 date: '2021-04-25'
 type: book
 draft: false

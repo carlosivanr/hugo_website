@@ -28,6 +28,7 @@ In this guide, I'll use data from the correlation walkthrough [here](/guides/cor
 ```r
 library(tidyverse)
 library(kableExtra)
+library(here)
 ```
 
 

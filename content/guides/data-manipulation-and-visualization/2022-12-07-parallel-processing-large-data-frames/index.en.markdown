@@ -1,0 +1,123 @@
+---
+title: Processing data in parallel
+author: Carlos Rodriguez
+date: '2022-12-07'
+slug: parallel-processing-large-data-frames
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2022-12-07T13:00:24-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+type: book
+---
+
+# Process large data frames in parallel
+
+There are times when working with large data frames becomes cumbersome as processing data becomes increasingly slow. I usually encounter this when I'm working with data frames that are in the millions of rows large. I've especially noticed bottlenecks when using the `group_by()` verb from the {dplyr} package with multiple variables with these large data frames. I came across one solution to this problem on [this]( https://stackoverflow.com/questions/65846252/how-to-split-dataframe-for-future-map-for-optimal-performance) Stack Overflow post. I had used the {furrr} package in other [contexts](/guides/workflow/parameterized-and-parallelized-quarto-reports), but found this to be an adequate solution to cutting down some processing time. Essentially, the technique is to break apart a large data frame into smaller chunks, then apply what ever data processing step is required in parallel. In the contexts that I've used this approach, I've been able to cut processing times by about 45% although your mileage may vary.
+
+The general approach is divide the data frame in a reasonable way. Much of the data I work with is patient data so I want to make sure that the same patient IDs are always in the same sub data frame chunk. To accomplish this I use the `cut_number()` function from the {ggplot2} package, and use the number of available cores minus 1 to set the number of groups. I set the number of groups using the labs value which is a numeric value to indicate which sub data frame a particular row will go into.
+
+Next, I define a function that will be applied to each sub data frame. The function that I defined, `slice_dx()`, is meant to group my data by patient, encounter, and diagnosis code. I want to extract one unique diagnosis code per patient per visit. As a result, the `slice_head()` function from the {dplyr} package does the trick after piping in data that has been grouped by patient, visit, and diagnosis code. Thus my function will split my large data frame by the split_group variable, then takes advantage of the `future_map_dfr()` function to take each separate sub data set and returns one unique diagnosis code per patient per visit in parallel. In case you're wondering, the specific use of using `future_map_dfr()` is to return a data frame instead of a list.
+
+After defining the function, then the last step is to apply the function, by passing in the original data (dx) and the grouping variable as arguments, and saving the output. 
+While this approach has worked in most situations, there have been times where it has backfired. Typically, this has been in situations where the size of the data frame so large that creating sub data frames further taxes memory resources which has led to crashes. Thus, you'll want to ensure you have enough memory resources to handle these extreme cases.
+
+
+```r
+library(tidyverse)
+library(furrr)
+
+# Set the number of parallel cores 
+cores <- (availableCores() - 1)
+
+# Set the labels to be used when creating
+# the split_group variable
+labs <- seq_along(1:cores)
+
+# Set the options and number of multisession cores 
+options(future.rng.onMisuse = "ignore")
+plan(multisession, workers = cores)
+
+# Assign each patient id to a split group, which will then be used for
+# splitting the data frame into smaller sets for parallel processing
+dx$split_group <- cut_number(dx$patient_id, 
+                                  n = cores, 
+                                  labels = labs)
+
+# Define a function that will slice one diagnosis code per each patient 
+# per visit.
+slice_dx <- function(data, split_by){
+  split_by <- enquo(split_by)
+
+  data %>%
+    group_split(!!split_by) %>%
+    future_map_dfr(~.x %>%
+                     group_by(patient_id, encounter_id, dx_code) %>% 
+                     slice_head()) 
+  }
+
+# Apply the slice_dx() function to dx data frame
+dx <- slice_dx(dx, split_group)
+```
+
+
+
+# Applying the same data prep steps to multiple data frames
+
+```r
+# Define a function
+prep_dxs <- function(data){
+      
+      # 1. Pare down the data to only the patients in the input visits/temp df
+      data %<>% 
+        filter(Arb_PersonId %in% temp$Arb_PersonId)
+      
+      # 2. Eliminate any duplicates that could potentially be left in the data
+      data <- data[!duplicated(data)]
+      
+      # 3. Use NA dates and cut offs to further reduce the data
+      data %<>% 
+        drop_na(DiagnosisDate)
+      
+      data %<>% 
+        mutate(lookback = Date.max - DiagnosisDate) %>% 
+        filter(lookback < (yrs * 360),
+               lookback >= 0) %>%
+        select(-lookback)
+      
+      # 4. Filter by comorbidities of interest
+      data %<>% 
+        filter(DiagnosisCode %in% cois$`ICD-10.code(s)`)
+      
+      # 5. Handle the output
+      return(data)
+    }
+    
+
+    # Process the dx data frames saving the output to the environment
+    dfs <- c("dx_copy", "dxco_copy")
+
+    walk(
+        .x = dfs,
+        .f = function(df_name){
+          # Get the data from the global environment
+          df <- get(df_name, envir = .GlobalEnv)
+          
+          # Process each data frame
+          df <- prep_dxs(df)
+          
+          # Save the processed data frame back in the global environment
+          assign(df_name, df, envir = .GlobalEnv)
+          }
+        )
+```
+
+# Loading multiple files in parallel
