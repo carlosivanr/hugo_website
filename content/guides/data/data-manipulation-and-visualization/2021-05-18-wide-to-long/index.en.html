@@ -1,0 +1,917 @@
+---
+title: Converting wide to long data in R
+author: Carlos Rodriguez
+date: '2021-05-18'
+slug: wide-to-long
+categories:
+tags:
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-18T22:08:51-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: false
+type: book
+weight: 10
+---
+
+
+
+<p>Structured datasets tend to come in one of two formats, wide or long. In the wide format, each row contains data related to a particular subject or event. Each values in each column usually represent a variable taken from that participant. On the other hand, long data format is when related values of an outcome variable are placed in a column, while a different column contains values regarding the condition under which the outcome variables were gathered. Some R functions work best with wide data, while others work best with long data. As a result, it is important to know how to reshape data and go between the two types. This guide explains how to convert a wide format dataset to long format using tidyverse. The data are from the AMCP package and were created to perform a two-way repeated measures ANOVA.</p>
+<pre class="r"><code>library(tidyverse)
+library(AMCP)
+library(kableExtra)
+
+# Load the data
+data(chapter_12_table_1)</code></pre>
+<div id="wide-data" class="section level2">
+<h2>Wide Data</h2>
+<p>In the wide format data, each row represents a subject. Each column is a combination of two main factors Condition and Angle. Condition is a two level factor, while Angle is a three level factor. Thus there are six columns for all possible combinations of Condition and Angle. Each cell along the rows represent a unique dependent variable taken from the same subject. In this case, the numerical values are reaction times in milliseconds.</p>
+<table>
+<caption>
+<span id="tab:unnamed-chunk-2">Table 1: </span>Wide data format.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Absent0
+</th>
+<th style="text-align:right;">
+Absent4
+</th>
+<th style="text-align:right;">
+Absent8
+</th>
+<th style="text-align:right;">
+Present0
+</th>
+<th style="text-align:right;">
+Present4
+</th>
+<th style="text-align:right;">
+Present8
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+420
+</td>
+<td style="text-align:right;">
+420
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+600
+</td>
+<td style="text-align:right;">
+780
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+420
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+360
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+600
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+660
+</td>
+<td style="text-align:right;">
+780
+</td>
+<td style="text-align:right;">
+780
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+420
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+780
+</td>
+<td style="text-align:right;">
+900
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+660
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+660
+</td>
+<td style="text-align:right;">
+720
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+360
+</td>
+<td style="text-align:right;">
+420
+</td>
+<td style="text-align:right;">
+360
+</td>
+<td style="text-align:right;">
+360
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+540
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+600
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+720
+</td>
+<td style="text-align:right;">
+840
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+600
+</td>
+<td style="text-align:right;">
+660
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+720
+</td>
+<td style="text-align:right;">
+900
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+600
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+720
+</td>
+<td style="text-align:right;">
+780
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+420
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+540
+</td>
+<td style="text-align:right;">
+660
+</td>
+<td style="text-align:right;">
+780
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="long-data" class="section level2">
+<h2>Long Data</h2>
+In the long data format, each row represents an observation. Instead of having six columns with all of the dependent variables in one row, we want all of our dependent variables in one column. In addition, we will want additional columns that will contain the information that was specified by the column names. Notice that the values in 1st row of the wide data are now the first six values in the new column “Reaction_Time.” One way to think about creating the “Reaction_Time” column is that we are going to take the values of each row, transpose them to column, and then begin to concatenate or stack all of the values. At the same time, we will want to keep information about Condition wether noise was present or absent, and the angle at wich a stimulus was presented so will need to create two additional columns to contain that information.
+<table>
+<caption>
+<span id="tab:unnamed-chunk-4">Table 2: </span>Long data format.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Condition
+</th>
+<th style="text-align:left;">
+Angle
+</th>
+<th style="text-align:right;">
+Reaction_Time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+780
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="converting-wide-to-long" class="section level2">
+<h2>Converting Wide to Long</h2>
+<div id="create-a-subject-id" class="section level3">
+<h3>1. Create a subject id</h3>
+<p>To make this transformation we will use the tidyverse functions. First, we will want to keep track of our 10 subjects so we will create a column “id” with an integer to identify them, then bind that column to the wide data to create a new dataframe.</p>
+<pre class="r"><code>#1. Create a new data frame with a subject id
+long.data &lt;- cbind(id = c(1:10), chapter_12_table_1)</code></pre>
+</div>
+<div id="gather-dependent-variables" class="section level3">
+<h3>2. Gather dependent variables</h3>
+<p>Next, we will use the <code>gather()</code> function which will stack each column of the wide data under a column called reaction_time and create a new column that will add the column name of the wide data as a value in a new column called condition.angle. The <code>-id</code> is used to prevent getting the id number into the condition.angle column.</p>
+<pre class="r"><code>long.data %&gt;% gather(key = condition.angle,
+                     value = reaction_time, -id)</code></pre>
+<table>
+<caption>
+<span id="tab:unnamed-chunk-7">Table 3: </span>Results after applying the <code>gather()</code> function.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:left;">
+condition.angle
+</th>
+<th style="text-align:right;">
+reaction_time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Absent0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Absent0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Absent0
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Absent0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+Absent0
+</td>
+<td style="text-align:right;">
+540
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+Absent0
+</td>
+<td style="text-align:right;">
+360
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="separate-the-condition.angle-column" class="section level3">
+<h3>3. Separate the condition.angle column</h3>
+<p>So far we’re on a good track, but the column condition.angle needs to be separated into two columns. One to specify condition, the other to specify angle. The <code>separate()</code> function can help us out here by splitting the condition.angle column into two columns, <code>condition</code> and <code>angle</code>. The <code>sep = -1</code> argument tells the <code>separate()</code> function to split the values 1 character from the end. This separates the last character which contains a single digit angle number into a separate column. Try substituting different numbers such as -2 or 1, to get a feel for what the function is doing here.</p>
+<pre class="r"><code>long.data %&gt;% 
+  gather(key = condition.angle,
+                     value = reaction_time, 
+                     -id) %&gt;%
+  separate(col = condition.angle, 
+           into = c(&quot;condition&quot;, &quot;angle&quot;), 
+           sep = -1)</code></pre>
+<table>
+<caption>
+<span id="tab:unnamed-chunk-9">Table 4: </span>Results after separating condition.angle with the <code>separate()</code> function.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:left;">
+condition
+</th>
+<th style="text-align:left;">
+angle
+</th>
+<th style="text-align:right;">
+reaction_time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+540
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+360
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sort-the-data" class="section level3">
+<h3>4. Sort the data</h3>
+<p>At this point, we’ve done most of what is needed to convert the wide data to long data. The next step in the series of tidyverse functions is to sort the data. To get the output displayed above, we will want to sort the data by subject id, then by condition, then by angle. To accomplish this we will use the <code>arrange()</code> function and will display the reaction_time values as a column of the transposed rows from the wide data set. We will re-save this manipulation as long.data. Notice how the number of rows is now 60 whereas we started with 10.</p>
+<pre class="r"><code>long.data &lt;- long.data %&gt;% 
+  gather(key = condition.angle,
+         value = reaction_time, 
+         -id) %&gt;%
+  separate(col = condition.angle, 
+           into = c(&quot;condition&quot;, &quot;angle&quot;), 
+           sep = -1) %&gt;%
+  arrange(id, 
+          condition, 
+          angle)</code></pre>
+<table>
+<caption>
+<span id="tab:unnamed-chunk-11">Table 5: </span>First 6 rows of long.data after applying steps 1-3 and overwriting our original data.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:left;">
+condition
+</th>
+<th style="text-align:left;">
+angle
+</th>
+<th style="text-align:right;">
+reaction_time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+600
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+780
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="convert-to-factor" class="section level3">
+<h3>5. Convert to factor</h3>
+<p>Now before conducting any statistical tests, we will want to convert our id, condition, and angle columns to factor. We can do this with the base R function <code>as.factor()</code>.</p>
+<pre class="r"><code>long.data$id &lt;- as.factor(long.data$id)
+long.data$condition &lt;- as.factor(long.data$condition)
+long.data$angle &lt;- as.factor(long.data$angle)</code></pre>
+</div>
+<div id="bonus-with-other-helper-functions" class="section level3">
+<h3>Bonus with other helper functions</h3>
+<p>We could also convert variable to factor with the <code>convert_as_factor()</code> function from the rstatix package. We can pipe each of the steps above and add the <code>convert_as_factor()</code> function at the end setting the columns we would like to convert.</p>
+<pre class="r"><code>library(rstatix)
+# Create a new data frame with a subject id
+rm_data &lt;- cbind(id = c(1:10), chapter_12_table_1)
+
+# Convert the data from wide to long and convert id, Condition and Angle to factor
+rm_data &lt;-  rm_data %&gt;% 
+  gather(key = Condition.Angle, 
+         value = Reaction_Time, 
+         -id) %&gt;%
+  separate(col = Condition.Angle, 
+           into = c(&quot;Condition&quot;, &quot;Angle&quot;), 
+           sep = -1) %&gt;%
+  arrange(id, 
+          Condition, 
+          Angle) %&gt;%
+  convert_as_factor(id, Condition, Angle)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Condition
+</th>
+<th style="text-align:left;">
+Angle
+</th>
+<th style="text-align:right;">
+Reaction_Time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+780
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="using-the-pivot_wider-function" class="section level3">
+<h3>Using the <code>pivot_wider()</code> function</h3>
+<p>The <code>pivot_wider()</code> function from the dplyr package can also be used accomplish the same task of converting wide to long data. In this case we use the chapter 12 data as the input data frame, select columns Absent0 through Present8 to pivot wider, specify the column names of the selected columns will be placed into a new column called condition.angle, and then the values in to a new column called reaction time. Finally, we will sepatrate the condition and angle variables to be placed in separate columns, condition and angle. The length of the code is roughly the same, but it may be more intuitive to understand the mechanics.</p>
+<pre class="r"><code>long_data &lt;- 
+  pivot_longer(chapter_12_table_1,
+             cols = Absent0:Present8,
+             names_to = &quot;condition.angle&quot;,
+             values_to = &quot;reaction_time&quot;) %&gt;%
+  separate(col = condition.angle,
+           into = c(&quot;condition&quot;, &quot;angle&quot;),
+           sep = -1)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+condition
+</th>
+<th style="text-align:left;">
+angle
+</th>
+<th style="text-align:right;">
+reaction_time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Absent
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Present
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+780
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="wrap-up" class="section level2">
+<h2>Wrap Up</h2>
+<p>Converting wide data to long and vice versa are indespensible skills when working in R. It can be tricky at first, but thankfully the tidyverse package as several functions that can simplify this process. Going from wide to long will set you up to perform many of the statistical analyses you may be interested in doing.</p>
+<div id="references" class="section level3">
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-R-rstatix">
+<p>Kassambara, Alboukadel. 2020a. <em>Rstatix: Pipe-Friendly Framework for Basic Statistical Tests</em>. <a href="https://CRAN.R-project.org/package=rstatix" class="uri">https://CRAN.R-project.org/package=rstatix</a>.</p>
+</div>
+<div id="ref-R-AMCP">
+<p>Maxwell, Scott, Harold Delaney, and Ken Kelley. 2020. <em>AMCP: A Model Comparison Perspective</em>. <a href="https://CRAN.R-project.org/package=AMCP" class="uri">https://CRAN.R-project.org/package=AMCP</a>.</p>
+</div>
+<div id="ref-R-tidyverse">
+<p>Wickham, Hadley. 2019. <em>Tidyverse: Easily Install and Load the ’Tidyverse’</em>. <a href="https://CRAN.R-project.org/package=tidyverse" class="uri">https://CRAN.R-project.org/package=tidyverse</a>.</p>
+</div>
+</div>
+</div>
+</div>

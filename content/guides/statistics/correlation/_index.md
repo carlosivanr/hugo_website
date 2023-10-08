@@ -1,0 +1,48 @@
+---
+title: Correlation in R
+linkTitle: Correlation in R
+summary: How to perform correlation analyses in R.
+date: '2021-09-17'
+type: book
+weight: 10
+draft: false
+---
+<!--
+{{< figure src="featured.jpg" >}}
+-->
+
+<!--
+{{< toc hide_on="xl" >}}
+-->
+
+
+# Overview
+The following how-to guides explore how to conduct correlation analyses in R. Focus is placed on how to implement these analyses in R rather than providing a conceptual background. For an introductory background, I suggest Field, Miles, and Field’s 1st edition of ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/). The Field et al. text is an excellent introduction to many different types of statistical analyses and how to conduct them in R. I will also use sample datasets from the Field et al. text to demonstrate these analyses in R.
+
+# Requirements
+- Working installation of RStudio & R
+- Packages:
+  - tidyverse
+  - rstatix
+  - broom
+  - car
+  - QuantPsyc
+
+# Topics covered
+
+{{< list_children >}}
+
+<!-- ## Meet your instructor
+{{< mention "admin" >}}
+
+## FAQs
+{{< spoiler text="Are there prerequisites?" >}}
+There are no prequisites, but a background in upper division or graduate level statistics will come in handy.
+{{< /spoiler >}}
+
+{{< spoiler text="How often do the courses run?" >}}
+Continuously, at your own pace.
+{{< /spoiler >}} -->
+
+{{< cta cta_text="Continue" cta_link="/how-to-guides/correlation-and-regression/correlation-in-r" >}}
+

@@ -1,0 +1,406 @@
+---
+title: Boxplots in ggplot2
+author: Carlos Rodriguez
+date: '2021-09-24'
+slug: boxplots-in-ggplot2
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-09-24T22:45:33-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 30
+draft: False
+---
+
+
+
+
+In a recent paper published in [ACER](/publication/rn-566), I used R and the ggplot2 package to create the main figures. In this post, I will walk through how I used ggplot2 and a couple of extra packages to create the box plots for this publication.
+
+
+
+```r
+library(tidyverse)
+library(rstatix)
+library(ggpubr)
+library(AMCP)
+library(kableExtra)
+
+# Load the data
+data(chapter_12_table_1)
+
+# Display part of the data
+kable(head(chapter_12_table_1))
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Absent0 </th>
+   <th style="text-align:right;"> Absent4 </th>
+   <th style="text-align:right;"> Absent8 </th>
+   <th style="text-align:right;"> Present0 </th>
+   <th style="text-align:right;"> Present4 </th>
+   <th style="text-align:right;"> Present8 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 600 </td>
+   <td style="text-align:right;"> 780 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 600 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 780 </td>
+   <td style="text-align:right;"> 780 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 780 </td>
+   <td style="text-align:right;"> 900 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 540 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 660 </td>
+   <td style="text-align:right;"> 720 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 420 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 360 </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 540 </td>
+  </tr>
+</tbody>
+</table>
+
+```r
+# Create a new data frame with a subject id
+rm_data <- cbind(id = c(1:10), chapter_12_table_1)
+
+# Convert the data from wide to long
+rm_data <-  rm_data %>%
+  gather(key = Condition.Angle,
+         value = Latency,-id) %>%
+  separate(col = Condition.Angle,
+           into = c("Condition", "Angle"),
+           sep = -1) %>%
+  arrange(id,
+          Condition,
+          Angle) %>%
+  convert_as_factor(Condition, Angle)
+
+# Conduct repeated measures ANOVA
+rm_aov <- anova_test(data = rm_data,
+                     dv = Latency, 
+                     wid = id, 
+                     within = c(Condition, Angle), 
+                     effect.size = "pes")
+
+
+kable(get_anova_table(rm_aov, correction = "none"))
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Effect </th>
+   <th style="text-align:right;"> DFn </th>
+   <th style="text-align:right;"> DFd </th>
+   <th style="text-align:right;"> F </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:left;"> p&lt;.05 </th>
+   <th style="text-align:right;"> pes </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Condition </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 33.766 </td>
+   <td style="text-align:right;"> 2.56e-04 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.790 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Angle </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 40.719 </td>
+   <td style="text-align:right;"> 2.00e-07 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.819 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Condition:Angle </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 45.310 </td>
+   <td style="text-align:right;"> 1.00e-07 </td>
+   <td style="text-align:left;"> * </td>
+   <td style="text-align:right;"> 0.834 </td>
+  </tr>
+</tbody>
+</table>
+      
+### Basic ggplot boxplot
+To create a ggplot boxplot, we need 4 basic ingredients: 1) data in long format, 2) specify the variable to be displayed on the x axis, 2) specify the variable to be displayed on the y axis, and 3) a call to the geom_boxplot geometric element. When adding or changing layers to a ggplot we will use the + sign incrementally to modify the plot. The code chunk below gets us started, but as you may notice, our data are also grouped by Condition.
+
+```r
+p1 <- ggplot(data = rm_data, aes(x = Angle, y = Latency)) +
+  geom_boxplot()
+p1
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+### Visualize boxplots by the grouping variable
+To tell ggplot to display separate boxplots according to condition, simply add "Condition" to the color argument. The output is much better, and for most situations, this will be enough to get a decent idea of what the data look like.
+
+```r
+p2 <- ggplot(data = rm_data, aes(x = Angle, y = Latency, color = Condition)) +
+  geom_boxplot()
+p2
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+### Changing colors
+One way to change the colors of a plot manually, is to create a vector of characters with hexadecimal color codes. These can be passed in to the values argument of the `scale_color_manual()` function. Notice how we needed to add a plus sign and add a new line with the `scale_color_manual()` function. There are also palettes and themes with colors that can be added, but will not be covered here.
+
+```r
+colors = c( "#440154FF","#1565c0")
+```
+
+
+```r
+p3 <- ggplot(data = rm_data, aes(x = Angle, y = Latency, color = Condition)) +
+  geom_boxplot() +
+  scale_color_manual(values = colors)
+p3
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+### Change the fill of the boxplot
+In the boxplot above, the fill of the is white, but can also be changed. First, we will need to add fill as an aesthetic in the first line of the ggplot call. Then, we can modify the opacity. By default, the opacity is at 100%, so we wouldn't be able to see the line in the boxes indicating the median. The opacity of the boxplots is modified by the alpha argument within the `geom_boxplot()` function. Finally, we add pass our colors vector to the values argument of `scale_fill_manual()`.
+
+```r
+p4 <- ggplot(data = rm_data, aes(x = Angle, y = Latency, color = Condition, fill = Condition)) +
+  geom_boxplot(alpha = 0.3) +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors)
+p4
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+### Remove the default gray plot background
+In order to display the colored box plots on a white background, use the `theme_minimal()` layer to remove it. It results in a cleaner look. My only qualm is that it also removes the x and y axes.
+
+```r
+p5 <- ggplot(data = rm_data, aes(x = Angle, y = Latency, color = Condition, fill = Condition)) +
+  geom_boxplot(alpha = 0.3) +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  theme_minimal()
+p5
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+### Add custom x and y axes
+We can add custom x and y axes by modifying the `theme()` layer, specifically setting axis.line to element.line which takes a color argument. In this case, I set the color argument to "grey70".
+
+```r
+p6 <- ggplot(data = rm_data, aes(x = Angle, y = Latency, color = Condition, fill = Condition)) +
+  geom_boxplot(alpha = 0.3) +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+p6
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+
+### Add statistical significance markers [^1]
+If you are conducting pairwise t-tests on your data, it's possible to add statistical significance markers to boxplots. This process is facilitated by some helper functions in the ggpubr and tidyverse packages. Here, rm_data is piped to the `group_by()` function. The argument used in this line is "Angle", since we might want to compare the two conditions within angle. The output is then piped into the `pairwise_t_test()` function which will take additional arguments. First, we want to add a formula `Latency ~ Condition` to compare latencies across conditions. Next, we add a multiple comparison correction method, in this case its Bonferroni[^2]. Finally, we will need to specify whether or not to pool the standard deviation which will depend on your design and its sample size. The output of this chain of functions is saved to a data frame called pwd. The final step is to pass pwc with the pipe operator to the `add_xy_position()` function. This function works under the hood to get the appropriate x and y coordinates which are used to tell ggplot where to display the significance markers in the coordinate system of the plot.
+
+```r
+pwc <- rm_data %>%
+      group_by(Angle) %>%
+      pairwise_t_test(Latency ~ Condition, 
+                      p.adjust.method = "bonferroni",
+                      pool.sd = TRUE)
+
+pwc <- pwc %>% 
+  add_xy_position(x = "Angle", 
+                  fun = "max")
+```
+
+```r
+kable(pwc)
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Angle </th>
+   <th style="text-align:left;"> .y. </th>
+   <th style="text-align:left;"> group1 </th>
+   <th style="text-align:left;"> group2 </th>
+   <th style="text-align:right;"> n1 </th>
+   <th style="text-align:right;"> n2 </th>
+   <th style="text-align:right;"> p </th>
+   <th style="text-align:left;"> p.signif </th>
+   <th style="text-align:right;"> p.adj </th>
+   <th style="text-align:left;"> p.adj.signif </th>
+   <th style="text-align:right;"> y.position </th>
+   <th style="text-align:left;"> groups </th>
+   <th style="text-align:right;"> x </th>
+   <th style="text-align:right;"> xmin </th>
+   <th style="text-align:right;"> xmax </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> Latency </td>
+   <td style="text-align:left;"> Absent </td>
+   <td style="text-align:left;"> Present </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 3.79e-01 </td>
+   <td style="text-align:left;"> ns </td>
+   <td style="text-align:right;"> 3.79e-01 </td>
+   <td style="text-align:left;"> ns </td>
+   <td style="text-align:right;"> 703.2 </td>
+   <td style="text-align:left;"> Absent , Present </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.8 </td>
+   <td style="text-align:right;"> 1.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:left;"> Latency </td>
+   <td style="text-align:left;"> Absent </td>
+   <td style="text-align:left;"> Present </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 3.15e-03 </td>
+   <td style="text-align:left;"> ** </td>
+   <td style="text-align:right;"> 3.15e-03 </td>
+   <td style="text-align:left;"> ** </td>
+   <td style="text-align:right;"> 823.2 </td>
+   <td style="text-align:left;"> Absent , Present </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 2.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 8 </td>
+   <td style="text-align:left;"> Latency </td>
+   <td style="text-align:left;"> Absent </td>
+   <td style="text-align:left;"> Present </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 5.44e-05 </td>
+   <td style="text-align:left;"> **** </td>
+   <td style="text-align:right;"> 5.44e-05 </td>
+   <td style="text-align:left;"> **** </td>
+   <td style="text-align:right;"> 943.2 </td>
+   <td style="text-align:left;"> Absent , Present </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 2.8 </td>
+   <td style="text-align:right;"> 3.2 </td>
+  </tr>
+</tbody>
+</table>
+
+### Plot significance markers
+Once we have a pwc with the x, xmin, and xmax columns, we can use that data frame to pass it into the `stat_pvalue_manual()` layer and setting the inherit.aes argument to FALSE, hide.ns = TRUE, and tip.length to 0. However feel free to play with the settings to get the plot to communicate what you want to your audience.
+
+```r
+p7 <- ggplot(data = rm_data, aes(x = Angle, y = Latency, color = Condition, fill = Condition)) +
+  geom_boxplot(position = position_dodge(1), alpha = 0.3) +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70")) +
+  stat_pvalue_manual(pwc,
+                         inherit.aes = FALSE,
+                         hide.ns = TRUE,
+                         tip.length = 0)
+p7
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+### Arrange paneled plots
+Often for scientific publications, many individual plots will be paneled into one figure. This is a relatively easy task with the ggpubr and the ggarrange function. First, all paneled plots must be save to an R object/List. The `ggarrange()` function will take in an array of the plots to be paneled, the labels (e.g. A, B, C, D), whether or not they have a common legend, and the position of the legend. Notice that our plots above had legends on the side and in the paneled plot below we have placed the legend at the top of the figure. If the common.legend argument is set to true, the legend of the first plot (p4) in our case will be used.
+
+```r
+figure <- ggarrange(p4, p3, p5, p7, 
+                   labels = c("A", "B", "C", "D"), 
+                   common.legend = TRUE, 
+                   legend = "top")
+figure
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+### Save figure to pdf
+Saving your plots to a high quality image file is the last step before submitting them along with your scientific manuscript to a peer reviewed journal. Again, ggpubr comes in and saves the day. Simply pass the output file name, the object with the paneled plots, size measurements, and dpi settings to the ggsave() function, and that's it! You'll now have a nice pdf to submit with your manuscript.
+
+```r
+ggsave("paneled_plot.pdf",
+       plot = figure,
+       units = "mm",
+       width = 180,
+       height = 180,
+       dpi = 600)
+```
+
+I hope this helps provide a frame work for creating publication quality plots in R using the awesome tidyverse and ggpubr packages. If you run into problem, I do recommend checking out the ggplot2 and ggpubr documentation since they provide a lot of helpful information to get your data to shine through.
+
+
+
+### Footnotes
+[^1]: The data presented here are from a repeated measures ANOVA design. One of the central assumptions for repeated measures ANOVA is sphericity. Sphericity is the condition in which the variance of the differences between all possible conditions is equal. It is analogous to the assumption of homogeneity of variance in n-way ANOVA. While it is possible to correct for violations of sphericity with the Greenhouse-Geisser and Huyn-Feldt procedures, these corrections complicate performing multiple comparisons. The idea here is that the correction applied applies to the entire data set. However, when performing a pairwise comparison, that same correction may be inappropriate because a different portion of the data is isolated. As a result, if performing multiple comparisons in a repeated measures ANOVA design, it is wise to check the assumption of sphericity or if shericity correction was applied as some statistical software packages may do so automatically.
+[^2]: If you print pwc to the console, it will display the results of all of the pairwise tests and notice that even though "bonferroni" was set as a correction method, the adjusted p-values are the same as the non-adjusted p-values. The pairwise_t_test() function views each test within angle as an independent test. If we had a third condition, then pair_wise_t_test would correct for three comparisons (0.05/3) within angle. There are some who may not agree with this approach and would want to correct for all three t-tests. If so, then the list of p-values can be adjusted and replaced into the pwc data frame manually. Similarly the significance markers can be modified as well to correspond with the adjusted p-values. The main point of all of this though is that the pwc table provides a nice way to visualize the statistical significance of tests.
+
+<!-- ```{r} -->
+<!-- # Replace p-values with Bonferroni corrected values -->
+<!-- pwc$p.adj <- p.adjust(pwc$p, method = "bonferroni") -->
+
+<!-- # Replace significance markers with other characters -->
+<!-- pwc$p.adj.signif <- c("ns", "^^", "^^^") -->
+<!-- ``` -->
+
+<!-- ------------------LINKS---------------------------- -->
+<!-- Howell source on multiple comparisons in RM ANOVA: https://www.uvm.edu/~statdhtx/StatPages/More_Stuff/RepMeasMultComp/RepMeasMultComp.pdf -->

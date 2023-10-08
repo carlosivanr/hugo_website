@@ -32,7 +32,7 @@ In his blog, [Matt Roumaya demonstrated](https://www.mattroumaya.com/post/using-
  
 While Matt's approach works well for knitting RMarkdown documents, I was unsuccessful in adapting it to render Quarto documents in parallel [footnote]. As a result, I developed a different approach that relies on the {furrr} package which is akin to the {purrr} package but with parallel processing capabilities. 
 
-The overall gist of my approach is to 1) create a primary layout ".qmd" file and then 2) create a script that contains a function that renders the ".qmd" files with arguments to produce separate reports. The caveat here is that the rendering function in the script must contain code that creates copies of the .qmd file intended for parallel rendering. 
+The overall outline of my approach is to 1) create a primary layout ".qmd" file and then 2) create a script that contains a function that renders the ".qmd" files with arguments to produce separate reports. The caveat here is that the rendering function in the script must contain code that creates copies of the .qmd file intended for parallel rendering. 
 
 ## 1. Create a quarto file to render a document
 The .qmd file shown here is a modified version of the .Rmd file from [Matt Roumaya's post](https://www.mattroumaya.com/post/using-foreach-to-speed-up-parameterized-rmarkdown-reports/). The .qmd file here has modifications in the YAML header to reflect Quarto execution parameters and in the dplyr `filter()` verb that accepts a parameterized input for Species.

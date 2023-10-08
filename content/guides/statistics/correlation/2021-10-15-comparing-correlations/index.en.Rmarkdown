@@ -1,0 +1,116 @@
+---
+title: 'Correlation in R Pt. 2 - Comparing Correlation Coefficients'
+author: Carlos Rodriguez
+date: '2021-10-15'
+slug: correlation-in-r-2
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-15T13:09:17-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 11
+draft: false
+---
+
+In this second part, we continue to examine the Exam Anxiety dataset to look at the separate correlations between the variables of interest in males and females. We then proceed to test if there is a difference between those two correlations.
+
+```{r, warning=FALSE, message=FALSE, include=FALSE}
+library(tidyverse)  # for data importing and visualization
+library(rstatix)    # for performing statistics
+library(kableExtra) # for displaying tables
+```
+
+```{r, include=FALSE}
+file_path <- "~/hugo_website/content/how-to-guides/correlation-and-regression/2021-10-08-correlation-in-r/Exam Anxiety.dat"
+data <- read.table(file = file_path, header = TRUE)
+```
+
+### Plot by Gender
+We can plot the data by Gender to see if the relationship between pre-test anxiety and exam scores are different between genders. This is accomplished by adding the color = Gender argument to the aes() portion of the ggplot call.
+```{r, warning=FALSE, message=FALSE}
+colors = c( "#440154FF","#1565c0")
+ggplot(data, aes(x = Anxiety, y = Exam, color = Gender)) +
+  geom_point(alpha = 0.7) +
+  scale_color_manual(values = colors) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
+
+### Correlations by Gender
+The `group_by()` function is compatible with the rstatix `cor_test()` to produce two separate correlations, one ofr males and one for females. We simply pipe data to `group_by()` and then pipe that output to `cor_test()`.
+```{r}
+correlations <- data %>% 
+  group_by(Gender) %>%  
+  cor_test(.,
+           vars = c("Anxiety"),
+           vars2 = c("Exam", "Revise"),
+           method = "pearson",
+           use = "pairwise.complete.obs")
+kable(correlations)
+```
+
+### Compare correlation values between genders
+Filed, Miles, and Field provide the code for a function to compare two correlation values[^2]. This function takes in as input the correlation and sample size for each group. Entering our values into the function results in a z-difference score of -.80 and p-value of .21 which suggests there is no statistical difference between the correlations between Anxiety and Exam scores in females and males.
+```{r}
+kable(data %>% count(Gender))
+
+zdifference <- function(r1, r2, n1, n2){
+  zd <- (atanh(r1)-atanh(r2))/sqrt(1/(n1-3)+1/(n2-3))
+	p <- 1 - pnorm(abs(zd))
+	print(paste("Z Difference: ", zd))
+	print(paste("One-Tailed P-Value: ", p))
+	print(paste("Two-Tailed P-Value: ", (2*p)))
+	}
+	
+zdifference(-0.51, -0.38, 52, 51)
+```
+
+<!-- ### Assumptions -->
+<!-- The rstatix package has a nice pipe friendly function to assess the normality of the Anxiety, Exam, and Revise variables.  -->
+<!-- ```{r} -->
+<!-- kable( -->
+<!--   data %>% shapiro_test(Anxiety, Exam, Revise) -->
+<!-- ) -->
+<!-- ``` -->
+
+
+### References
+<div id="refs" class="references">
+
+<div id="ref-R-rstatix">
+
+Kassambara, Alboukadel. 2020. *Rstatix: Pipe-Friendly Framework for Basic Statistical Tests*. <https://CRAN.R-project.org/package=rstatix>.
+
+</div>
+
+<div id="ref-R-tidyverse">
+
+Wickham, Hadley. 2021. *Tidyverse: Easily Install and Load the Tidyverse*. <https://CRAN.R-project.org/package=tidyverse>.
+
+</div>
+
+<div id="ref-R-kableExtra">
+
+Zhu, Hao. 2021. *KableExtra: Construct Complex Table with Kable and Pipe Syntax*. <https://CRAN.R-project.org/package=kableExtra>.
+
+</div>
+
+<div id="ref-DSUR">
+
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. *Discovering Statistics Using R*. Sage.
+
+</div>
+
+</div>
+
+
+[^2]: Pearson correlation values can be converted to z-scores with the arc tangent function, `atanh()`. Converting correlations to z-scores before conducting other statistics is necessary because correlations values are bounded by -1 and +1. Conversely, the hyperbolic tangent `tanh()` function can be used to convert z-scores back to correlation values.
