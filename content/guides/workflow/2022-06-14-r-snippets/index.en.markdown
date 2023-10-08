@@ -20,7 +20,7 @@ weight: 20
 ---
 
 
-One of my favorite features in RStudio is the code snippet. This feature allows users to save templates of code that can be used to save you time. Maybe there's a function or chain of piped commands that one uses frequently. Instead of building these from scratch every time, the code snippet can be used to serve as a guide post and modified for each situation. Some snippets are already baked into RStudio, but one can also create your own for your own needs.
+One of my favorite features in RStudio is the code snippet. This feature allows users to save frequently used templates of code that can be recycled for other uses. For example, if there's a function or chain of piped commands that one uses frequently, instead of writing these from scratch every time, the code snippet can be used to insert the template that can then be filled in with . Some snippets are already baked into RStudio, but you can also create your own for your own specific needs.
 
 ## Examples of snippets
 
@@ -167,6 +167,6 @@ snippet notin
 	df %>% filter(!${1:col_name} %in% ${2:col_name2})
 ```
 
-In my code snippet, beginning to type `"notin"` in RStudio will present auto complete options. If I press tab to autocomplete the snippet, it will complete the function where the function has been typed out and all that is needed is to fill in the place-holders, `"df"`, `"col_name"`, and `"col_name2"`. In the snippets file, each variable that will need to be filled in is encased in curly braces preceding with a dollar sign, and each variable is also preceeded with a number and a colon. The numbers are the order of variables. I saved this snipped towards the top of my snippets file within a section called "my snippets."
+In my code snippet, beginning to type `"notin"` in RStudio will present auto complete options. If I press tab to autocomplete the snippet, it will complete the function where the function has been typed out and all that is needed is to fill in the place-holders, `"df"`, `"col_name"`, and `"col_name2"`. In the snippets file, each variable that will need to be filled in is encased in curly braces preceding with a dollar sign, and each variable is also preceded with a number and a colon. The numbers are the order of variables. I saved this snipped towards the top of my snippets file within a section called "my snippets."
 
-I hope this gets the point across of how snippets can be useful to save you time while coding. They're especially usefull for code chunks that are often reused or for functions that you want to avoid looking up when you need them.
+I hope this gets the point across of how snippets can be useful to save you time while coding. They're especially useful for code chunks that are often reused or for functions that you want to avoid looking up when you need them.

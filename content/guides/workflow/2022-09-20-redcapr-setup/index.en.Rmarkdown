@@ -1,5 +1,5 @@
 ---
-title: Setup RedCapR API
+title: Setup REDCapR API
 author: Carlos Rodriguez
 date: '2022-09-20'
 slug: redcapr-setup
@@ -24,6 +24,8 @@ weight: 25
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
+[REDCap](https://www.project-redcap.org/) is a web-based application used to build and store data from online surveys. {REDCapR} is an R package that can create a link between an RStudio session and a REDCap project that facilitates importing REDCap data. 
+
 ## Load library
 ```{r, eval = FALSE}
 library(REDCapR)
@@ -39,9 +41,9 @@ create_credential_local(
 
 ## Modify the template file
 - Remove all rows except the first one
-- Replace uri with "https://redcap.ucdenver.edu/api/"
+- Replace uri with your domain e.g. "https://redcap.ucdenver.edu/api/"
 - Replace username with your own
-- Enter the project ID, (found on the RedCap project website)
+- Enter the project ID, (found on the REDCap project website)
 - Enter a comment to describe the project or leave it blank with empty ""
 - Save the file in a secure location, where it may be able to be accessed by multiple Git R projects
 - Ensure that it is ignored by any version control system

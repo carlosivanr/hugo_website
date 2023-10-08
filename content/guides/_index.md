@@ -7,7 +7,7 @@ date: '2021-11-11'
 weight: 10
 ---
 
-This following are a set of guides for using R to create data visualizations and conduct statistical analyses.
+The following are a set of guides for using R, wrangling and visualizing data, and conducting statistical analyses.
 
 
 # Contents:
