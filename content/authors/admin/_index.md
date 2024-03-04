@@ -46,7 +46,7 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-I am senior instructor and statistical data analyst in the Department of Family Medicine at the University of Colorado Anschutz Medical Campus. In my current role, I am part of an NIH-funded research team focused on studying the effectiveness of a novel pragmatic approach to address weight management in primary care. I also collaborate with other research teams on projects related to well-being among clinicians, integrated physical and behavioral health care models, and addressing health inequities in primary care. 
+Welcome! My name is Carlos Rodriguez and I am a faculty member in the Department of Family Medicine at the University of Colorado Anschutz Medical Campus. In my current role, I am part of an NIH-funded research team focused on studying the effectiveness of a novel pragmatic approach to address weight management in primary care. I also collaborate with several other research teams and workgroups to consult on research design and data collection, perform power analyses, design and implement data processing pipelines, and conduct statistical analyses.
 
 Prior to my current position, I completed a Ph.D. in psychology and underwent post-doctoral training centered on functional neuroimaging. My research was primarily aimed at better understanding how prenatal alcohol alters network connectivity in the brain and how machine learning approaches could be leveraged to develop non-invasive diagnostic tools for fetal alcohol spectrum disorders.
 
