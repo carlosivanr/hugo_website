@@ -25,7 +25,8 @@ weight: 5
 ```r
 pacman::p_load(tidyverse,
                magrittr,
-               haven)
+               haven,
+               install = FALSE)
 ```
 
 
@@ -187,3 +188,39 @@ data %>%
   rowwise() %>% 
   mutate(sum = sum(c_across(sample_question_1.integer:sample_question_3:integer), na.rm = TRUE))
 ```
+
+## Strip characters
+
+```r
+ids <- c("[2987202982]", "[2123402982]", "[2009283471]" )
+ids <- as.data.frame(ids)
+```
+
+### Remove everything to the right of the bracket
+
+```r
+ids %>%
+  mutate(ids = sub("].*", "", ids))
+```
+
+```
+##           ids
+## 1 [2987202982
+## 2 [2123402982
+## 3 [2009283471
+```
+
+### Remove everthing to the left
+
+```r
+ids %>%
+  mutate(ids = sub(".*\\[", "", ids))
+```
+
+```
+##           ids
+## 1 2987202982]
+## 2 2123402982]
+## 3 2009283471]
+```
+
