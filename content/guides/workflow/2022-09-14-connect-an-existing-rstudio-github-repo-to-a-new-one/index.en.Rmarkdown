@@ -30,7 +30,7 @@ git remote remove origin
 
 
 ## 2 Create a new GitHub repository
-The next step is to create a new GitHub repository.
+The next step is to create a new GitHub repository. TEst
 
 ## 3 Connect the local git repository to the new GitHub repository
 When the new GitHub repository is created a set of commands are provided. Those commands can be copied and pasted into the bash terminal and should complete the setup.
