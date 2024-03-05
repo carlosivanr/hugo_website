@@ -45,5 +45,12 @@ git push -u origin main
 
 
 
+```{bash, echo =FALSE, eval = FALSE}
+# If you accidentally remove the remote origin
+git remote add origin https://github.com/{USER}/{REP}.git
+
+
+git push --set-upstream origin main
+```
 
 
