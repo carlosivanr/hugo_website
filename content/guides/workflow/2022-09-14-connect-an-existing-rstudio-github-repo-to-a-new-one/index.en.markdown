@@ -34,7 +34,7 @@ git remote remove origin
 The next step is to create a new GitHub repository.
 
 ## 3 Connect the local git repository to the new GitHub repository
-When the new GitHub repository is created a set of commands are provided on the git hub web site. Those commands can be copied and pasted into the terminal, executed in the terminal, and should complete the setup.
+When the new GitHub repository is created a set of commands are provided on the git hub web site. Those commands can be copied and pasted into the terminal, executed in the terminal, and should complete the setup. Notice that when copy-pasting the first two lines may execute themselves but the third one will need to be executed manually.
 
 
 ```bash
