@@ -22,7 +22,7 @@ weight: 15
 In the event of having to move one github repository a different repository, due to needing to separate professional and personal accounts, the following commands should complete the task.
 
 ## 1 Disconnect the local repository from GitHub
-The first step is disconnect the local repository from GitHub. To accomplish this, navigate to the directory of the git repository. Typically, I will open up an Rstudio project that has git version controlled enabled. Then I will open a new bash terminal. The terminal should open in the same directory as the git repository. Finally, type the following bash command to disconnect the local git repot from the GitHub one.
+The first step is disconnect the local repository from GitHub. In an RStudio session, click on the "Terminal" tab in the Console pane. Navigate to the root directory of the git repository using the command line. It may be the case that navigating to the directory is unnecessary if it's the same as the RStudio project directory. Finally, type the following bash command to disconnect the local git repo from the GitHub one.
 
 ```{bash, eval = FALSE}
 git remote remove origin
@@ -30,7 +30,7 @@ git remote remove origin
 
 
 ## 2 Create a new GitHub repository
-The next step is to create a new GitHub repository. This can be done with new organization on the GitHub website. 
+The next step is to create a new GitHub repository.
 
 ## 3 Connect the local git repository to the new GitHub repository
 When the new GitHub repository is created a set of commands are provided. Those commands can be copied and pasted into the bash terminal and should complete the setup.
