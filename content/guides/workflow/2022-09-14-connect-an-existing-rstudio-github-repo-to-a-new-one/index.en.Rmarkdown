@@ -46,13 +46,13 @@ git push -u origin main
 
 
 ```{bash, echo =FALSE, eval = FALSE}
-# If you accidentally remove the remote origin
-#git remote add hugo_website https://github.com/{USER}/{REP}
+git remote add origin https://github.com/{USER}/{REP}.git
 
-#git remote set-url origin https://github.com/carlosivanr/hugo_website
+git branch -M main
 
-git remote add origin https://github.com/{USER}/{REP}
+git push -u origin main
 
+# Try these if that doesn't work
 git push --set-upstream origin main
 
 git push
