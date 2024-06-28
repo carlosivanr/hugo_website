@@ -1,5 +1,5 @@
 ---
-title: Histograms
+title: Histograms in ggplot2
 author: Carlos Rodriguez
 date: '2024-06-26'
 slug: percentage-histograms
