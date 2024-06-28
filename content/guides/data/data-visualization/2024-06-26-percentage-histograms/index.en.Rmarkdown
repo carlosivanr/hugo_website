@@ -24,6 +24,8 @@ draft: False
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+In the ggplot2 package, there are two geom_*() layers that can be created to make histograms, geom_histogram() and geom_bar(). The following focuses on the use of geom_bar() to make different types of histograms. We will use the built-in mtcars data set to demonstrate.
+
 ```{r message=FALSE}
 library(tidyverse)
 ```
@@ -31,6 +33,7 @@ library(tidyverse)
 ```{r}
 head(mtcars)
 ```
+
 ## Traditional Histogram
 ```{r}
 mtcars %>%
@@ -38,7 +41,8 @@ mtcars %>%
   geom_bar() +
   theme_minimal()
 ```
-## Histogram paneled by automatic transmistion
+## Paneled histogram 
+Here we make separate panels to show the histogram by am(automatic transmission) where a 1 denotes automatic and 0 denotes manual transmission. 
 ```{r}
 mtcars %>%
   ggplot(., aes(x = cyl)) +
@@ -46,18 +50,35 @@ mtcars %>%
   facet_wrap(~am) +
   theme_minimal()
 ```
-## Clustered histogram
+### Modify the panel labels
+To modify the labels, we can convert the variable am to a factor where 1 is set to Automatic and 0 is set to Manual, then setting the order of the levels match the previous plot.
 ```{r}
 mtcars %>%
-  mutate(am = factor(am)) %>%
+  mutate(am = factor(ifelse(am == 1, "Automatic", "Manual"), levels = c("Manual", "Automatic"))) %>%
   ggplot(., aes(x = cyl)) +
-  geom_bar(aes(color = am, fill = am),
-                 position = position_dodge2(preserve = "single")) +
+  geom_bar() +
+  facet_wrap(~am) +
   theme_minimal()
 ```
 
+
+## Clustered histogram
+In a this clustered histogram separate bars at each value of cyl are displayed, one for automatic and another for manual. The position option is needed to display the separate bars side by side, otherwiese the bars will appear stacked instead.
+```{r}
+colors = c( "#440154FF","#1565c0")
+mtcars %>%
+  mutate(am = factor(am)) %>%
+  ggplot(., aes(x = cyl)) +
+  geom_bar(aes(color = am, fill = am), position = position_dodge2(preserve = "single")) +
+  theme_minimal() +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors)
+
+```
+
 ## Clustered histogram with percentages
-About 60% of the observations where am == 1 are 4 cylinder vehicles.
+### Denominator is the grouping variable
+There may be situations where a percentage instead of a count facilitates comparisons across groups. In this version, the denominator for calculating a percentage is that of the total number of observations within each level of am. To produce such a plot, we first need to group the data by am and cyl, and then calculated frequencies and proportions. We can see that 4-cylinder vehicles make up about 60% of the observations where the transmission is an automatic one which can be compared to about 15% of 4-cylinder vehicles are equipped with a manual transmission.
 ```{r message=FALSE, echo=FALSE}
 mtcars %>%
   mutate(am = factor(am)) %>%
@@ -68,11 +89,19 @@ mtcars %>%
   geom_bar(stat = "identity", position = position_dodge2(preserve = "single")) +
   scale_y_continuous(labels = scales::label_percent()) +
   theme_minimal() +
+  scale_fill_manual(values = colors) +
   ylab("Percentage within each am group") 
 ```
+To ensure that the appropriate values are displayed, a quick gtsummary() table will display the actual percentages in a table.
+```{r}
+mtcars %>%
+  mutate(am = factor(am)) %>%
+  select(cyl, am) %>%
+  gtsummary::tbl_summary(by = am, digits = list(everything() ~ c(0,2))) 
+```
 
-## Denominator is the sample size
-About 25% of all observations are automatic and 4 cylinder vehicles.
+### Denominator is the sample size
+The proportion of all observations can also be displayed. In this plot we see that bout 25% of all observations are automatic and 4 cylinder vehicles.
 ```{r}
 mtcars %>%
   mutate(am = factor(am)) %>%
@@ -81,6 +110,16 @@ mtcars %>%
            position = position_dodge2(preserve = "single")) +
   scale_y_continuous(labels = scales::label_percent()) +
   theme_minimal() +
+  scale_fill_manual(values = colors) +
   ylab("Percent of all observations") 
+```
+To double check the values, we can display a variable in which cyl has been crossed with am.
+```{r}
+mtcars %>%
+  mutate(am = factor(ifelse(am == 1, "Automatic", "Manual"), levels = c("Manual", "Automatic"))) %>%
+  mutate(var = str_c(cyl, am)) %>%
+  select(var) %>%
+  gtsummary::tbl_summary()
+
 ```
 
