@@ -1,5 +1,5 @@
 ---
-title: Percentage Histograms
+title: Histograms
 author: Carlos Rodriguez
 date: '2024-06-26'
 slug: percentage-histograms
