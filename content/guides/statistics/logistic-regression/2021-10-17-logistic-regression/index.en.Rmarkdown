@@ -26,7 +26,7 @@ draft: false
 ---
 
 
-Logistic regression is a statistical technique to understand the relationship between categorical outcome variables and categorical or continuous predictor variables. Binary logistic regression can be used in situations where the outcome takes on one of two values, such as whether or not someone survived a hospital stay or whether or not a medical intervention was successful or not. For this guide, we will work with example data in which eels are used as an experimental treatment to cure a medical condition. Our outcome will fall into one of two possibilities, Cured or Not Cured, and our predictor is whether someone received the Intervention or not.
+Logistic regression is a statistical technique to understand the relationship between a dichotomous categorical outcome and categorical or continuous predictor variables. Examples of logistic regression include analyses to determine factors associated with whether or not someone survived a hospital stay or whether or not a medical intervention was successful or not. For this guide, we will work with example data in which eels are used as an experimental treatment to cure a medical condition. Our outcome will fall into one of two possibilities, Cured or Not Cured, and our predictor is whether someone received the Intervention or not.
 
 ```{r, warning=FALSE, message=FALSE}
 library(car)
@@ -47,7 +47,7 @@ kable(head(eelData))
 ```
 
 ### Prepare data
-Before building our logistic regression model, we will need to convert Cured and Intervention to factored variables. Additionally, we will need to order the levels so that Not Cured and No Treatment are the baseline (reference) categories.
+In R, logistic regression models can utilize a dichotomous categorical variable as the dependent variable or they can utilize a binary indicator variable consisting of 0s and 1s. For this example, we will use the categorical variable to facilitate the interpretation of the output. First, convert the Cured and Intervention variables to factored variables. Additionally, we will need to order the levels so that Not Cured and No Treatment are the baseline (reference) categories. The first level of a factored variable will become the reference category in the model.
 ```{r}
 eelData$Cured <- factor(eelData$Cured, levels = c("Not Cured", "Cured"))
 eelData$Intervention <- factor(eelData$Intervention, levels = c("No Treatment", "Intervention"))
@@ -65,16 +65,6 @@ ggplot(eelData, aes(x = Cured, color = Intervention, fill = Intervention)) +
   theme(axis.line = element_line(color = "grey70"))
 ```
 
-```{r, include = FALSE}
-colors <- c( "#440154FF","#1565c0")
-ggplot(eelData, aes(x = Intervention, y = Cured, color = Intervention)) +
-  geom_point(alpha = 0.7, position = position_jitter(width = 0.1, height = 0.1)) +
-  scale_color_manual(values = colors) + 
-  theme_minimal() +
-  theme(axis.line = element_line(color = "grey70"))
-```
-
-
 
 ### Model the data with one predictor variable
 For our first logistic regression model, we will attempt to predict Cured from Intervention only. For a logistic regression analysis, we will use the `glm()` function, specify `binomial()` as the family argument, and then specify the data. Lastly, we will use the `summary()` to display the output.
@@ -87,17 +77,20 @@ summary(eel_model.1)
 ### Walkthrough of R's logistic regression output
 The output of the `summary()` function can be divided into four sections. 
   * The first section is the "**Call:**," which is simply a reproduction of the `glm()` function used to create the model. 
-  * The next section, "**Deviance Residuals:**," contains information about the differences between the model predictions the and the actual values. 
+  * The next section, "**Deviance Residuals:**," contains information about the spread of the residuals which are the differences between the model predictions and the observed values. 
   * In the third, "**Coefficients:**," section we find information regarding the model parameters. The same section will contain a standard error, z-value, and p-value.
-  * Finally, the last section displays information about the **overall fit** of the model. In the logistic regression output, the primary values to inspect are the Null and Residual deviance statistics.
+  * Finally, the last section displays information about the **overall fit** of the model.
 
 ### Deviance statistics
-The "Null deviance" value provides information on a model that does not contain any predictors other than the constant, which is akin to the mean in a simple linear regression model. In contrast, the "Residual deviance" value provides information regarding fit in the model that does contain our predictors. If the model fits the data well, then we would expect lower residuals deviance values compared to the null deviance values. The difference between the residual and null deviance values follows a chi-square distribution and can be tested for statistical significance. This is accomplished with the `pchisq()` function which calculates the area under the curve of a chi-distribution with corresponding degrees of freedom. The result of this command is a p-value of 0.002 (rounded) which would indicate that including our predictor "Intervention" significantly improves the fit of the model.
+The "Null deviance" value provides information on a model that does not contain any predictors other than the constant, which is akin to the mean in a simple linear regression model. In contrast, the "Residual deviance" value provides information regarding fit in the model that does contain our predictors. If our model fits the data well, then we would expect lower residuals deviance values compared to the null deviance values. The difference between the residual and null deviance values follows a chi-square distribution and can be tested for statistical significance. This is accomplished with the `pchisq()` function which calculates the area under the curve of a chi-distribution with the corresponding degrees of freedom. The result of this command is a p-value of 0.002 (rounded) which would indicate that including our predictor "Intervention" significantly improves the fit of the model compared to model that does not include our predictors.
+
 ```{r, include=FALSE}
 #Just to prove what the null deviance is
 # eel_model.0 <- glm(Cured ~ 1, data = eelData, family = binomial())
 # summary(eel_model.0)
 ```
+
+
 ```{r}
 #difference between model deviance statistics
 chi_model <- eel_model.1$null.deviance - eel_model.1$deviance
@@ -134,17 +127,17 @@ logistic_pseudoRs <- function(log_model){
   cat("Nagelkerke's R^2 ", round(R.n, 3), "\n" )
 }
 
-logistic_pseudoRs(eelModel.1)
+logistic_pseudoRs(eel_model.1)
 ```
 
 <!-- ### Akaike Informatin Criterion (AIC) -->
 <!-- The AIC for our model is measure of fit that takes into consideration the number of predictors. The higher the number of the predictors, the more the fit is penalized. The AIC is 148.16 and can be used to compare other models in which additional predictors are included. -->
 
 ### Coefficients
-The estimate or b-value for the model is 1.23. In linear regression, the coefficients represent the change in the outcome variable that can be expected for after a one unit increase in a predictor variable. In logistic regression, the coefficients represent the change in the logit of the outcome variable that can be expected for the same one unit change in the predictor variable. The logit of the outcome variable corresponds to the natural logarithm of the odds of the outcome variable occurring. The z-values are normally distributed and can be tested for significance. In our example, Intervention is statistically significant which indicates that the predictor, whether or not someone received the intervention, is making a significant contribution to the prediction of the outcome variable.
+The estimate or b-value for the model is 1.23. In linear regression, the coefficients represent the change in the outcome variable that can be expected after a one unit increase in a predictor variable. In logistic regression, the coefficients represent the change in the logit of the outcome variable that can be expected for the same one unit change in the predictor variable. The logit of the outcome variable corresponds to the natural logarithm of the odds of the outcome variable occurring. The z-values are normally distributed and can be tested for significance. In our example, Intervention is statistically significant which indicates that the Intervention, whether or not someone received the intervention, is making a significant contribution to the prediction of the outcome variable, Cured.
 
 ### Odds ratio
-In cases where the predictor variable is dichotomous, the odds ratio is defined as the exponentiated (`exp()` function) coefficient and has a straightforward interpretation. A value greater than one indicates that as the predictor increases, the odds (not to be confused with probability) of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. The odds ratio in this example is 3.42. This means that receiving an intervention increases the odds of a "Cured" outcome.
+The odds ratio is the probability of something happening divided by the probability of it not happening ( p / (1-p)). In cases where the predictor variable is dichotomous, the odds ratio is defined as the exponentiated coefficient and has a straightforward interpretation. A value greater than one indicates that as the predictor increases, the odds (not to be confused with probability) of the outcome occurring increases. A value less than one indicates that as the predictor increases, the odds of the outcome occurring decreases. The odds ratio in this example is 3.42. This means that receiving an intervention increases the odds of a "Cured" outcome.
 ```{r, message=FALSE}
 # Odds ratio
 kable(exp(eel_model.1$coefficients))
@@ -158,7 +151,110 @@ kable(exp(confint(eel_model.1)))
 ```
 
 
+###
 
+```{r, echo = FALSE, eval=FALSE}
+# has_churned is the predicted prob
+# most_likely outcome is the rounded predicted_prob
+# odds_ratio 
+
+# Talk about the most likely outcome because it could be easier for your audience to grasp
+# Update the data frame to create the most likely outcome
+prediction_data <- explanatory_data %>% 
+  mutate(   
+    has_churned = predict(mdl_churn_vs_relationship, explanatory_data, type = "response"),
+    # Add the most likely churn outcome
+    most_likely_outcome = round(has_churned)
+  )
+
+
+# Update the plot, needs to specify aes(Y = ...) -------------------------------
+plt_churn_vs_relationship +
+  # Add most likely outcome points from prediction_data, colored yellow, size 2
+  geom_point(aes(y = most_likely_outcome), color = "yellow", size = 2)
+
+
+# Calculate the odds ratio. The odds ratio is the probability that something
+# will happen over the probability that it will not happen. --------------------
+# Update the data frame
+prediction_data <- explanatory_data %>% 
+  mutate(   
+    has_churned = predict(
+      mdl_churn_vs_relationship, explanatory_data, 
+      type = "response"
+    ),
+    # Add the odds ratio
+    odds_ratio = has_churned/(1-has_churned)
+  )
+
+# See the result
+prediction_data
+
+# Display the log odds ---------------------------------------------------------
+# The type = "response" is different for log_odds_ratio_2
+# Update the data frame
+prediction_data <- explanatory_data %>% 
+  mutate(   
+    has_churned = predict(mdl_churn_vs_relationship, explanatory_data, type = "response"),
+    odds_ratio = has_churned / (1 - has_churned),
+    # Add the log odds ratio from odds_ratio
+    log_odds_ratio = log(odds_ratio),
+    # Add the log odds ratio using predict()
+    log_odds_ratio2 = predict(mdl_churn_vs_relationship, explanatory_data)
+  )
+
+# See the result
+prediction_data
+
+
+# Update the plot by addint the scale_y_log10()
+ggplot(prediction_data, aes(time_since_first_purchase, odds_ratio)) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  # Use a logarithmic y-scale
+  scale_y_log10()
+
+# Confusion matrices to assess model fit
+# Create a confusion matrix to look at sensitivity and specificity
+# Get the actual responses from the dataset
+actual_response <- churn$has_churned
+
+# Get the "most likely" responses from the model
+predicted_response <- round(fitted(mdl_churn_vs_relationship))
+
+# Create a table of counts
+outcomes <- table(predicted_response, actual_response)
+
+# See the result
+outcomes
+
+# Get yardstick and autoplot functions
+# Convert outcomes to a yardstick confusion matrix
+confusion <- conf_mat(outcomes)
+
+# Plot the confusion matrix
+autoplot(confusion)
+
+# Get performance metrics for the confusion matrix
+summary(confusion, event_level = "second")
+
+
+# look at accuracy sensitivity and specificity
+# Accuracy is the proportion of correct responses
+# Sensitivity is the subset of those that churned
+# Specificity is the subset of those that did not churn
+
+```
+
+```{r, include = FALSE}
+colors <- c( "#440154FF","#1565c0")
+# ggplot(eelData, aes(x = Duration, y = Cured, color = Intervention)) +
+ggplot(eelData, aes(x = Duration, y = Cured)) +
+  geom_point(alpha = 0.7, position = position_jitter(width = 0.1, height = 0.1)) +
+  scale_color_manual(values = colors) +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
 ### References 
 
 <div id="refs" class="references">

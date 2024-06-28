@@ -23,13 +23,14 @@ weight: 15
 #   @R-broom
 ---
 
-This guide is the first part in a series on linear regression. I will walk through how to build a simple linear regression model with one outcome variable and one predictor variable. The dataset for this guide comes from Field, Miles, and Field's ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/). The Supermodels dataset contains salary per working day, amount of experience in years, age, and a measure of beauty as determined by a panel of judges. Our job is to help determine what are the factors that best predict salary. We will begi with a simple linear regression model consisting of one outcome (dependent variable) and one predictor (variable) before moving on to more complex models with more predictor variables in subsequent guides.
+This guide is the first part in a series on linear regression. I will walk through how to build a simple linear regression model with one outcome variable and one predictor variable. The dataset for this guide comes from Field, Miles, and Field's ["Discovering Statistics Using R"](https://www.discoveringstatistics.com/books/discovering-statistics-using-r/). The Supermodels dataset contains salary per working day, amount of experience in years, age, and a measure of beauty as determined by a panel of judges. Our task is to help determine what are the factors that best predict salary. We will begin with a simple linear regression model consisting of one outcome (dependent variable) and one numerical predictor (variable) before moving on to more complex models with more predictor variables and of different types like categorical predictors in subsequent guides.
 
 ### Load packages
 ```{r, warning=FALSE, message=FALSE}
 library(tidyverse)  # for data importing and visualization
 library(broom)      # for linear model
 library(kableExtra) # for displaying tables
+library(modendive)  # for plotting
 ```
 
 ### Load data
@@ -46,10 +47,11 @@ Let's begin by visualizing the data with one predictor variable, AGE. We'll turn
 ```{r, warning=FALSE, message=FALSE}
 ggplot(data, aes(x = AGE, y = SALARY)) +
   geom_point(alpha = 0.7, color = "#1565c0") +
-  geom_smooth(method = "lm", se = TRUE, color = "#1565c0") +
+  geom_smooth(method = "lm", se = F, color = "#1565c0") +
   theme_minimal() +
   theme(axis.line = element_line(color = "grey70"))
 ```
+
 ```{r, include=FALSE}
 # Histogram of age
 ggplot(data, aes(x = AGE)) +
@@ -62,7 +64,7 @@ ggplot(data, aes(x = SALARY)) +
 ```
 
 ### Model the data
-Now to build a regression model in R, we will use the `lm()` function which stands for linear model. The `lm()` function needs two main arguments. First, we enter a formula that is in the form of outcome ~ predictor (read outcome by predictor)[^1]. Then, we specify the data frame to use. Finally, we can obtain output from our model with the `summary()` function.
+To build a regression model in R, we will use the `lm()` function which stands for linear model. The `lm()` function needs two main arguments. First, we enter a formula that is in the form of outcome ~ predictor (which I read as outcome predicted by predictor)[^1]. Then, we specify the data frame to use. Finally, we can obtain output from our model with the `summary()` function.
 ```{r}
 model <- lm(SALARY ~ AGE, data = data)
 summary(model)
@@ -70,13 +72,17 @@ summary(model)
 
 ### Walkthrough of the output
 The output of the `summary()` is organized into 4 main sections of related information. 
-  * Beginning with the top, the first section is the "**Call:**," which is simply a reproduction of the `lm()` function used to create the model. 
-  * The next section, "**Residuals:**" contains information about the differences between the model predictions and the actual values. 
-  * In the third, "**Coefficients:**," section we find information regarding the model parameters which can also be referred to as beta coefficients. Each model will have an intercept, which isn't really a predictor variable, but can be interpreted as the predicted outcome when the predictor = 0. In our case, the predicted salary is -36.18 when age = 0. This doesn't make a ton of sense since we are unlikely to encounter Supermodels at age 0. Again, the data are fabricated and are simply analyzed here for demonstrative purposes. The AGE coefficient is interpreted as what the model predicts as an increase in the outcome variable for every unit increase in age. In other words, we would predict salary to increase by 2.63 units every year. In the same section we find a standard error, t-value, and p-value. The t-values are the results of a t-test that the coeffient is not zero and the Pr(>|t|) column displays the p-value of this test statistic. This section is concluded with a key of the significance markers. 
-  * Finally, the last section displays information about the **overall fit** of the model. In this example, the Multiple R-squared value is interpreted as 15.8% of the variance in SALARY can be accounted for by AGE. The last line of this section displays the results of an analysis of variance and can be interpreted as the regression model resulting in a significantly better prediction of SALARY than using the mean salary.
+
+1. Beginning with the top, the first section is the "**Call:**," which is simply a reproduction of the `lm()` command used to create the model. 
+
+2. The next section, "**Residuals:**" Displays the minimum value of the residuals, the interquartile range of the residuals, and the maximum value of the residuals. The residuals are the differences between our observed values in the dependent variable and what the model predictions. One of the assumptions of linear models is that the residuals are normally distributed. Therefore we expect that the Median of the residuals is close to zero. In addition, we would expect the absolute values of the 1st and 3rd quartiles to be close which would indicate equal spread above and below the mean.
+
+3. The "**Coefficients:**" displays information regarding the model coefficients, their standard errors, t-values, and p-values. Each model will have an intercept, which isn't really a predictor variable. In this case, it can be interpreted as the predicted outcome  when the predictor equals 0. The predicted salary is -36.18 when age equals 0. This doesn't make a ton of sense since we are unlikely to encounter someone with an age of 0 and the salary is negative and is simply a by product of the linear model. In other cases the intercept may represent the mean of the dependent variable for observations belonging to a certain group. The AGE coefficient is interpreted as what the model predicts as an increase in the outcome variable for every unit increase in AGE. In other words, we would predict salary to increase by 2.63 units for every 1 year increase in AGE. In the same section we find the standard error, t-value, and p-value for each coefficient. The t-values are the result of a t-test that the coefficient is not zero and the Pr(>|t|) column displays the p-value of this test statistic. This section is concluded with a key of the significance markers where an asterisk indicates the p-values is <= 0.05. 
+
+4. Finally, the last section displays information about the **overall fit** of the model. The residual standard error (RSE) is the standard error of the residuals. RSE can be thought of as the typical size of the residuals. The Multiple R-squared value is the proportion of the variance in the dependent variable that can be attributed to the predictor variable. Multiple R-squared can also be called the coefficient of determination. In this case, 15.8% of the variance in SALARY can be attributed to AGE. Adjusted R-squared is interpreted like R-squared and the difference is that the adjustment applies a penalty for the number of predictor variables entered into the model. The last line of this section displays the results of an analysis of variance that compares a model where SALARY is predicted by AGE to a model where the mean and only the mean of salary is used as a predictor. Predicting salary from age is significantly better than using the mean of salary alone.
 
 ### Tidy models
-With the `tidy()` function in the broom package. We can "clean up" the output of the `summary()` functions by displaying it without all of the information.
+The `summary()` function was designed to read output, but it may be helpful to obtain the output in a data frame where the values can be manipulated. The `tidy()` function in the broom package displays a portion of the output as a data frame that will have some beneficial features as we move forward.
 ```{r}
 kable(
   tidy(model)
@@ -84,14 +90,184 @@ kable(
 ```
 
 ### Make predictions with the model
-Since our model is better than using the mean and age is a significant predictor of salary, we can then use the model to predict outcomes. We will create a new dataframe with at least one value, change its column name to match that of the data frame that was used to generate the model, and then use the `predict()` function to get the predicted value. In this case, we would expect 24.31 units of salary for a 23-year old model. I simply used a single value to illustrate the use of the `predict()` function, but an entire column vector of ages could just as easily be use to predict multiple salaries.
+Since our model is better than using the mean as a predictor of salary and age is a significant predictor of salary, we can then use the model to predict outcomes for data that we don't have. For example, the maximum age in the data set is 25.29. Suppose we wanted to predict the salary of someone who was 30.  To accomplish this, we first create a tibble (a type of dataframe) with at least one value and name the column match that of the predictor variable used to generate the model. Next, use the `predict()` function to get the predicted value for the new AGE value. In this case, we would expect 42.72 units of salary for a 30-year old. I simply used a single value to illustrate the use of the `predict()` function, but an entire data frame new AGE values could just as easily be used to predict multiple salaries.
 ```{r}
-# Predict salary at age of 23
-new_data <- as.data.frame(c(23))  # Create a new data frame with a prediction
-names(new_data)[1] <- "AGE"       # Change the column name to match the lm() predictor column name
+# Predict salary at age of 30
+new_data <- tibble(AGE = 30)
 predict(model, new_data)          # Predict new values 
 
 ```
+
+
+### Interpretation of summary output for categorical variables
+Linear models can and will often include categorical predictor variables, often in combination with other numerical predictor variables. To illustrate the output of `lm()` with categorical predictors we will create a new variable named GENDER that will take one of two values, "Male" if the salary is below the median and "Female" otherwise. 
+```{r}
+data  <- data %>% mutate(GENDER = ifelse(SALARY <= median(SALARY), "Male", "Female"))
+```
+
+We can proceed to visualize our data, except this time we will use box plots since our predictor variable is now a categorical one.
+```{r}
+ggplot(data, aes(x = GENDER, y = SALARY)) +
+  geom_boxplot(color = "#1565c0") +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
+We can also group our data by GENDER and then calculate the mean.
+```{r}
+data %>% 
+  group_by(GENDER) %>%
+  summarise(mean_SALARY = mean(SALARY))
+```
+
+Next, we can build a model where SALARY is predicted by GENDER and display the output.
+```{r}
+gender_model <- lm(SALARY ~ GENDER, data = data)
+
+summary(gender_model)
+```
+When the predictor variable is categorical, the Estimate for the Intercept reflects the mean of the reference group. In this case, "Female" is the reference group because Female appears before Male in alphabetical order. This is the default behavior, but we can easily set MALE or any other variable as the reference group. The Estimate for GENDERMale is -19.71 which reflects that the mean salary of Males is 19.71 units below the mean of Females.
+
+Here we explicitly set the order of the levels where the reference group is Male. Now the output displays the Estimate for the Intercept as the mean of the Male group and the Estimate for GENDERFemale indicates that the mean of the Female group is 19.71 units above the mean of the Male group.
+
+```{r}
+# Explicitly set the order of levels
+data$GENDER <- factor(data$GENDER, levels = c("Male", "Female"))
+
+gender_model <- lm(SALARY ~ GENDER, data = data)
+
+summary(gender_model)
+```
+
+### Relationship between two sample independent t-test and lm with a two-level categorical predictor
+A linear model where a continuous variable is predicted by a two-level categorical variable is equivalent to a two sample independent t-test. Notice that the output of the `t.test()` function results in the same t-value and p-value that are shown in the model outputs for the GENDERMale and GENDERFemale models. The var.equal = TRUE argument sets the t-test to use the pooled variance which is akin to the average variance of the two groups and what is used underneath the hood of the `lm()` command.
+```{r}
+t.test(SALARY ~ GENDER, var.equal = TRUE, data = data)
+```
+### Final note on categorical predictors
+The same relationship between the two sample t-test and a linear model with one two-level categorical predictor is extended to ANOVA when the categorical predictor has three or more levels. To briefly illustrate this, we can create a categorical variable to divide the sample into 3 equal groups based on the salary. This variable will take on three values "Low", "Medium", and "High".
+
+```{r}
+data <- 
+  data %>%
+  mutate(TERT = ntile(SALARY, 3)) %>%
+  mutate(TERT = if_else(TERT == 1, 'Low', if_else(TERT == 2, 'Medium', 'High'))) %>%
+  mutate(TERT = factor(TERT, levels = c("Low", "Medium", "High")))
+```
+
+
+Once again, we can display our data as a set of box plots.
+```{r}
+ggplot(data, aes(x = TERT, y = SALARY)) +
+  geom_boxplot(color = "#1565c0") +
+  theme_minimal() +
+  theme(axis.line = element_line(color = "grey70"))
+```
+Next we can create a linear model, where SALARY is predicted by TERT.
+```{r}
+tert_model <- lm(SALARY ~ TERT, data = data)
+
+summary(tert_model)
+```
+In the output of the `lm()` command the F-statistic, degrees of freedom and p-value would correspond to the omnibus test for the effect of TERT in a one-way ANOVA. 
+```{r}
+summary(car::Anova(tert_model,type = 2))
+```
+
+The multiple R-squared value is equivalent to the measure of effect partial eta squared which is often used in ANOVA. Partial eta squared is defined as SSeffect / (SSeffect + SSerror) where SS refers to Sum of Squares and is provided in the output above.
+
+```{r}
+33260/(33260 +25815)
+```
+
+The results of the pairwise t-tests also coincide with the values provided for the TERTMedium and TERTHigh values. In practicem these would likely need to be corrected for multiple comparisons and are shown here to illustrate some of the similarities between a linear model specified with `lm()` and an ANOVA.
+```{r}
+pairwise.t.test(data$SALARY, data$TERT, p.adj = "none", pool.sd = TRUE)
+```
+
+```{r, eval = FALSE}
+data %>% rstatix::pairwise_t_test(SALARY ~ TERT, 
+                  p.adjust.method = "none") 
+```
+
+```{r, eval = FALSE}
+rstatix::tukey_hsd(data, SALARY ~ TERT) 
+```
+
+```{r, echo = FALSE, eval = FALSE}
+# The + 0 tells lm to not model an intercept
+model <- lm(SALARY ~ YEARS + GENDER + 0, data = data)
+
+
+model
+# For each additional year of experience, the expected salary increases by 2.322 units
+
+
+
+colors = c( "#440154FF","#1565c0")
+
+ggplot(data, aes(x = YEARS, y = SALARY, color = GENDER)) +
+  geom_point() +
+  scale_color_manual(values = colors) +
+  geom_parallel_slopes(se = FALSE)
+
+```
+
+```{r}
+explanatory_data <- 
+  expand_grid(YEARS = c(15),
+              GENDER = unique(data$GENDER))
+
+prediction_data <- 
+  explanatory_data %>%
+  mutate(SALARY = predict(model, explanatory_data))
+
+ggplot(data, aes(x = YEARS, y = SALARY, color = GENDER)) +
+  geom_point() +
+  scale_color_manual(values = colors) +
+
+  geom_parallel_slopes(se = FALSE) +
+  geom_point(
+    data = prediction_data,
+    shape = 3)
+
+
+# Calculate predictions manually
+
+```
+```{r}
+# we can split the dat set into sub sets, model each group separately
+male <- data %>%
+  filter(GENDER == "Male")
+
+female <- data %>%
+  filter(GENDER == "Female")
+
+# The intercept in this model will represent the mean salary of males
+# The coefficient for years represents the expected change in salary following
+# a one unit increase in Years
+model_male <- lm(SALARY ~ YEARS, data = male)
+summary(model_male)
+
+# The intercept in this model will represent the mean salary of females
+# The coefficient for years represents the expected change in salary following
+# a one unit increase in Years
+model_female <- lm(SALARY ~ YEARS, data = female)
+summary(model_female)
+
+# Or we can include them as an interaction.
+# In this format the intercept is the mean of Males because it's the reference
+# category
+lm(SALARY ~  GENDER * YEARS, data = data)
+
+# Readable Interaction format
+# in this format, we do not get an intercept. the coefficient for Years is the
+# slope for males, GENDERmale and GENDERfemale represent the means of each of 
+# those groups in SALARY, and the interaction terms are the slopes for years
+# within each subgroup.
+lm(SALARY ~ GENDER + YEARS:GENDER + 0, data = data)
+
+```
+
 ### References
 <div id="refs" class="references">
 

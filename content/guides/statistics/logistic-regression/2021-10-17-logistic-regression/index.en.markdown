@@ -49,47 +49,16 @@ eelData <- read.delim("eel.dat", header = TRUE)
 kable(head(eelData))
 ```
 
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;"> Cured </th>
-   <th style="text-align:left;"> Intervention </th>
-   <th style="text-align:right;"> Duration </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Not Cured </td>
-   <td style="text-align:left;"> No Treatment </td>
-   <td style="text-align:right;"> 7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Not Cured </td>
-   <td style="text-align:left;"> No Treatment </td>
-   <td style="text-align:right;"> 7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Not Cured </td>
-   <td style="text-align:left;"> No Treatment </td>
-   <td style="text-align:right;"> 6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Cured </td>
-   <td style="text-align:left;"> No Treatment </td>
-   <td style="text-align:right;"> 8 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Cured </td>
-   <td style="text-align:left;"> Intervention </td>
-   <td style="text-align:right;"> 7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Cured </td>
-   <td style="text-align:left;"> No Treatment </td>
-   <td style="text-align:right;"> 6 </td>
-  </tr>
-</tbody>
-</table>
+
+
+|Cured     |Intervention | Duration|
+|:---------|:------------|--------:|
+|Not Cured |No Treatment |        7|
+|Not Cured |No Treatment |        7|
+|Not Cured |No Treatment |        6|
+|Cured     |No Treatment |        8|
+|Cured     |Intervention |        7|
+|Cured     |No Treatment |        6|
 
 ### Prepare data
 Before building our logistic regression model, we will need to convert Cured and Intervention to factored variables. Additionally, we will need to order the levels so that Not Cured and No Treatment are the baseline (reference) categories.
@@ -179,28 +148,13 @@ Value <- c(chi_model, chidf, chisq.prob)
 kable(data.frame(Intervention.Model, Value))
 ```
 
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;"> Intervention.Model </th>
-   <th style="text-align:right;"> Value </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Chi-square statistic </td>
-   <td style="text-align:right;"> 9.9262012 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Degrees of freedom </td>
-   <td style="text-align:right;"> 1.0000000 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> p-value </td>
-   <td style="text-align:right;"> 0.0016294 </td>
-  </tr>
-</tbody>
-</table>
+
+
+|Intervention.Model   |     Value|
+|:--------------------|---------:|
+|Chi-square statistic | 9.9262012|
+|Degrees of freedom   | 1.0000000|
+|p-value              | 0.0016294|
 
 
 <!-- ### Akaike Informatin Criterion (AIC) -->
@@ -217,24 +171,12 @@ In cases where the predictor variable is dichotomous, the odds ratio is defined 
 kable(exp(eel_model.1$coefficients))
 ```
 
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> x </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.750000 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> InterventionIntervention </td>
-   <td style="text-align:right;"> 3.416667 </td>
-  </tr>
-</tbody>
-</table>
+
+
+|                         |        x|
+|:------------------------|--------:|
+|(Intercept)              | 0.750000|
+|InterventionIntervention | 3.416667|
 
 
 ### Confidence intervals of the odds ratio
@@ -244,27 +186,13 @@ To obtain confidence intervals for the odds ratio of model.1, simply pass the mo
 kable(exp(confint(eel_model.1)))
 ```
 
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> 2.5 % </th>
-   <th style="text-align:right;"> 97.5 % </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.4374531 </td>
-   <td style="text-align:right;"> 1.268674 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> InterventionIntervention </td>
-   <td style="text-align:right;"> 1.5820127 </td>
-   <td style="text-align:right;"> 7.625545 </td>
-  </tr>
-</tbody>
-</table>
+
+
+|                         |     2.5 %|   97.5 %|
+|:------------------------|---------:|--------:|
+|(Intercept)              | 0.4374531| 1.268674|
+|InterventionIntervention | 1.5820127| 7.625545|
+
 
 
 

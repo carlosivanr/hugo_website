@@ -1,0 +1,86 @@
+---
+title: Percentage Histograms
+author: Carlos Rodriguez
+date: '2024-06-26'
+slug: percentage-histograms
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2024-06-26T09:31:48-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 30
+draft: False
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE}
+library(tidyverse)
+```
+
+```{r}
+head(mtcars)
+```
+## Traditional Histogram
+```{r}
+mtcars %>%
+  ggplot(., aes(x = cyl)) +
+  geom_bar() +
+  theme_minimal()
+```
+## Histogram paneled by automatic transmistion
+```{r}
+mtcars %>%
+  ggplot(., aes(x = cyl)) +
+  geom_bar() +
+  facet_wrap(~am) +
+  theme_minimal()
+```
+## Clustered histogram
+```{r}
+mtcars %>%
+  mutate(am = factor(am)) %>%
+  ggplot(., aes(x = cyl)) +
+  geom_bar(aes(color = am, fill = am),
+                 position = position_dodge2(preserve = "single")) +
+  theme_minimal()
+```
+
+## Clustered histogram with percentages
+About 60% of the observations where am == 1 are 4 cylinder vehicles.
+```{r message=FALSE, echo=FALSE}
+mtcars %>%
+  mutate(am = factor(am)) %>%
+  group_by(am, cyl) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n)) %>%
+  ggplot(., aes(x = cyl, y = freq, fill = am)) +
+  geom_bar(stat = "identity", position = position_dodge2(preserve = "single")) +
+  scale_y_continuous(labels = scales::label_percent()) +
+  theme_minimal() +
+  ylab("Percentage within each am group") 
+```
+
+## Denominator is the sample size
+About 25% of all observations are automatic and 4 cylinder vehicles.
+```{r}
+mtcars %>%
+  mutate(am = factor(am)) %>%
+  ggplot(., aes(cyl, fill = am)) +
+  geom_bar(aes(y = (..count..)/sum(..count..)),
+           position = position_dodge2(preserve = "single")) +
+  scale_y_continuous(labels = scales::label_percent()) +
+  theme_minimal() +
+  ylab("Percent of all observations") 
+```
+
