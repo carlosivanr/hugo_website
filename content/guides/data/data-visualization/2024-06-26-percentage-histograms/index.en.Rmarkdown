@@ -41,6 +41,7 @@ mtcars %>%
   geom_bar() +
   theme_minimal()
 ```
+
 ## Paneled histogram
 
 Here we make separate panels to show the histogram by am(automatic transmission) where a 1 denotes automatic and 0 denotes manual transmission. 
@@ -51,7 +52,9 @@ mtcars %>%
   facet_wrap(~am) +
   theme_minimal()
 ```
+
 ### Modify the panel labels
+
 To modify the labels, we can convert the variable am to a factor where 1 is set to Automatic and 0 is set to Manual, then setting the order of the levels match the previous plot.
 ```{r}
 mtcars %>%
