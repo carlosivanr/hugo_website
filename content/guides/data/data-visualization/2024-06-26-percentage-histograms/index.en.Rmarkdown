@@ -34,14 +34,14 @@ library(tidyverse)
 head(mtcars)
 ```
 
-## Traditional Histogram
+# Traditional Histogram
 ```{r}
 mtcars %>%
   ggplot(., aes(x = cyl)) +
   geom_bar() +
   theme_minimal()
 ```
-## Paneled histogram 
+# Paneled histogram 
 Here we make separate panels to show the histogram by am(automatic transmission) where a 1 denotes automatic and 0 denotes manual transmission. 
 ```{r}
 mtcars %>%
@@ -50,7 +50,7 @@ mtcars %>%
   facet_wrap(~am) +
   theme_minimal()
 ```
-### Modify the panel labels
+## Modify the panel labels
 To modify the labels, we can convert the variable am to a factor where 1 is set to Automatic and 0 is set to Manual, then setting the order of the levels match the previous plot.
 ```{r}
 mtcars %>%
@@ -62,8 +62,8 @@ mtcars %>%
 ```
 
 
-## Clustered histogram
-In a this clustered histogram separate bars at each value of cyl are displayed, one for automatic and another for manual. The position option is needed to display the separate bars side by side, otherwiese the bars will appear stacked instead.
+# Clustered histogram
+In a this clustered histogram separate bars at each value of cyl are displayed, one for automatic and another for manual. The position option is needed to display the separate bars side by side, otherwise the bars will appear stacked instead.
 ```{r}
 colors = c( "#440154FF","#1565c0")
 mtcars %>%
@@ -76,8 +76,8 @@ mtcars %>%
 
 ```
 
-## Clustered histogram with percentages
-### Denominator is the grouping variable
+# Clustered histogram with percentages
+## Denominator is the grouping variable
 There may be situations where a percentage instead of a count facilitates comparisons across groups. In this version, the denominator for calculating a percentage is that of the total number of observations within each level of am. To produce such a plot, we first need to group the data by am and cyl, and then calculated frequencies and proportions. We can see that 4-cylinder vehicles make up about 60% of the observations where the transmission is an automatic one which can be compared to about 15% of 4-cylinder vehicles are equipped with a manual transmission.
 ```{r message=FALSE, echo=FALSE}
 mtcars %>%
@@ -100,7 +100,7 @@ mtcars %>%
   gtsummary::tbl_summary(by = am, digits = list(everything() ~ c(0,2))) 
 ```
 
-### Denominator is the sample size
+## Denominator is the sample size
 The proportion of all observations can also be displayed. In this plot we see that bout 25% of all observations are automatic and 4 cylinder vehicles.
 ```{r}
 mtcars %>%
