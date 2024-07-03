@@ -24,7 +24,7 @@ draft: False
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In the ggplot2 package, there are two geom_*() layers that can be created to make histograms, geom_histogram() and geom_bar(). The following focuses on the use of geom_bar() to make different types of histograms. We will use the built-in mtcars data set to demonstrate.
+Histograms are a great way to display the frequency of categorical variables and can aid the the understanding of the distribution of a variable to make visual comparisons across groups. In this guide, I focus on the use of the ggplot2 package to make different types of histograms. The following snippets use the built-in mtcars data set to demonstrate.
 
 ```{r message=FALSE}
 library(tidyverse)

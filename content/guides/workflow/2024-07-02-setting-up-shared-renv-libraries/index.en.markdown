@@ -1,0 +1,70 @@
+---
+title: Setting up shared renv libraries
+author: Carlos Rodriguez
+date: '2024-07-02'
+slug: setting-up-shared-renv-libraries
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2024-07-02T12:32:26-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+type: book
+weight: 90
+draft: False
+---
+
+In my day to day duties, I work on several projects requiring coding in R. Each project may require a specific set of R packages which opens up the possibility of running into issues with package management. For example, updating or installing a package for one project, may cause issues for a different project. To overcome this challenge I use the `renv` package which handles most of my use cases except for one. There are instances where the same research project may require the creation of separate R projects. In these cases, I like to have one common library for all R projects related to a research study, instead of managing multiple renv libraries for each R project individually. Currently, I'm experimenting with a workflow to create a shared `renv` library. This approach involves nesting indivual R project directories in a parent study directory that also contains a folder housing all of the R packages. I then configure renv in each project to use the common R package folder.
+
+## 1. Create a new R project
+The first step is to create a sub project folder in the parent study directory. Then, using RStudio's GUI to create a new project in an existing directory. Below is an example directory path to how this may look.
+```{}
+"C:/Users/user/Documents/projects/research_study_x/sub_project_1/"
+```
+
+
+## 2. Create a .Renviron file 
+The next step is to create a .Renviron file setting the following variables to the common folder that will house all of the R packages.
+```{}
+RENV_PATHS_LIBRARY = "C:/Users/user/Documents/projects/research_study_x/renv_library/"
+RENV_PATHS_ROOT = "C:/Users/user/Documents/projects/research_study_x/renv_library/"
+RENV_PATHS_CACHE = "C:/Users/user/Documents/projects/research_study_x/renv_library/"
+```
+The .Renviron file can be created with any text editor and should be placed in the root directory of an R project like ".../sub_project_1/" above. This file will also need to be placed in any other sub_project directory that is set up to use the common library.
+
+## 3. Initialize the R project
+Once the .Renviron file is placed in the root R project directory, I restart the R session, and run the following command to initialize renv.
+
+```r
+renv::init()
+```
+
+## 4. Install packages
+From here, I will use renv::install() to install any packages. For example, I almost always install `tidyverse` as a first step. Renv will proceed to download and install tidyverse and any dependency.
+
+```r
+renv::install("tidyverse")
+```
+
+## 5. Snapshot
+Finally, this portion of the procedure ends with executing the following command for renv to make note of which version of R is utilized and which version of each package is utilized.
+
+```r
+renv::snapshot()
+```
+
+## 6. Repeat steps 1-5 for a 2nd R project
+For a second R project, repeat steps 1-5. Create a new sub directory for the R project, copy and paste the .Renvinron file from step 2 into the new sub directory, and then initialize the project with renv. If additional packages are needed for the 2nd R project, they can be installed followed by snap shotting. If a new package is installed at this stage, that package will be available to use in the first R project without needing to install.
+```{}
+"C:/Users/user/Documents/projects/research_study_x/sub_project_2/"
+```
+
+
+## Configure renv to work across multiple computers
+To complicate matters further, I often work on several computers which adds an extra layer of complexity in managing R packages. One solution I'm working with is to place R projects in a OneDrive folder that syncs across multiple computers. I set the folder to "Always keep on this device" so that any new packages are readily available on each machine for loading.

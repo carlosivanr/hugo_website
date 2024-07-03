@@ -1,0 +1,72 @@
+---
+title: Automating R scripts on Windows
+author: Carlos Rodriguez
+date: '2024-03-11'
+slug: automating-r-scripts-windows
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2024-03-11T17:44:34-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+Every now then it may be helpful to automate running R scripts. One example would be to generate a weekly Quarto report. Although there is an R package called `taskscheduleR` that may work in some cases. In my experience, however, this package did not work possibly due to my use of R environments with the `renv` package. The following provides one solution to automate running R scripts in Windows using a batch file and the native Windows Task Scheduler app.
+
+# Write an R script
+The first step is to write an R script that is designed to run on designated schedule. In this example, we create a dummy data frame that will get saved as an Excel file with the date the script was run as its name. This is just a simple example to illustrate the process, however in practice, automated tasks can become much more elaborate.
+```{r, eval=FALSE}
+library(here)
+library(writexl)
+
+# Set the date to append to file
+date <- Sys.Date()
+
+# Create a dummy data frame to output
+data <- as.data.frame(date)
+
+# Write the dummy data frame to Excel with the date as the file name
+write_xlsx(data, path = here(str_c(date, ".xlsx")))
+
+```
+
+
+# Write a batch file
+The next step is to create a .bat file contains a set of commands. The .bat file will be called to run on a designated schedule. The .bat files can be created with a text editor like Notepad or Sublime Text and will look like the code chunk below and has three main parts. 
+  - In the first part, `CD` is used to change to the root directory of the R project that is linked to the R script that needs to run automatically. 
+  - The second part is a series sub commands that begins with `CALL` 
+      - The first subcommand is to set the path to the Rscript.exe program followed by the -e option
+      - The second subcommand is to load the renv project environment. This is only necessary if you have your project set up with renv.
+      - The next subcommand is to set the path to the R script
+      - The last subcommmand is to pipe any warnings or messages from the R console to a file called Output.log. 
+  - Finally the third part is to use the `exit` command close up the R session and command prompt.
+  
+```console
+CD C:\R\PROJECT\ROOT\DIRECTORY
+
+CALL "C:\Program Files\R\R-4.2.2\bin\Rscript.exe" -e "renv::load('C:/Users/USER/PATH/TO/ROOT/DIRECTORY'); source('C:/Users/USER/PATH/TO/ROOT/DIRECTORY/scripts/r_script.R')" > "C:/Users/USER/PATH/TO/ROOT/DIRECTORY/scripts/Output.log" 2>&1   
+
+EXIT
+```
+
+# Use task Schedule R
+- Search for "Task Scheduler" in the Windows Taskbar Search field
+- Find and open Task Scheduler
+- Right click on Task Scheduler Library and select "New Folder"
+- Rename the folder to organize any future tasks related to this project
+- Select the new folder
+- In the right hand pane select Create Basic Task
+- Follow through the prompts by:
+    - Naming the task
+    - Describing it
+    - Setting the Trigger (e.g. daily, weekly, etc.)
+    - Refining the start time, launch time, and recurrence
+    - Select "Start a program" radio button
+    - Then "Browse..." to the path of the .bat file
+
