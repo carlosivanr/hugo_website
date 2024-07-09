@@ -46,9 +46,9 @@ superuser: true
 title: Carlos I. Rodriguez, Ph.D.
 ---
 
-Welcome! My name is Carlos Rodriguez and I am a faculty member in the Department of Family Medicine at the University of Colorado Anschutz Medical Campus. In my current role, I am part of an NIH-funded research team focused on studying the effectiveness of a novel pragmatic approach to address weight management in primary care. I also collaborate with several other research teams and workgroups to consult on research design and data collection, perform power analyses, design and implement data processing pipelines, and conduct statistical analyses.
+Welcome! My name is Carlos Rodriguez and I am a senior instructor in the Department of Family Medicine at the University of Colorado Anschutz Medical Campus. In my current role, I primarily develop and maintain data pipelines and perform data analysis for academic research purposes.
 
-Prior to my current position, I completed a Ph.D. in psychology and underwent post-doctoral training centered on functional neuroimaging. My research was primarily aimed at better understanding how prenatal alcohol alters network connectivity in the brain and how machine learning approaches could be leveraged to develop non-invasive diagnostic tools for fetal alcohol spectrum disorders.
+Prior to my current position, I completed a Ph.D. in psychology and underwent post-doctoral training centered on functional neuroimaging. My graduate level research was primarily aimed at better understanding how prenatal alcohol alters network connectivity in the brain and how machine learning approaches could be leveraged to develop non-invasive diagnostic tools for fetal alcohol spectrum disorders.
 
 In addition to my research, I have a longstanding commitment to mentoring students from under-represented backgrounds. I have mentored under-represented students in achieving their research career goals through my involvement with the Society for Neuroscience, the University of New Mexico's El Centro de la Raza, and the Society for Advancing Chicanos/Hispanics and Native Americans in Science. 
 
