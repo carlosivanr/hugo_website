@@ -83,7 +83,7 @@ mtcars %>%
 ## Clustered histogram with percentages
 ### Denominator is the grouping variable
 There may be situations where a percentage instead of a count facilitates comparisons across groups. In this version, the denominator for calculating a percentage is that of the total number of observations within each level of am. To produce such a plot, we first need to group the data by am and cyl, and then calculated frequencies and proportions. We can see that 4-cylinder vehicles make up about 60% of the observations where the transmission is an automatic one which can be compared to about 15% of 4-cylinder vehicles are equipped with a manual transmission.
-```{r message=FALSE, echo=FALSE}
+```{r message=FALSE}
 mtcars %>%
   mutate(am = factor(am)) %>%
   group_by(am, cyl) %>%
